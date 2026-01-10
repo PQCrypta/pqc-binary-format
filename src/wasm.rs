@@ -193,7 +193,7 @@ pub struct WasmCompressionParameters {
 impl WasmCompressionParameters {
     /// Create new compression parameters
     #[wasm_bindgen(constructor)]
-    pub fn new(algorithm: String, level: i32, original_size: u64) -> Self {
+    pub fn new(algorithm: String, level: u8, original_size: u64) -> Self {
         Self {
             inner: CompressionParameters {
                 algorithm,
@@ -212,7 +212,7 @@ impl WasmCompressionParameters {
 
     /// Get compression level
     #[wasm_bindgen(getter)]
-    pub fn level(&self) -> i32 {
+    pub fn level(&self) -> u8 {
         self.inner.level
     }
 

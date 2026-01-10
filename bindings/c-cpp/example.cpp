@@ -16,7 +16,7 @@ void print_separator(const std::string& title = "") {
     std::cout << std::string(50, '-') << "\n";
 }
 
-void print_buffer(const char* label, const PqcByteBuffer& buffer) {
+void print_buffer(const char* label, const ByteBuffer& buffer) {
     std::cout << label << ": " << buffer.len << " bytes\n";
 }
 
@@ -62,7 +62,7 @@ int main() {
     pqc_free_string(alg_name);
 
     // Serialize to bytes
-    PqcByteBuffer serialized = pqc_format_to_bytes(format);
+    ByteBuffer serialized = pqc_format_to_bytes(format);
     if (!serialized.data) {
         std::cerr << "Serialization failed\n";
         pqc_format_free(format);
@@ -90,7 +90,7 @@ int main() {
     std::cout << "Deserialized algorithm: " << deser_alg_name << "\n";
     pqc_free_string(deser_alg_name);
 
-    PqcByteBuffer data = pqc_format_get_data(deserialized);
+    ByteBuffer data = pqc_format_get_data(deserialized);
     print_buffer("Data length", data);
     pqc_free_buffer(data);
 
@@ -132,7 +132,7 @@ int main() {
         return 1;
     }
 
-    PqcByteBuffer serialized_with_kem = pqc_format_to_bytes(format_with_kem);
+    ByteBuffer serialized_with_kem = pqc_format_to_bytes(format_with_kem);
     if (serialized_with_kem.data) {
         print_buffer("Serialized size with KEM", serialized_with_kem);
         pqc_free_buffer(serialized_with_kem);

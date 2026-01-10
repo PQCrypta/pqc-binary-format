@@ -3,15 +3,17 @@
 //! This module provides C-compatible foreign function interface (FFI)
 //! for use in C/C++ applications and Go (via cgo).
 
+#![allow(missing_docs)]
+
 use std::collections::HashMap;
-use std::ffi::{CStr, CString};
+use std::ffi::CString;
 use std::os::raw::{c_char, c_int, c_uchar};
 use std::ptr;
 use std::slice;
 
 use crate::{
-    Algorithm, CompressionParameters, EncParameters, FormatFlags, KemParameters, PqcBinaryFormat,
-    PqcMetadata, SigParameters,
+    Algorithm, EncParameters, KemParameters, PqcBinaryFormat,
+    PqcMetadata,
 };
 
 /// Opaque handle to PqcBinaryFormat
@@ -42,6 +44,7 @@ impl ByteBuffer {
         }
     }
 
+    #[allow(dead_code)]
     unsafe fn to_vec(&self) -> Vec<u8> {
         if self.data.is_null() {
             return Vec::new();
@@ -375,23 +378,43 @@ pub extern "C" fn pqc_get_binary_version() -> u8 {
 }
 
 // Algorithm ID constants for C/C++ convenience
+
+/// Algorithm ID for Classical (X25519 + Ed25519 + AES-256-GCM)
 #[no_mangle]
 pub static PQC_ALGORITHM_CLASSICAL: u16 = 0x0050;
+
+/// Algorithm ID for Password-based Classical encryption
 #[no_mangle]
 pub static PQC_ALGORITHM_PASSWORD_CLASSICAL: u16 = 0x0051;
+
+/// Algorithm ID for Hybrid (ML-KEM-1024 + X25519 + ML-DSA-87 + Ed25519)
 #[no_mangle]
 pub static PQC_ALGORITHM_HYBRID: u16 = 0x0100;
+
+/// Algorithm ID for Post-Quantum (ML-KEM-1024 + ML-DSA-87)
 #[no_mangle]
 pub static PQC_ALGORITHM_POST_QUANTUM: u16 = 0x0200;
+
+/// Algorithm ID for ML-KEM-1024 pure implementation
 #[no_mangle]
 pub static PQC_ALGORITHM_ML_KEM_1024: u16 = 0x0202;
+
+/// Algorithm ID for Multi-KEM (multiple key encapsulation layers)
 #[no_mangle]
 pub static PQC_ALGORITHM_MULTI_KEM: u16 = 0x0203;
+
+/// Algorithm ID for Multi-KEM Triple Layer
 #[no_mangle]
 pub static PQC_ALGORITHM_MULTI_KEM_TRIPLE: u16 = 0x0204;
+
+/// Algorithm ID for Quad-Layer redundant encryption
 #[no_mangle]
 pub static PQC_ALGORITHM_QUAD_LAYER: u16 = 0x0205;
+
+/// Algorithm ID for PQ3-Stack with forward secrecy
 #[no_mangle]
 pub static PQC_ALGORITHM_PQ3_STACK: u16 = 0x0207;
+
+/// Algorithm ID for Lattice-Code Hybrid Stack
 #[no_mangle]
 pub static PQC_ALGORITHM_LATTICE_CODE_HYBRID: u16 = 0x0208;

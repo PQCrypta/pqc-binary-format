@@ -26,3 +26,13 @@ Thumbs.db
 
 # Benchmark results
 /target/criterion/
+
+# C/C++ build artifacts
+bindings/c-cpp/example
+*.o
+*.so
+*.dylib
+*.dll
+
+# Build outputs
+build-output.txt

@@ -18,46 +18,76 @@
 /**
  * Current version of the PQC Binary Format specification
  */
-#define PqcPQC_BINARY_VERSION 1
+#define PQC_BINARY_VERSION 1
 
 /**
  * C-compatible byte buffer
  */
-typedef struct PqcPqcByteBuffer {
+typedef struct ByteBuffer {
   unsigned char *data;
   uintptr_t len;
   uintptr_t capacity;
-} PqcPqcByteBuffer;
+} ByteBuffer;
 
 /**
  * Opaque handle to PqcBinaryFormat
  */
-typedef struct PqcPqcFormatHandle {
+typedef struct PqcFormatHandle {
   uint8_t _private[0];
-} PqcPqcFormatHandle;
+} PqcFormatHandle;
 
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
 
+/**
+ * Algorithm ID for Classical (X25519 + Ed25519 + AES-256-GCM)
+ */
 extern const uint16_t PQC_ALGORITHM_CLASSICAL;
 
+/**
+ * Algorithm ID for Password-based Classical encryption
+ */
 extern const uint16_t PQC_ALGORITHM_PASSWORD_CLASSICAL;
 
+/**
+ * Algorithm ID for Hybrid (ML-KEM-1024 + X25519 + ML-DSA-87 + Ed25519)
+ */
 extern const uint16_t PQC_ALGORITHM_HYBRID;
 
+/**
+ * Algorithm ID for Post-Quantum (ML-KEM-1024 + ML-DSA-87)
+ */
 extern const uint16_t PQC_ALGORITHM_POST_QUANTUM;
 
+/**
+ * Algorithm ID for ML-KEM-1024 pure implementation
+ */
 extern const uint16_t PQC_ALGORITHM_ML_KEM_1024;
 
+/**
+ * Algorithm ID for Multi-KEM (multiple key encapsulation layers)
+ */
 extern const uint16_t PQC_ALGORITHM_MULTI_KEM;
 
+/**
+ * Algorithm ID for Multi-KEM Triple Layer
+ */
 extern const uint16_t PQC_ALGORITHM_MULTI_KEM_TRIPLE;
 
+/**
+ * Algorithm ID for Quad-Layer redundant encryption
+ */
 extern const uint16_t PQC_ALGORITHM_QUAD_LAYER;
 
+/**
+ * Algorithm ID for PQ3-Stack with forward secrecy
+ */
 extern const uint16_t PQC_ALGORITHM_PQ3_STACK;
 
+/**
+ * Algorithm ID for Lattice-Code Hybrid Stack
+ */
 extern const uint16_t PQC_ALGORITHM_LATTICE_CODE_HYBRID;
 
 /**
@@ -66,7 +96,7 @@ extern const uint16_t PQC_ALGORITHM_LATTICE_CODE_HYBRID;
  * # Safety
  * The buffer must have been allocated by this library
  */
-pqc_ void pqc_free_buffer(struct PqcPqcByteBuffer buffer) ;
+void pqc_free_buffer(struct ByteBuffer buffer);
 
 /**
  * Free a string allocated by this library
@@ -74,7 +104,7 @@ pqc_ void pqc_free_buffer(struct PqcPqcByteBuffer buffer) ;
  * # Safety
  * The string must have been allocated by this library
  */
-pqc_ void pqc_free_string(char *s) ;
+void pqc_free_string(char *s);
 
 /**
  * Create a new PQC Binary Format structure
@@ -94,7 +124,7 @@ pqc_ void pqc_free_string(char *s) ;
  * # Safety
  * All pointers must be valid. The returned handle must be freed with `pqc_format_free`.
  */
-pqc_ struct PqcPqcFormatHandle *pqc_format_new(uint16_t algorithm_id, const unsigned char *iv, uintptr_t iv_len, const unsigned char *tag, uintptr_t tag_len, const unsigned char *data, uintptr_t data_len) ;
+struct PqcFormatHandle *pqc_format_new(uint16_t algorithm_id, const unsigned char *iv, uintptr_t iv_len, const unsigned char *tag, uintptr_t tag_len, const unsigned char *data, uintptr_t data_len);
 
 /**
  * Create PQC Binary Format with KEM parameters
@@ -102,7 +132,7 @@ pqc_ struct PqcPqcFormatHandle *pqc_format_new(uint16_t algorithm_id, const unsi
  * # Safety
  * All pointers must be valid
  */
-pqc_ struct PqcPqcFormatHandle *pqc_format_new_with_kem(uint16_t algorithm_id, const unsigned char *iv, uintptr_t iv_len, const unsigned char *tag, uintptr_t tag_len, const unsigned char *kem_public_key, uintptr_t kem_public_key_len, const unsigned char *kem_ciphertext, uintptr_t kem_ciphertext_len, const unsigned char *data, uintptr_t data_len) ;
+struct PqcFormatHandle *pqc_format_new_with_kem(uint16_t algorithm_id, const unsigned char *iv, uintptr_t iv_len, const unsigned char *tag, uintptr_t tag_len, const unsigned char *kem_public_key, uintptr_t kem_public_key_len, const unsigned char *kem_ciphertext, uintptr_t kem_ciphertext_len, const unsigned char *data, uintptr_t data_len);
 
 /**
  * Serialize PQC Binary Format to bytes
@@ -116,7 +146,7 @@ pqc_ struct PqcPqcFormatHandle *pqc_format_new_with_kem(uint16_t algorithm_id, c
  * # Safety
  * Handle must be valid. Returned buffer must be freed with `pqc_free_buffer`.
  */
-pqc_ struct PqcPqcByteBuffer pqc_format_to_bytes(const struct PqcPqcFormatHandle *handle) ;
+struct ByteBuffer pqc_format_to_bytes(const struct PqcFormatHandle *handle);
 
 /**
  * Deserialize PQC Binary Format from bytes
@@ -131,7 +161,7 @@ pqc_ struct PqcPqcByteBuffer pqc_format_to_bytes(const struct PqcPqcFormatHandle
  * # Safety
  * Data pointer must be valid. Returned handle must be freed with `pqc_format_free`.
  */
-pqc_ struct PqcPqcFormatHandle *pqc_format_from_bytes(const unsigned char *data, uintptr_t len) ;
+struct PqcFormatHandle *pqc_format_from_bytes(const unsigned char *data, uintptr_t len);
 
 /**
  * Get algorithm ID from format
@@ -139,7 +169,7 @@ pqc_ struct PqcPqcFormatHandle *pqc_format_from_bytes(const unsigned char *data,
  * # Safety
  * Handle must be valid
  */
-pqc_ uint16_t pqc_format_get_algorithm_id(const struct PqcPqcFormatHandle *handle) ;
+uint16_t pqc_format_get_algorithm_id(const struct PqcFormatHandle *handle);
 
 /**
  * Get algorithm name from format
@@ -150,7 +180,7 @@ pqc_ uint16_t pqc_format_get_algorithm_id(const struct PqcPqcFormatHandle *handl
  * # Safety
  * Handle must be valid
  */
-pqc_ char *pqc_format_get_algorithm_name(const struct PqcPqcFormatHandle *handle) ;
+char *pqc_format_get_algorithm_name(const struct PqcFormatHandle *handle);
 
 /**
  * Get encrypted data from format
@@ -161,7 +191,7 @@ pqc_ char *pqc_format_get_algorithm_name(const struct PqcPqcFormatHandle *handle
  * # Safety
  * Handle must be valid
  */
-pqc_ struct PqcPqcByteBuffer pqc_format_get_data(const struct PqcPqcFormatHandle *handle) ;
+struct ByteBuffer pqc_format_get_data(const struct PqcFormatHandle *handle);
 
 /**
  * Validate format structure
@@ -172,7 +202,7 @@ pqc_ struct PqcPqcByteBuffer pqc_format_get_data(const struct PqcPqcFormatHandle
  * # Safety
  * Handle must be valid
  */
-pqc_ int pqc_format_validate(const struct PqcPqcFormatHandle *handle) ;
+int pqc_format_validate(const struct PqcFormatHandle *handle);
 
 /**
  * Get total size of serialized format
@@ -180,7 +210,7 @@ pqc_ int pqc_format_validate(const struct PqcPqcFormatHandle *handle) ;
  * # Safety
  * Handle must be valid
  */
-pqc_ uintptr_t pqc_format_get_total_size(const struct PqcPqcFormatHandle *handle) ;
+uintptr_t pqc_format_get_total_size(const struct PqcFormatHandle *handle);
 
 /**
  * Free a PqcBinaryFormat handle
@@ -188,7 +218,7 @@ pqc_ uintptr_t pqc_format_get_total_size(const struct PqcPqcFormatHandle *handle
  * # Safety
  * Handle must have been allocated by this library and not previously freed
  */
-pqc_ void pqc_format_free(struct PqcPqcFormatHandle *handle) ;
+void pqc_format_free(struct PqcFormatHandle *handle);
 
 /**
  * Get library version string
@@ -196,12 +226,12 @@ pqc_ void pqc_format_free(struct PqcPqcFormatHandle *handle) ;
  * # Returns
  * Null-terminated version string. Must be freed with `pqc_free_string`.
  */
-pqc_ char *pqc_get_version(void) ;
+char *pqc_get_version(void);
 
 /**
  * Get binary format version
  */
-pqc_ uint8_t pqc_get_binary_version(void) ;
+uint8_t pqc_get_binary_version(void);
 
 #ifdef __cplusplus
 }  // extern "C"

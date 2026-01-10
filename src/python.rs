@@ -3,8 +3,11 @@
 //! This module provides Python bindings for the PQC Binary Format library.
 //! All core functionality is exposed through Python classes and methods.
 
+#![allow(non_local_definitions)]
+#![allow(missing_docs)]
+
 use pyo3::prelude::*;
-use pyo3::types::{PyBytes, PyDict};
+use pyo3::types::PyBytes;
 use std::collections::HashMap;
 
 use crate::{
@@ -137,7 +140,7 @@ pub struct PyCompressionParameters {
     #[pyo3(get, set)]
     pub algorithm: String,
     #[pyo3(get, set)]
-    pub level: i32,
+    pub level: u8,
     #[pyo3(get, set)]
     pub original_size: u64,
 }
@@ -145,7 +148,7 @@ pub struct PyCompressionParameters {
 #[pymethods]
 impl PyCompressionParameters {
     #[new]
-    fn new(algorithm: String, level: i32, original_size: u64) -> Self {
+    fn new(algorithm: String, level: u8, original_size: u64) -> Self {
         Self {
             algorithm,
             level,

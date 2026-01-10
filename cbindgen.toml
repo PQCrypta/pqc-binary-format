@@ -10,17 +10,15 @@ style = "both"
 
 [export]
 include = ["PqcFormatHandle", "ByteBuffer"]
-prefix = "Pqc"
+prefix = ""
 
 [export.rename]
 "PqcFormatHandle" = "PqcFormatHandle"
-"ByteBuffer" = "PqcByteBuffer"
+"ByteBuffer" = "ByteBuffer"
 
 [parse]
 parse_deps = false
 include = ["pqc-binary-format"]
 
 [fn]
-prefix = "pqc_"
-postfix = ""
 args = "horizontal"

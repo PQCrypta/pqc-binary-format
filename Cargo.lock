@@ -483,7 +483,7 @@ dependencies = [
 
 [[package]]
 name = "pqc-binary-format"
-version = "1.0.3"
+version = "1.0.4"
 dependencies = [
  "bincode",
  "criterion",
