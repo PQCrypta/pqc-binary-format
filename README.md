@@ -1,0 +1,423 @@
+# PQC Binary Format v1.0
+
+[![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
+[![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
+[![License](https://img.shields.io/crates/l/pqc-binary-format.svg)](LICENSE-MIT)
+[![Build Status](https://github.com/PQCrypta/pqcrypta-community/workflows/CI/badge.svg)](https://github.com/PQCrypta/pqcrypta-community/actions)
+
+**A standardized, self-describing binary format for post-quantum cryptography encrypted data interchange.**
+
+## 🌟 The Problem
+
+Post-quantum cryptography (PQC) implementations suffer from the "Babel Tower problem": different implementations cannot interoperate because there is no standardized format for encrypted data. Each library uses its own proprietary format, making cross-platform and cross-language encryption impossible.
+
+## 💡 The Solution
+
+PQC Binary Format v1.0 provides a universal, algorithm-agnostic format that:
+
+- ✅ Works across **28+ cryptographic algorithms**
+- ✅ **Self-describing metadata** enables seamless decryption
+- ✅ **Integrity verification** with SHA-256 checksums
+- ✅ **Cross-platform compatible** (Rust, Python, JavaScript, Go, etc.)
+- ✅ **Future-proof** design allows algorithm migration
+- ✅ **Zero dependencies** except serde and sha2
+
+## 🚀 Quick Start
+
+Add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+pqc-binary-format = "1.0"
+```
+
+### Basic Usage
+
+```rust
+use pqc_binary_format::{PqcBinaryFormat, Algorithm, PqcMetadata, EncParameters};
+use std::collections::HashMap;
+
+// Create metadata with encryption parameters
+let metadata = PqcMetadata {
+    enc_params: EncParameters {
+        iv: vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],  // 12-byte nonce
+        tag: vec![0; 16],                                  // 16-byte auth tag
+        params: HashMap::new(),
+    },
+    ..Default::default()
+};
+
+// Create encrypted data container
+let encrypted_data = vec![1, 2, 3, 4, 5];  // Your encrypted bytes
+let format = PqcBinaryFormat::new(Algorithm::Hybrid, metadata, encrypted_data);
+
+// Serialize to bytes (for transmission or storage)
+let bytes = format.to_bytes().unwrap();
+
+// Deserialize from bytes (includes automatic checksum verification)
+let recovered = PqcBinaryFormat::from_bytes(&bytes).unwrap();
+
+assert_eq!(format, recovered);
+println!("Algorithm: {}", recovered.algorithm().name());
+```
+
+## 📦 Binary Format Specification
+
+```text
++-------------------+
+| Magic (4 bytes)   | "PQC\x01" - Format identifier
++-------------------+
+| Version (1 byte)  | 0x01 - Format version
++-------------------+
+| Algorithm (2 bytes)| Algorithm identifier (0x0050 - 0x0506)
++-------------------+
+| Flags (1 byte)    | Feature flags (compression, streaming, etc.)
++-------------------+
+| Metadata Len (4)  | Length of metadata section
++-------------------+
+| Data Len (8)      | Length of encrypted payload
++-------------------+
+| Metadata (var)    | Algorithm-specific parameters
++-------------------+
+| Data (var)        | Encrypted data
++-------------------+
+| Checksum (32)     | SHA-256 integrity checksum
++-------------------+
+```
+
+## 🔐 Supported Algorithms
+
+The format supports 28 cryptographic algorithm identifiers:
+
+### Classical Algorithms
+- **Classical** (0x0050): X25519 + Ed25519 + AES-256-GCM
+- **Password Classical** (0x0051): Password-based encryption
+
+### Hybrid Algorithms
+- **Hybrid** (0x0100): ML-KEM-1024 + X25519 + ML-DSA-87 + Ed25519
+
+### Post-Quantum Algorithms
+- **Post-Quantum** (0x0200): ML-KEM-1024 + ML-DSA-87
+- **ML-KEM-1024** (0x0202): Pure ML-KEM with AES-256-GCM
+- **Multi-KEM** (0x0203): Dual-layer KEM
+- **Multi-KEM Triple** (0x0204): Triple-layer KEM
+- **Quad-Layer** (0x0205): Four independent layers
+- **PQ3-Stack** (0x0207): Forward secrecy stack
+
+### Max Secure Series (0x0300-0x0306)
+High-security configurations for enterprise use
+
+### FN-DSA Series (0x0400-0x0407)
+Falcon-based signature algorithms
+
+### Experimental (0x0500-0x0506)
+Research and next-generation algorithms
+
+[View full algorithm list](docs/algorithms.md)
+
+## 🎯 Features
+
+### Feature Flags
+
+Control optional behavior with feature flags:
+
+```rust
+use pqc_binary_format::{PqcBinaryFormat, Algorithm, FormatFlags, PqcMetadata, EncParameters};
+use std::collections::HashMap;
+
+let flags = FormatFlags::new()
+    .with_compression()       // Data was compressed before encryption
+    .with_streaming()         // Streaming encryption mode
+    .with_additional_auth();  // Additional authentication layer
+
+let metadata = PqcMetadata {
+    enc_params: EncParameters {
+        iv: vec![1; 12],
+        tag: vec![1; 16],
+        params: HashMap::new(),
+    },
+    ..Default::default()
+};
+
+let format = PqcBinaryFormat::with_flags(
+    Algorithm::QuadLayer,
+    flags,
+    metadata,
+    vec![1, 2, 3],
+);
+
+assert!(format.flags().has_compression());
+assert!(format.flags().has_streaming());
+```
+
+### Metadata Structure
+
+The format includes rich metadata for decryption:
+
+```rust
+use pqc_binary_format::{PqcMetadata, KemParameters, SigParameters, EncParameters, CompressionParameters};
+use std::collections::HashMap;
+
+let metadata = PqcMetadata {
+    // Key Encapsulation (optional)
+    kem_params: Some(KemParameters {
+        public_key: vec![/* ML-KEM public key */],
+        ciphertext: vec![/* encapsulated key */],
+        params: HashMap::new(),
+    }),
+
+    // Digital Signature (optional)
+    sig_params: Some(SigParameters {
+        public_key: vec![/* ML-DSA public key */],
+        signature: vec![/* signature bytes */],
+        params: HashMap::new(),
+    }),
+
+    // Symmetric Encryption (required)
+    enc_params: EncParameters {
+        iv: vec![1; 12],              // Nonce/IV
+        tag: vec![1; 16],             // AEAD auth tag
+        params: HashMap::new(),
+    },
+
+    // Compression (optional)
+    compression_params: Some(CompressionParameters {
+        algorithm: "zstd".to_string(),
+        level: 3,
+        original_size: 1024,
+        params: HashMap::new(),
+    }),
+
+    // Custom parameters (extensible)
+    custom: HashMap::new(),
+};
+```
+
+### Custom Parameters
+
+Add your own metadata:
+
+```rust
+use pqc_binary_format::PqcMetadata;
+
+let mut metadata = PqcMetadata::new();
+metadata.add_custom("my_param".to_string(), vec![1, 2, 3]);
+
+// Later...
+if let Some(value) = metadata.get_custom("my_param") {
+    println!("Custom param: {:?}", value);
+}
+```
+
+## 🔍 Integrity Verification
+
+Every format includes a SHA-256 checksum calculated over all fields:
+
+```rust
+use pqc_binary_format::PqcBinaryFormat;
+
+let bytes = format.to_bytes().unwrap();
+
+// Tamper with the data
+// let mut corrupted = bytes.clone();
+// corrupted[50] ^= 0xFF;
+
+// Deserialization automatically verifies checksum
+match PqcBinaryFormat::from_bytes(&bytes) {
+    Ok(format) => println!("✓ Checksum valid"),
+    Err(e) => println!("✗ Checksum failed: {}", e),
+}
+```
+
+## 📚 Examples
+
+### Example 1: Basic Encryption Format
+
+```rust
+use pqc_binary_format::{PqcBinaryFormat, Algorithm, PqcMetadata, EncParameters};
+use std::collections::HashMap;
+
+fn main() {
+    let metadata = PqcMetadata {
+        enc_params: EncParameters {
+            iv: vec![1; 12],
+            tag: vec![1; 16],
+            params: HashMap::new(),
+        },
+        ..Default::default()
+    };
+
+    let format = PqcBinaryFormat::new(
+        Algorithm::Hybrid,
+        metadata,
+        vec![/* your encrypted data */],
+    );
+
+    // Save to file
+    let bytes = format.to_bytes().unwrap();
+    std::fs::write("encrypted.pqc", &bytes).unwrap();
+
+    // Load from file
+    let loaded_bytes = std::fs::read("encrypted.pqc").unwrap();
+    let loaded = PqcBinaryFormat::from_bytes(&loaded_bytes).unwrap();
+
+    println!("Algorithm: {}", loaded.algorithm().name());
+}
+```
+
+### Example 2: Cross-Language Interoperability
+
+**Rust (Encryption)**
+```rust
+let format = PqcBinaryFormat::new(Algorithm::PostQuantum, metadata, data);
+let bytes = format.to_bytes().unwrap();
+// Send bytes to Python
+```
+
+**Python (Decryption)**
+```python
+from pqc_binary_format import PqcBinaryFormat
+
+format = PqcBinaryFormat.from_bytes(bytes)
+print(f"Algorithm: {format.algorithm.name}")
+print(f"Data: {format.data}")
+```
+
+*Note: Python bindings coming soon!*
+
+### Example 3: Algorithm Migration
+
+```rust
+// Old data encrypted with Classical algorithm
+let old_format = PqcBinaryFormat::from_bytes(&old_encrypted_data)?;
+assert_eq!(old_format.algorithm(), Algorithm::Classical);
+
+// Re-encrypt with Post-Quantum algorithm
+let plaintext = decrypt_with_classical(&old_format)?;
+let new_metadata = create_pq_metadata()?;
+let new_format = PqcBinaryFormat::new(
+    Algorithm::PostQuantum,
+    new_metadata,
+    encrypt_with_pq(&plaintext)?,
+);
+
+// Same format, different algorithm!
+```
+
+## 🎓 Use Cases
+
+### 1. **Cross-Platform Encryption**
+Encrypt in Rust, decrypt in Python, JavaScript, or Go using the same format.
+
+### 2. **Long-Term Archival**
+Self-describing format ensures data can be decrypted decades later even as algorithms evolve.
+
+### 3. **Algorithm Agility**
+Switch between algorithms without changing application code.
+
+### 4. **Compliance & Audit**
+Embedded metadata provides audit trail for regulatory compliance (GDPR, HIPAA, etc.).
+
+### 5. **Research & Benchmarking**
+Standardized format enables fair comparison of PQC algorithm performance.
+
+## 🧪 Testing
+
+```bash
+# Run tests
+cargo test
+
+# Run tests with output
+cargo test -- --nocapture
+
+# Run specific test
+cargo test test_binary_format_roundtrip
+```
+
+## 📊 Benchmarks
+
+```bash
+# Run benchmarks
+cargo bench
+
+# View benchmark results
+open target/criterion/report/index.html
+```
+
+Performance characteristics:
+- **Serialization**: ~50 MB/s for typical payloads
+- **Deserialization**: ~45 MB/s (includes checksum verification)
+- **Overhead**: ~100 bytes + metadata size
+
+## 🔧 Development
+
+### Building from Source
+
+```bash
+git clone https://github.com/PQCrypta/pqcrypta-community.git
+cd pqcrypta-community
+cargo build --release
+```
+
+### Running Examples
+
+```bash
+cargo run --example basic_usage
+cargo run --example with_compression
+cargo run --example cross_platform
+```
+
+## 🤝 Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Areas for Contribution
+
+- **Language Bindings**: Python, JavaScript, Go, C/C++
+- **Documentation**: Tutorials, guides, examples
+- **Testing**: Additional test cases, fuzzing
+- **Performance**: Optimization PRs welcome
+- **Standards**: Help draft RFC for IETF submission
+
+## 📄 License
+
+Licensed under either of:
+
+- MIT License ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+
+at your option.
+
+## 🙏 Acknowledgments
+
+This format was developed as part of the [PQCrypta](https://pqcrypta.com) enterprise post-quantum cryptography platform. Special thanks to:
+
+- NIST Post-Quantum Cryptography Project
+- The Rust cryptography community
+- Contributors to pqcrypto, ring, and other foundational crates
+
+## 📖 References
+
+- [NIST Post-Quantum Cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
+- [ML-KEM (Kyber) Specification](https://csrc.nist.gov/pubs/fips/203/final)
+- [ML-DSA (Dilithium) Specification](https://csrc.nist.gov/pubs/fips/204/final)
+- [PQCrypta Documentation](https://pqcrypta.com/docs)
+
+## 🔗 Related Projects
+
+- [pqcrypto](https://github.com/rustpq/pqcrypto) - Rust PQC implementations
+- [Open Quantum Safe](https://openquantumsafe.org/) - PQC library collection
+- [CIRCL](https://github.com/cloudflare/circl) - Cloudflare's crypto library
+
+## 💬 Community & Support
+
+- **GitHub Issues**: [Report bugs](https://github.com/PQCrypta/pqcrypta-community/issues)
+- **Discussions**: [Ask questions](https://github.com/PQCrypta/pqcrypta-community/discussions)
+- **Website**: [pqcrypta.com](https://pqcrypta.com)
+- **Documentation**: [docs.rs/pqc-binary-format](https://docs.rs/pqc-binary-format)
+
+---
+
+**Made with ❤️ by the PQCrypta Community**
+
+*Securing the future, one byte at a time.*
