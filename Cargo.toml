@@ -12,7 +12,7 @@ documentation = "https://docs.rs/pqc-binary-format"
 readme = "README.md"
 keywords = ["cryptography", "post-quantum", "pqc", "encryption", "binary-format"]
 categories = ["cryptography", "encoding", "no-std"]
-exclude = [".github/", "docs/", "examples/"]
+exclude = [".github/", "target/"]
 
 [dependencies]
 # Serialization
