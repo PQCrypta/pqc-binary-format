@@ -274,10 +274,10 @@ All bindings support:
 
 | Platform | Status | Notes |
 |----------|--------|-------|
-| crates.io (Rust) | ⏳ Ready | Version 1.0.7 ready for publication |
+| crates.io (Rust) | ✅ **Published** | **[v1.0.7 live!](https://crates.io/crates/pqc-binary-format)** |
 | PyPI (Python) | ⏳ Ready | Maturin build tested, ready for `maturin publish` |
 | npm (JavaScript) | ⏳ Ready | WASM package built with wasm-pack |
-| pkg.go.dev (Go) | ⏳ Auto | Automatically indexed after GitHub push |
+| pkg.go.dev (Go) | ⏳ Ready | Will auto-index on tag push |
 
 ## 📦 Binary Format Specification
 
@@ -604,9 +604,9 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Current Status
 
-- **Language Bindings**: ✅ **Rust** (native), ✅ **Python** (tested v1.0.6), ✅ **JavaScript/WASM** (tested v1.0.6), ✅ **Go** (tested v1.0.6), ✅ **C/C++** (tested v1.0.6)
+- **Language Bindings**: ✅ **Rust** (native), ✅ **Python** (tested v1.0.7), ✅ **JavaScript/WASM** (tested v1.0.7), ✅ **Go** (tested v1.0.7), ✅ **C/C++** (tested v1.0.7)
 - **Examples**: ✅ 9 validated examples across 6 languages
-- **Package Distribution**: ⏳ Ready for publication (crates.io, PyPI, npm, pkg.go.dev)
+- **Package Distribution**: ✅ **crates.io published!** | ⏳ PyPI, npm, pkg.go.dev ready
 
 ### Areas for Contribution
 
