@@ -29,6 +29,8 @@ Thumbs.db
 
 # C/C++ build artifacts
 bindings/c-cpp/example
+examples/c/basic_usage
+examples/cpp/basic_usage
 *.o
 *.so
 *.dylib
