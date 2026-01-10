@@ -1,0 +1,42 @@
+{
+  "name": "pqc-binary-format",
+  "version": "1.0.3",
+  "description": "Standardized binary format for post-quantum cryptography encrypted data interchange",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PQCrypta/pqcrypta-community.git"
+  },
+  "keywords": [
+    "cryptography",
+    "post-quantum",
+    "pqc",
+    "encryption",
+    "binary-format",
+    "webassembly",
+    "wasm"
+  ],
+  "author": "Allan <allan@pqcrypta.com>",
+  "license": "(MIT OR Apache-2.0)",
+  "bugs": {
+    "url": "https://github.com/PQCrypta/pqcrypta-community/issues"
+  },
+  "homepage": "https://pqcrypta.com",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "pqc_binary_format_bg.wasm",
+    "pqc_binary_format.js",
+    "pqc_binary_format.d.ts"
+  ],
+  "scripts": {
+    "build": "wasm-pack build --target web --out-dir bindings/javascript ../../ -- --features wasm",
+    "build:nodejs": "wasm-pack build --target nodejs --out-dir bindings/javascript ../../ -- --features wasm",
+    "build:bundler": "wasm-pack build --target bundler --out-dir bindings/javascript ../../ -- --features wasm",
+    "test": "node test.js"
+  },
+  "devDependencies": {
+    "wasm-pack": "^0.12.0"
+  }
+}

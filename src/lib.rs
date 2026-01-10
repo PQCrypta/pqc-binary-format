@@ -98,6 +98,16 @@ pub mod error;
 pub mod format;
 pub mod metadata;
 
+// Language bindings (conditional compilation)
+#[cfg(feature = "python")]
+pub mod python;
+
+#[cfg(feature = "wasm")]
+pub mod wasm;
+
+// FFI bindings always available for C/C++/Go
+pub mod ffi;
+
 // Re-exports for convenience
 pub use algorithm::Algorithm;
 pub use error::{CryptoError, Result};

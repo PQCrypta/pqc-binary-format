@@ -24,6 +24,8 @@ PQC Binary Format v1.0 provides a universal, algorithm-agnostic format that:
 
 ## 🚀 Quick Start
 
+### Rust
+
 Add to your `Cargo.toml`:
 
 ```toml
@@ -31,7 +33,7 @@ Add to your `Cargo.toml`:
 pqc-binary-format = "1.0"
 ```
 
-### Basic Usage
+### Basic Usage (Rust)
 
 ```rust
 use pqc_binary_format::{PqcBinaryFormat, Algorithm, PqcMetadata, EncParameters};
@@ -59,6 +61,145 @@ let recovered = PqcBinaryFormat::from_bytes(&bytes).unwrap();
 
 assert_eq!(format, recovered);
 println!("Algorithm: {}", recovered.algorithm().name());
+```
+
+### Python
+
+Install the Python bindings:
+
+```bash
+cd bindings/python
+pip install maturin
+maturin develop --release
+```
+
+```python
+from pqc_binary_format import Algorithm, EncParameters, PqcMetadata, PqcBinaryFormat
+
+# Create algorithm and metadata
+algorithm = Algorithm("hybrid")
+enc_params = EncParameters(
+    iv=bytes([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+    tag=bytes([0] * 16)
+)
+metadata = PqcMetadata(enc_params=enc_params, kem_params=None, sig_params=None, compression_params=None)
+
+# Create and serialize format
+pqc_format = PqcBinaryFormat(algorithm, metadata, bytes([1, 2, 3, 4, 5]))
+serialized = pqc_format.to_bytes()
+
+# Deserialize and verify
+deserialized = PqcBinaryFormat.from_bytes(serialized)
+print(f"Algorithm: {deserialized.algorithm().name()}")
+```
+
+### JavaScript/TypeScript
+
+Build the WebAssembly bindings:
+
+```bash
+cd bindings/javascript
+npm install
+npm run build
+```
+
+```javascript
+import init, { WasmAlgorithm, WasmEncParameters, WasmPqcMetadata, WasmPqcBinaryFormat } from './pqc_binary_format.js';
+
+await init();
+
+const algorithm = new WasmAlgorithm('hybrid');
+const encParams = new WasmEncParameters(
+    new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+    new Uint8Array(16)
+);
+const metadata = new WasmPqcMetadata(encParams);
+const pqcFormat = new WasmPqcBinaryFormat(algorithm, metadata, new Uint8Array([1, 2, 3, 4, 5]));
+
+const serialized = pqcFormat.toBytes();
+const deserialized = WasmPqcBinaryFormat.fromBytes(serialized);
+console.log(`Algorithm: ${deserialized.algorithm.name}`);
+```
+
+### Go
+
+Build the Rust library first, then use the Go bindings:
+
+```bash
+cargo build --release
+cd bindings/go
+go build example.go
+```
+
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+    pqc "github.com/PQCrypta/pqcrypta-community/bindings/go"
+)
+
+func main() {
+    iv := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+    tag := make([]byte, 16)
+    data := []byte{1, 2, 3, 4, 5}
+
+    format, err := pqc.NewPqcBinaryFormat(pqc.AlgorithmHybrid, iv, tag, data)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer format.Free()
+
+    serialized, _ := format.ToBytes()
+    deserialized, _ := pqc.FromBytes(serialized)
+    defer deserialized.Free()
+
+    fmt.Printf("Algorithm: %s\n", deserialized.GetAlgorithmName())
+}
+```
+
+### C/C++
+
+Build the Rust library and generate the C header:
+
+```bash
+cargo build --release
+cbindgen --config cbindgen.toml --output include/pqc_binary_format.h
+cd bindings/c-cpp
+make
+```
+
+```cpp
+#include "pqc_binary_format.h"
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<uint8_t> iv = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    std::vector<uint8_t> tag(16, 0);
+    std::vector<uint8_t> data = {1, 2, 3, 4, 5};
+
+    PqcFormatHandle* format = pqc_format_new(
+        PQC_ALGORITHM_HYBRID,
+        iv.data(), iv.size(),
+        tag.data(), tag.size(),
+        data.data(), data.size()
+    );
+
+    PqcByteBuffer serialized = pqc_format_to_bytes(format);
+    PqcFormatHandle* deserialized = pqc_format_from_bytes(serialized.data, serialized.len);
+
+    char* alg_name = pqc_format_get_algorithm_name(deserialized);
+    std::cout << "Algorithm: " << alg_name << std::endl;
+
+    pqc_free_string(alg_name);
+    pqc_free_buffer(serialized);
+    pqc_format_free(deserialized);
+    pqc_format_free(format);
+
+    return 0;
+}
 ```
 
 ## 📦 Binary Format Specification
@@ -271,7 +412,7 @@ fn main() {
 ```rust
 let format = PqcBinaryFormat::new(Algorithm::PostQuantum, metadata, data);
 let bytes = format.to_bytes().unwrap();
-// Send bytes to Python
+// Send bytes to Python/JavaScript/Go/C++
 ```
 
 **Python (Decryption)**
@@ -279,11 +420,24 @@ let bytes = format.to_bytes().unwrap();
 from pqc_binary_format import PqcBinaryFormat
 
 format = PqcBinaryFormat.from_bytes(bytes)
-print(f"Algorithm: {format.algorithm.name}")
-print(f"Data: {format.data}")
+print(f"Algorithm: {format.algorithm().name()}")
+print(f"Data: {len(format.data())} bytes")
 ```
 
-*Note: Python bindings coming soon!*
+**JavaScript (Decryption)**
+```javascript
+const format = WasmPqcBinaryFormat.fromBytes(bytes);
+console.log(`Algorithm: ${format.algorithm.name}`);
+console.log(`Data: ${format.data.length} bytes`);
+```
+
+**Go (Decryption)**
+```go
+format, _ := pqc.FromBytes(bytes)
+defer format.Free()
+fmt.Printf("Algorithm: %s\n", format.GetAlgorithmName())
+fmt.Printf("Data: %d bytes\n", len(format.GetData()))
+```
 
 ### Example 3: Algorithm Migration
 
@@ -373,11 +527,12 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Areas for Contribution
 
-- **Language Bindings**: Python, JavaScript, Go, C/C++
-- **Documentation**: Tutorials, guides, examples
-- **Testing**: Additional test cases, fuzzing
+- **Language Bindings**: ✅ Python, ✅ JavaScript/WASM, ✅ Go, ✅ C/C++ (Java, C#, Ruby welcome!)
+- **Documentation**: Tutorials, guides, more examples
+- **Testing**: Additional test cases, fuzzing, property-based testing
 - **Performance**: Optimization PRs welcome
 - **Standards**: Help draft RFC for IETF submission
+- **Package Distribution**: Publish to PyPI, npm, crates.io, Go pkg
 
 ## 📄 License
 

@@ -1,6 +1,6 @@
 [package]
 name = "pqc-binary-format"
-version = "1.0.2"
+version = "1.0.3"
 edition = "2021"
 rust-version = "1.75"
 authors = ["Allan <allan@pqcrypta.com>"]
@@ -14,6 +14,9 @@ keywords = ["cryptography", "post-quantum", "pqc", "encryption", "binary-format"
 categories = ["cryptography", "encoding", "no-std"]
 exclude = [".github/", "target/"]
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 # Serialization
 serde = { version = "1.0", features = ["derive"] }
@@ -24,6 +27,19 @@ sha2 = "0.10"
 
 # Error handling
 thiserror = "1.0"
+
+# Python bindings (optional)
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+
+# WebAssembly bindings (optional)
+wasm-bindgen = { version = "0.2", optional = true }
+serde-wasm-bindgen = { version = "0.6", optional = true }
+js-sys = { version = "0.3", optional = true }
+
+[features]
+default = []
+python = ["pyo3"]
+wasm = ["wasm-bindgen", "serde-wasm-bindgen", "js-sys"]
 
 [dev-dependencies]
 # Testing
