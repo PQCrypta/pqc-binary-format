@@ -10,7 +10,7 @@ fn main() {
     let metadata = PqcMetadata {
         enc_params: EncParameters {
             iv: vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], // 12-byte nonce
-            tag: vec![0; 16], // 16-byte authentication tag
+            tag: vec![0; 16],                                // 16-byte authentication tag
             params: HashMap::new(),
         },
         ..Default::default()

@@ -181,7 +181,7 @@ impl Algorithm {
             Self::Pq3Stack => "PQ3-Stack",
             Self::MaxSecureLightweight => "Max Secure: PQ Lightweight",
             Self::MaxSecurePurePq => "Max Secure: Pure PQ",
-            Self::MaxSecureHybrid => "Max Secure: Hybrid Transition",
+            Self::MaxSecureHybrid => "Max Secure: Hybrid",
             Self::MaxSecureStateless => "Max Secure: Stateless",
             Self::MaxSecureCryptoAgile => "Max Secure: Crypto-Agile",
             Self::MaxSecurePqcZk => "Max Secure: PQC + ZK",

@@ -16,7 +16,10 @@ fn main() {
 
     let test_data = b"Hello, Post-Quantum World!".to_vec();
 
-    println!("{:<30} {:<10} {:<15} {}", "Algorithm", "ID", "Experimental", "Size (bytes)");
+    println!(
+        "{:<30} {:<10} {:<15} Size (bytes)",
+        "Algorithm", "ID", "Experimental"
+    );
     println!("{}", "-".repeat(70));
 
     for algo in algorithms {

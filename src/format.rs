@@ -368,16 +368,16 @@ impl PqcBinaryFormat {
         let mut hasher = Sha256::new();
 
         // Hash fixed fields with guaranteed deterministic ordering
-        hasher.update(&self.magic);
-        hasher.update(&[self.version]);
-        hasher.update(&self.algorithm.as_id().to_le_bytes());
-        hasher.update(&[self.flags]);
+        hasher.update(self.magic);
+        hasher.update([self.version]);
+        hasher.update(self.algorithm.as_id().to_le_bytes());
+        hasher.update([self.flags]);
 
         // Hash metadata deterministically
         self.hash_metadata_deterministic(&mut hasher);
 
         // Hash data length and content
-        hasher.update(&(self.data.len() as u64).to_le_bytes());
+        hasher.update((self.data.len() as u64).to_le_bytes());
         hasher.update(&self.data);
 
         hasher.finalize().into()
@@ -385,85 +385,86 @@ impl PqcBinaryFormat {
 
     /// Hash metadata in a deterministic way, field by field
     ///
-    /// Ensures HashMap contents are sorted before hashing for consistency.
+    /// Ensures `HashMap` contents are sorted before hashing for consistency.
+    #[allow(clippy::cast_possible_truncation)]
     fn hash_metadata_deterministic(&self, hasher: &mut Sha256) {
         // Hash KEM parameters if present
         if let Some(ref kem_params) = self.metadata.kem_params {
-            hasher.update(&[1u8]); // Present flag
-            hasher.update(&(kem_params.public_key.len() as u32).to_le_bytes());
+            hasher.update([1u8]); // Present flag
+            hasher.update((kem_params.public_key.len() as u32).to_le_bytes());
             hasher.update(&kem_params.public_key);
-            hasher.update(&(kem_params.ciphertext.len() as u32).to_le_bytes());
+            hasher.update((kem_params.ciphertext.len() as u32).to_le_bytes());
             hasher.update(&kem_params.ciphertext);
             // Hash params map deterministically by sorting keys
             let mut sorted_params: Vec<_> = kem_params.params.iter().collect();
             sorted_params.sort_by(|a, b| a.0.cmp(b.0));
-            hasher.update(&(sorted_params.len() as u32).to_le_bytes());
+            hasher.update((sorted_params.len() as u32).to_le_bytes());
             for (key, value) in sorted_params {
-                hasher.update(&(key.len() as u32).to_le_bytes());
+                hasher.update((key.len() as u32).to_le_bytes());
                 hasher.update(key.as_bytes());
-                hasher.update(&(value.len() as u32).to_le_bytes());
+                hasher.update((value.len() as u32).to_le_bytes());
                 hasher.update(value);
             }
         } else {
-            hasher.update(&[0u8]); // Not present flag
+            hasher.update([0u8]); // Not present flag
         }
 
         // Hash signature parameters if present
         if let Some(ref sig_params) = self.metadata.sig_params {
-            hasher.update(&[1u8]); // Present flag
-            hasher.update(&(sig_params.public_key.len() as u32).to_le_bytes());
+            hasher.update([1u8]); // Present flag
+            hasher.update((sig_params.public_key.len() as u32).to_le_bytes());
             hasher.update(&sig_params.public_key);
-            hasher.update(&(sig_params.signature.len() as u32).to_le_bytes());
+            hasher.update((sig_params.signature.len() as u32).to_le_bytes());
             hasher.update(&sig_params.signature);
             // Hash params map deterministically
             let mut sorted_params: Vec<_> = sig_params.params.iter().collect();
             sorted_params.sort_by(|a, b| a.0.cmp(b.0));
-            hasher.update(&(sorted_params.len() as u32).to_le_bytes());
+            hasher.update((sorted_params.len() as u32).to_le_bytes());
             for (key, value) in sorted_params {
-                hasher.update(&(key.len() as u32).to_le_bytes());
+                hasher.update((key.len() as u32).to_le_bytes());
                 hasher.update(key.as_bytes());
-                hasher.update(&(value.len() as u32).to_le_bytes());
+                hasher.update((value.len() as u32).to_le_bytes());
                 hasher.update(value);
             }
         } else {
-            hasher.update(&[0u8]); // Not present flag
+            hasher.update([0u8]); // Not present flag
         }
 
         // Hash encryption parameters
-        hasher.update(&(self.metadata.enc_params.iv.len() as u32).to_le_bytes());
+        hasher.update((self.metadata.enc_params.iv.len() as u32).to_le_bytes());
         hasher.update(&self.metadata.enc_params.iv);
-        hasher.update(&(self.metadata.enc_params.tag.len() as u32).to_le_bytes());
+        hasher.update((self.metadata.enc_params.tag.len() as u32).to_le_bytes());
         hasher.update(&self.metadata.enc_params.tag);
         // Hash enc params map deterministically
         let mut sorted_params: Vec<_> = self.metadata.enc_params.params.iter().collect();
         sorted_params.sort_by(|a, b| a.0.cmp(b.0));
-        hasher.update(&(sorted_params.len() as u32).to_le_bytes());
+        hasher.update((sorted_params.len() as u32).to_le_bytes());
         for (key, value) in sorted_params {
-            hasher.update(&(key.len() as u32).to_le_bytes());
+            hasher.update((key.len() as u32).to_le_bytes());
             hasher.update(key.as_bytes());
-            hasher.update(&(value.len() as u32).to_le_bytes());
+            hasher.update((value.len() as u32).to_le_bytes());
             hasher.update(value);
         }
 
         // Hash compression params if present
         if let Some(ref comp_params) = self.metadata.compression_params {
-            hasher.update(&[1u8]); // Present flag
-            hasher.update(&(comp_params.algorithm.len() as u32).to_le_bytes());
+            hasher.update([1u8]); // Present flag
+            hasher.update((comp_params.algorithm.len() as u32).to_le_bytes());
             hasher.update(comp_params.algorithm.as_bytes());
-            hasher.update(&comp_params.level.to_le_bytes());
-            hasher.update(&comp_params.original_size.to_le_bytes());
+            hasher.update(comp_params.level.to_le_bytes());
+            hasher.update(comp_params.original_size.to_le_bytes());
         } else {
-            hasher.update(&[0u8]); // Not present flag
+            hasher.update([0u8]); // Not present flag
         }
 
         // Hash custom fields deterministically by sorting keys
         let mut sorted_custom: Vec<_> = self.metadata.custom.iter().collect();
         sorted_custom.sort_by(|a, b| a.0.cmp(b.0));
-        hasher.update(&(sorted_custom.len() as u32).to_le_bytes());
+        hasher.update((sorted_custom.len() as u32).to_le_bytes());
         for (key, value) in sorted_custom {
-            hasher.update(&(key.len() as u32).to_le_bytes());
+            hasher.update((key.len() as u32).to_le_bytes());
             hasher.update(key.as_bytes());
-            hasher.update(&(value.len() as u32).to_le_bytes());
+            hasher.update((value.len() as u32).to_le_bytes());
             hasher.update(value);
         }
     }
@@ -526,8 +527,7 @@ mod tests {
             ..Default::default()
         };
 
-        let original =
-            PqcBinaryFormat::new(Algorithm::Hybrid, metadata, vec![1, 2, 3, 4, 5]);
+        let original = PqcBinaryFormat::new(Algorithm::Hybrid, metadata, vec![1, 2, 3, 4, 5]);
 
         let bytes = original.to_bytes().unwrap();
         let deserialized = PqcBinaryFormat::from_bytes(&bytes).unwrap();
@@ -546,8 +546,7 @@ mod tests {
             ..Default::default()
         };
 
-        let format =
-            PqcBinaryFormat::new(Algorithm::PostQuantum, metadata, vec![1, 2, 3, 4, 5]);
+        let format = PqcBinaryFormat::new(Algorithm::PostQuantum, metadata, vec![1, 2, 3, 4, 5]);
 
         let mut bytes = format.to_bytes().unwrap();
 
@@ -576,7 +575,8 @@ mod tests {
             .with_streaming()
             .with_additional_auth();
 
-        let format = PqcBinaryFormat::with_flags(Algorithm::QuadLayer, flags, metadata, vec![1, 2, 3]);
+        let format =
+            PqcBinaryFormat::with_flags(Algorithm::QuadLayer, flags, metadata, vec![1, 2, 3]);
 
         let bytes = format.to_bytes().unwrap();
         let recovered = PqcBinaryFormat::from_bytes(&bytes).unwrap();

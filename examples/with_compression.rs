@@ -31,12 +31,8 @@ fn main() {
     // Create format with compression flag enabled
     let flags = FormatFlags::new().with_compression();
 
-    let format = PqcBinaryFormat::with_flags(
-        Algorithm::PostQuantum,
-        flags,
-        metadata,
-        vec![1, 2, 3, 4, 5],
-    );
+    let format =
+        PqcBinaryFormat::with_flags(Algorithm::PostQuantum, flags, metadata, vec![1, 2, 3, 4, 5]);
 
     println!("Created format with:");
     println!("  Algorithm: {}", format.algorithm().name());
@@ -58,7 +54,10 @@ fn main() {
 
     // Verify custom parameters
     if let Some(version) = recovered.metadata().get_custom("app_version") {
-        println!("Custom parameter 'app_version': {}", String::from_utf8_lossy(version));
+        println!(
+            "Custom parameter 'app_version': {}",
+            String::from_utf8_lossy(version)
+        );
     }
 
     println!("\n✓ Compression metadata preserved!");
