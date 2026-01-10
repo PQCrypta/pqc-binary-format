@@ -61,13 +61,26 @@ All systems speak the same language, eliminating integration complexity.
 PQCrypta is releasing PQC Binary Format v1.0 under dual MIT/Apache-2.0 licenses to encourage broad adoption and community contribution.
 
 **Available Now:**
-- **Rust Crate**: https://crates.io/crates/pqc-binary-format
+- **Rust (crates.io)**: https://crates.io/crates/pqc-binary-format
+- **Python (PyPI)**: https://pypi.org/project/pqc-binary-format/
+- **JavaScript (npm)**: https://www.npmjs.com/package/pqc-binary-format
+- **Go (pkg.go.dev)**: https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go
 - **GitHub Repository**: https://github.com/PQCrypta/pqcrypta-community
 - **Documentation**: https://docs.rs/pqc-binary-format
 
-**Installation (Rust):**
+**Installation:**
 ```bash
+# Rust
 cargo add pqc-binary-format
+
+# Python
+pip install pqc-binary-format
+
+# JavaScript/Node.js
+npm install pqc-binary-format
+
+# Go
+go get github.com/PQCrypta/pqcrypta-community/bindings/go
 ```
 
 **Quick Start Example:**
@@ -102,7 +115,7 @@ The quantum threat is no longer theoretical:
 
 PQCrypta invites the global security community to contribute:
 
-- **Developers**: Build language bindings for Python, Go, JavaScript
+- **Developers**: Build additional language bindings (Java, C#, Ruby, Swift)
 - **Researchers**: Propose algorithm extensions and optimizations
 - **Organizations**: Share real-world use cases and requirements
 - **Technical Writers**: Improve documentation and tutorials
@@ -115,18 +128,21 @@ PQCrypta invites the global security community to contribute:
 
 ### Roadmap
 
-Version 1.0 establishes the foundation. The roadmap includes:
+Version 1.0 establishes the foundation with complete language support. Future roadmap includes:
 
-- WebAssembly bindings for browser-native post-quantum cryptography
-- Python, JavaScript, and Go client libraries
-- Streaming encryption support for large files
+- Additional language bindings (Java, C#, Ruby, Swift, Kotlin)
+- Advanced streaming encryption support for large files
 - Integration with popular PQC libraries (liboqs, PQClean)
+- IETF standardization proposal
 
 ### Availability
 
-PQC Binary Format v1.0 is available immediately:
+PQC Binary Format v1.0 is available immediately on all major package registries:
 
-- **Download**: `cargo add pqc-binary-format`
+- **Rust**: `cargo add pqc-binary-format` - https://crates.io/crates/pqc-binary-format
+- **Python**: `pip install pqc-binary-format` - https://pypi.org/project/pqc-binary-format/
+- **JavaScript**: `npm install pqc-binary-format` - https://www.npmjs.com/package/pqc-binary-format
+- **Go**: `go get github.com/PQCrypta/pqcrypta-community/bindings/go`
 - **Star the Repository**: https://github.com/PQCrypta/pqcrypta-community
 - **Read Documentation**: https://docs.rs/pqc-binary-format
 - **Join Discussion**: GitHub Discussions
@@ -168,10 +184,13 @@ https://pqcrypta.com
 ---
 
 **Related Links:**
-- PQC Binary Format Crate: https://crates.io/crates/pqc-binary-format
-- GitHub Repository: https://github.com/PQCrypta/pqcrypta-community
-- Technical Documentation: https://docs.rs/pqc-binary-format
-- NIST PQC Standards: https://csrc.nist.gov/projects/post-quantum-cryptography
+- **Rust (crates.io)**: https://crates.io/crates/pqc-binary-format
+- **Python (PyPI)**: https://pypi.org/project/pqc-binary-format/
+- **JavaScript (npm)**: https://www.npmjs.com/package/pqc-binary-format
+- **Go (pkg.go.dev)**: https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go
+- **GitHub Repository**: https://github.com/PQCrypta/pqcrypta-community
+- **Technical Documentation**: https://docs.rs/pqc-binary-format
+- **NIST PQC Standards**: https://csrc.nist.gov/projects/post-quantum-cryptography
 
 ---
 

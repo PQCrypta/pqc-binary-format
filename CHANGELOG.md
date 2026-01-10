@@ -7,23 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.7] - 2026-01-10
 
+### Published
+- ✅ **crates.io**: https://crates.io/crates/pqc-binary-format
+- ✅ **PyPI**: https://pypi.org/project/pqc-binary-format/
+- ⏳ **npm**: https://www.npmjs.com/package/pqc-binary-format (publishing)
+- ✅ **pkg.go.dev**: https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go
+
 ### Added
 - New "Language Bindings" section in README with comprehensive table of all bindings
 - Cross-language compatibility examples and workflow documentation
 - Installation quick reference for all supported languages
 - Package distribution status tracking table
 - "Current Status" section in Contributing guidelines
+- GitHub Actions workflows for automated publishing to npm and PyPI
+- Comprehensive PUBLISHING.md guide for all package registries
 
 ### Changed
 - Updated "Areas for Contribution" to reflect completed language bindings
 - Clarified that Python, JavaScript, Go, C, C++ bindings are production-ready and tested
 - Improved contributing guidelines with clearer focus areas
 - Version bumped to 1.0.7 across all packages
+- Press release updated with all package registry links
 
 ### Documentation
 - Enhanced README with language binding details and cross-platform examples
 - Updated all version references to 1.0.7
 - Improved clarity on which bindings are complete vs. contribution opportunities
+- Updated press release with multi-platform availability
 
 ## [1.0.6] - 2026-01-10
 
