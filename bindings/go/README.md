@@ -14,7 +14,7 @@ cargo build --release
 
 2. Add to your `go.mod`:
 ```go
-require github.com/PQCrypta/pqcrypta-community/bindings/go v1.0.6
+require github.com/PQCrypta/pqcrypta-community/bindings/go v1.0.7
 ```
 
 ## Quick Start

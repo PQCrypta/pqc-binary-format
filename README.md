@@ -1,4 +1,4 @@
-# PQC Binary Format v1.0.6
+# PQC Binary Format v1.0.7
 
 [![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
 [![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
@@ -202,6 +202,82 @@ int main() {
     return 0;
 }
 ```
+
+## 🌐 Language Bindings
+
+PQC Binary Format provides **production-ready, fully tested bindings** for multiple programming languages. All bindings support the complete API and produce cross-compatible binary formats.
+
+### Available Bindings (v1.0.7)
+
+| Language | Status | Package | Documentation | Examples |
+|----------|--------|---------|---------------|----------|
+| **Rust** | ✅ Native | `pqc-binary-format` | [docs.rs](https://docs.rs/pqc-binary-format) | [3 examples](examples/) |
+| **Python** | ✅ Tested | `pqc_binary_format` | [Python README](bindings/python/README.md) | [2 examples](examples/python/) |
+| **JavaScript/WASM** | ✅ Tested | `pqc_binary_format` (npm) | [JS README](bindings/javascript/README.md) | [1 example](examples/javascript/) |
+| **Go** | ✅ Tested | `github.com/PQCrypta/pqcrypta-community/bindings/go` | [Go README](bindings/go/README.md) | [1 example](examples/go/) |
+| **C** | ✅ Tested | FFI via Rust | [C/C++ README](bindings/c-cpp/README.md) | [1 example](examples/c/) |
+| **C++** | ✅ Tested | FFI via Rust | [C/C++ README](bindings/c-cpp/README.md) | [1 example](examples/cpp/) |
+
+### Installation Quick Reference
+
+```bash
+# Rust
+cargo add pqc-binary-format
+
+# Python (via maturin)
+python3 -m venv .venv && source .venv/bin/activate
+pip install maturin
+maturin develop --release
+
+# JavaScript/WASM (via wasm-pack)
+wasm-pack build --target web --features wasm
+
+# Go
+go get github.com/PQCrypta/pqcrypta-community/bindings/go
+
+# C/C++ (build from source)
+cargo build --release --no-default-features
+# Link against target/release/libpqc_binary_format.so
+```
+
+### Cross-Language Compatibility
+
+**All language bindings are fully interoperable!** You can:
+- ✅ Encrypt data in Python, decrypt in Rust
+- ✅ Serialize in Go, deserialize in JavaScript
+- ✅ Create format in C++, validate in Python
+- ✅ Mix any combination across platforms
+
+Example workflow:
+```bash
+# Create encrypted data with Python
+python3 examples/python/basic_usage.py > data.bin
+
+# Verify with C++
+LD_LIBRARY_PATH=target/release ./examples/cpp/basic_usage < data.bin
+
+# Process with Go
+cd examples/go && go run basic_usage.go < ../../data.bin
+```
+
+### Binding Features
+
+All bindings support:
+- ✅ Full algorithm suite (28 algorithms)
+- ✅ Metadata serialization/deserialization
+- ✅ SHA-256 integrity verification
+- ✅ Feature flags (compression, streaming, etc.)
+- ✅ Error handling with detailed messages
+- ✅ Memory safety (Rust-backed)
+
+### Package Distribution Status
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| crates.io (Rust) | ⏳ Ready | Version 1.0.7 ready for publication |
+| PyPI (Python) | ⏳ Ready | Maturin build tested, ready for `maturin publish` |
+| npm (JavaScript) | ⏳ Ready | WASM package built with wasm-pack |
+| pkg.go.dev (Go) | ⏳ Auto | Automatically indexed after GitHub push |
 
 ## 📦 Binary Format Specification
 
@@ -526,14 +602,20 @@ cargo run --example cross_platform
 
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
+### Current Status
+
+- **Language Bindings**: ✅ **Rust** (native), ✅ **Python** (tested v1.0.6), ✅ **JavaScript/WASM** (tested v1.0.6), ✅ **Go** (tested v1.0.6), ✅ **C/C++** (tested v1.0.6)
+- **Examples**: ✅ 9 validated examples across 6 languages
+- **Package Distribution**: ⏳ Ready for publication (crates.io, PyPI, npm, pkg.go.dev)
+
 ### Areas for Contribution
 
-- **Language Bindings**: ✅ Python, ✅ JavaScript/WASM, ✅ Go, ✅ C/C++ (Java, C#, Ruby welcome!)
-- **Documentation**: Tutorials, guides, more examples
+- **Additional Language Bindings**: Java, C#, Ruby, Swift, Kotlin - help us expand!
+- **Documentation**: Tutorials, integration guides, video walkthroughs
 - **Testing**: Additional test cases, fuzzing, property-based testing
-- **Performance**: Optimization PRs welcome
-- **Standards**: Help draft RFC for IETF submission
-- **Package Distribution**: Publish to PyPI, npm, crates.io, Go pkg
+- **Performance**: SIMD optimizations, benchmark improvements
+- **Standards**: Help draft RFC for IETF standardization submission
+- **Package Publishing**: Help publish to PyPI, npm, and other package registries
 
 ## 📄 License
 
