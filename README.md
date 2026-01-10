@@ -1,4 +1,4 @@
-# PQC Binary Format v1.0.4
+# PQC Binary Format v1.0.5
 
 [![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
 [![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
