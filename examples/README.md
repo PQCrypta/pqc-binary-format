@@ -37,79 +37,90 @@ cargo run --example algorithm_comparison
 cargo run --example with_compression
 ```
 
+**✅ Tested:** All Rust examples validated and working (v1.0.6)
+
 ### Python Examples
 
 ```bash
-# First, build and install Python bindings
-cd bindings/python
+# First, create virtualenv and build Python bindings
+python3 -m venv .venv
+source .venv/bin/activate
 pip install maturin
 maturin develop --release
 
 # Then run examples
-cd ../../examples/python
-python3 basic_usage.py
-python3 algorithm_comparison.py
+python3 examples/python/basic_usage.py
+python3 examples/python/algorithm_comparison.py
 ```
+
+**✅ Tested:** All Python examples validated and working (v1.0.6)
 
 ### JavaScript Examples
 
 ```bash
-# First, build WASM bindings
-cd bindings/javascript
-npm install
-npm run build
+# Build WASM bindings with wasm-pack
+wasm-pack build --target web --features wasm
 
-# Then run examples
-cd ../../examples/javascript
-node basic_usage.js
+# Run example (requires browser or Node.js <v18)
+node examples/javascript/basic_usage.js
 ```
+
+**⚠️ Note:** WASM bindings built successfully. Example requires browser environment for Node.js v22+. Use `wasm-pack build --target web` for web applications.
 
 ### Go Examples
 
 ```bash
-# First, build the Rust library
-cargo build --release
+# First, build the Rust library (without Python features for FFI)
+cargo build --release --no-default-features
 
 # Then run examples
 cd examples/go
+CGO_LDFLAGS="-L../../target/release -lpqc_binary_format" \
+CGO_CFLAGS="-I../../include" \
+LD_LIBRARY_PATH=../../target/release \
 go run basic_usage.go
 ```
+
+**✅ Tested:** Go example validated and working (v1.0.6)
+**Note:** Requires `--no-default-features` to build FFI-only library without Python dependencies.
 
 ### C Examples
 
 ```bash
-# First, build the Rust library
-cargo build --release
+# First, build the Rust library (without Python features for FFI)
+cargo build --release --no-default-features
 
 # Compile the example
-cd examples/c
-gcc -o basic_usage basic_usage.c \
-    -I../../include \
-    -L../../target/release \
+gcc examples/c/basic_usage.c \
+    -I include \
+    -L target/release \
     -lpqc_binary_format \
-    -ldl -lpthread -lm
+    -o examples/c/basic_usage
 
 # Run with library path
-LD_LIBRARY_PATH=../../target/release ./basic_usage
+LD_LIBRARY_PATH=target/release ./examples/c/basic_usage
 ```
+
+**✅ Tested:** C example validated and working (v1.0.6)
 
 ### C++ Examples
 
 ```bash
-# First, build the Rust library
-cargo build --release
+# First, build the Rust library (without Python features for FFI)
+cargo build --release --no-default-features
 
 # Compile the example
-cd examples/cpp
-g++ -std=c++17 -o basic_usage basic_usage.cpp \
-    -I../../include \
-    -L../../target/release \
+g++ -std=c++17 examples/cpp/basic_usage.cpp \
+    -I include \
+    -L target/release \
     -lpqc_binary_format \
-    -ldl -lpthread -lm
+    -o examples/cpp/basic_usage
 
 # Run with library path
-LD_LIBRARY_PATH=../../target/release ./basic_usage
+LD_LIBRARY_PATH=target/release ./examples/cpp/basic_usage
 ```
+
+**✅ Tested:** C++ example validated and working (v1.0.6)
 
 ## Example Descriptions
 

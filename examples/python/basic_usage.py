@@ -41,8 +41,8 @@ def main():
     # Step 3: Create algorithm
     print("Step 3: Selecting cryptographic algorithm...")
     algorithm = Algorithm("hybrid")
-    print(f"  ✓ Algorithm: {algorithm.name()}")
-    print(f"  ✓ Algorithm ID: 0x{algorithm.id():04X}")
+    print(f"  ✓ Algorithm: {algorithm.name}")
+    print(f"  ✓ Algorithm ID: 0x{algorithm.id:04X}")
     print()
 
     # Step 4: Create PQC Binary Format
@@ -62,8 +62,8 @@ def main():
     # Step 6: Deserialize from bytes
     print("Step 6: Deserializing from binary format...")
     deserialized = PqcBinaryFormat.from_bytes(serialized)
-    print(f"  ✓ Deserialized algorithm: {deserialized.algorithm().name()}")
-    print(f"  ✓ Data length: {len(deserialized.data())} bytes")
+    print(f"  ✓ Deserialized algorithm: {deserialized.algorithm.name}")
+    print(f"  ✓ Data length: {len(deserialized.data)} bytes")
     print()
 
     # Step 7: Validate integrity
@@ -78,8 +78,8 @@ def main():
 
     # Step 8: Verify roundtrip
     print("Step 8: Verifying roundtrip integrity...")
-    original_data = pqc_format.data()
-    recovered_data = deserialized.data()
+    original_data = pqc_format.data
+    recovered_data = deserialized.data
 
     if original_data == recovered_data:
         print("  ✓ Roundtrip successful - data matches!")
@@ -93,7 +93,7 @@ def main():
     print("=" * 60)
     print()
     print("Summary:")
-    print(f"  • Algorithm: {algorithm.name()} (0x{algorithm.id():04X})")
+    print(f"  • Algorithm: {algorithm.name} (0x{algorithm.id:04X})")
     print(f"  • Data size: {len(encrypted_data)} bytes")
     print(f"  • Serialized size: {len(serialized)} bytes")
     print(f"  • Overhead: {len(serialized) - len(encrypted_data)} bytes")

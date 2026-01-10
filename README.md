@@ -90,7 +90,8 @@ serialized = pqc_format.to_bytes()
 
 # Deserialize and verify
 deserialized = PqcBinaryFormat.from_bytes(serialized)
-print(f"Algorithm: {deserialized.algorithm().name()}")
+deserialized.validate()  # Verify checksum integrity
+print(f"Algorithm: {deserialized.algorithm.name}")
 ```
 
 ### JavaScript/TypeScript

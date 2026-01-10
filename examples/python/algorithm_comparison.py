@@ -50,8 +50,8 @@ def main():
 
             # Display results
             print(
-                f"{algorithm.name():<20} "
-                f"0x{algorithm.id():04X}   "
+                f"{algorithm.name:<20} "
+                f"0x{algorithm.id:04X}   "
                 f"{len(serialized):<10} "
                 f"{description}"
             )

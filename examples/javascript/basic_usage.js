@@ -16,7 +16,7 @@ import init, {
     WasmPqcBinaryFormat,
     getVersion,
     getBinaryVersion
-} from '../../bindings/javascript/pqc_binary_format.js';
+} from '../../pkg/pqc_binary_format.js';
 
 async function main() {
     console.log('='.repeat(60));

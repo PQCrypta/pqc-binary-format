@@ -61,12 +61,12 @@ print(f"Serialized size: {len(serialized)} bytes")
 
 # Deserialize from bytes
 deserialized = PqcBinaryFormat.from_bytes(serialized)
-print(f"Algorithm: {deserialized.algorithm().name()}")
-print(f"Data: {len(deserialized.data())} bytes")
+print(f"Algorithm: {deserialized.algorithm.name}")
+print(f"Data: {len(deserialized.data)} bytes")
 
-# Validate
+# Validate integrity
 deserialized.validate()
-print("✓ Validation passed")
+print("✓ Validation passed - checksum verified")
 ```
 
 ## API Reference
