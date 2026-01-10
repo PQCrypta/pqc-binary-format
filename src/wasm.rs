@@ -2,8 +2,8 @@
 //!
 //! This module provides WASM bindings for use in JavaScript/TypeScript environments.
 
-use wasm_bindgen::prelude::*;
 use std::collections::HashMap;
+use wasm_bindgen::prelude::*;
 
 use crate::{
     Algorithm, CompressionParameters, EncParameters, FormatFlags, KemParameters, PqcBinaryFormat,
@@ -268,10 +268,7 @@ impl WasmPqcMetadata {
             kem_params: self.kem_params.as_ref().map(|k| k.inner.clone()),
             sig_params: self.sig_params.as_ref().map(|s| s.inner.clone()),
             enc_params: self.enc_params.inner.clone(),
-            compression_params: self
-                .compression_params
-                .as_ref()
-                .map(|c| c.inner.clone()),
+            compression_params: self.compression_params.as_ref().map(|c| c.inner.clone()),
             custom: HashMap::new(),
         }
     }
@@ -412,8 +409,8 @@ impl WasmPqcBinaryFormat {
     /// @throws {Error} If deserialization fails
     #[wasm_bindgen(js_name = fromBytes)]
     pub fn from_bytes(data: &[u8]) -> Result<WasmPqcBinaryFormat, JsValue> {
-        let inner = PqcBinaryFormat::from_bytes(data)
-            .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        let inner =
+            PqcBinaryFormat::from_bytes(data).map_err(|e| JsValue::from_str(&e.to_string()))?;
         Ok(Self { inner })
     }
 

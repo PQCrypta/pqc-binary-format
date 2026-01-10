@@ -11,10 +11,7 @@ use std::os::raw::{c_char, c_int, c_uchar};
 use std::ptr;
 use std::slice;
 
-use crate::{
-    Algorithm, EncParameters, KemParameters, PqcBinaryFormat,
-    PqcMetadata,
-};
+use crate::{Algorithm, EncParameters, KemParameters, PqcBinaryFormat, PqcMetadata};
 
 /// Opaque handle to PqcBinaryFormat
 #[repr(C)]

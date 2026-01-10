@@ -92,6 +92,16 @@
 #![warn(clippy::pedantic)]
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::module_name_repetitions)]
+#![allow(clippy::doc_markdown)]
+#![allow(clippy::uninlined_format_args)]
+#![allow(clippy::must_use_candidate)]
+#![allow(clippy::return_self_not_must_use)]
+#![allow(clippy::needless_pass_by_value)]
+#![allow(clippy::unused_self)]
+#![allow(clippy::struct_field_names)]
+#![allow(clippy::ptr_as_ptr)]
+#![allow(clippy::manual_let_else)]
+#![allow(clippy::new_without_default)]
 
 pub mod algorithm;
 pub mod error;

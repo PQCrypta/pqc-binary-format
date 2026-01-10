@@ -211,14 +211,15 @@ impl PyPqcMetadata {
                 tag: self.enc_params.tag.clone(),
                 params: HashMap::new(),
             },
-            compression_params: self.compression_params.as_ref().map(|c| {
-                CompressionParameters {
+            compression_params: self
+                .compression_params
+                .as_ref()
+                .map(|c| CompressionParameters {
                     algorithm: c.algorithm.clone(),
                     level: c.level,
                     original_size: c.original_size,
                     params: HashMap::new(),
-                }
-            }),
+                }),
             custom: HashMap::new(),
         }
     }
