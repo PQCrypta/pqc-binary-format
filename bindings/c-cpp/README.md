@@ -53,7 +53,7 @@ int main() {
     pqc_free_string(alg_name);
 
     // Serialize to bytes
-    PqcByteBuffer serialized = pqc_format_to_bytes(format);
+    ByteBuffer serialized = pqc_format_to_bytes(format);
     if (!serialized.data) {
         std::cerr << "Serialization failed" << std::endl;
         pqc_format_free(format);
@@ -112,7 +112,7 @@ int main(void) {
     printf("Library version: %s\n", version);
     pqc_free_string(version);
 
-    PqcByteBuffer serialized = pqc_format_to_bytes(format);
+    ByteBuffer serialized = pqc_format_to_bytes(format);
     printf("Serialized size: %zu bytes\n", serialized.len);
 
     pqc_free_buffer(serialized);
@@ -129,14 +129,14 @@ int main(void) {
 #### `PqcFormatHandle`
 Opaque handle to a PQC binary format structure.
 
-#### `PqcByteBuffer`
+#### `ByteBuffer`
 Byte buffer structure:
 ```c
 typedef struct {
     unsigned char* data;
     size_t len;
     size_t capacity;
-} PqcByteBuffer;
+} ByteBuffer;
 ```
 
 ### Constants
@@ -199,7 +199,7 @@ Create a PQC binary format with KEM parameters.
 
 ##### `pqc_format_to_bytes`
 ```c
-PqcByteBuffer pqc_format_to_bytes(const PqcFormatHandle* handle);
+ByteBuffer pqc_format_to_bytes(const PqcFormatHandle* handle);
 ```
 Serialize PQC binary format to bytes.
 
@@ -232,7 +232,7 @@ Get algorithm name. **Must free with `pqc_free_string`**.
 
 ##### `pqc_format_get_data`
 ```c
-PqcByteBuffer pqc_format_get_data(const PqcFormatHandle* handle);
+ByteBuffer pqc_format_get_data(const PqcFormatHandle* handle);
 ```
 Get encrypted data. **Must free with `pqc_free_buffer`**.
 
@@ -276,7 +276,7 @@ Free a PQC binary format handle. **Must be called for every created handle**.
 
 ##### `pqc_free_buffer`
 ```c
-void pqc_free_buffer(PqcByteBuffer buffer);
+void pqc_free_buffer(ByteBuffer buffer);
 ```
 Free a byte buffer. **Must be called for every buffer returned by the library**.
 
@@ -297,7 +297,7 @@ PqcFormatHandle* format = pqc_format_new(...);
 pqc_format_free(format);  // REQUIRED
 
 // Free buffers
-PqcByteBuffer buffer = pqc_format_to_bytes(format);
+ByteBuffer buffer = pqc_format_to_bytes(format);
 // ... use buffer ...
 pqc_free_buffer(buffer);  // REQUIRED
 

@@ -1,4 +1,4 @@
-# PQC Binary Format v1.0
+# PQC Binary Format v1.0.4
 
 [![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
 [![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
@@ -13,7 +13,7 @@ Post-quantum cryptography (PQC) implementations suffer from the "Babel Tower pro
 
 ## 💡 The Solution
 
-PQC Binary Format v1.0 provides a universal, algorithm-agnostic format that:
+PQC Binary Format provides a universal, algorithm-agnostic format that:
 
 - ✅ Works across **28+ cryptographic algorithms**
 - ✅ **Self-describing metadata** enables seamless decryption
@@ -187,7 +187,7 @@ int main() {
         data.data(), data.size()
     );
 
-    PqcByteBuffer serialized = pqc_format_to_bytes(format);
+    ByteBuffer serialized = pqc_format_to_bytes(format);
     PqcFormatHandle* deserialized = pqc_format_from_bytes(serialized.data, serialized.len);
 
     char* alg_name = pqc_format_get_algorithm_name(deserialized);
