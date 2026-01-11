@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.9] - 2026-01-11
+
+### Published
+- ✅ **crates.io**: https://crates.io/crates/pqc-binary-format v1.0.9
+- ✅ **PyPI**: https://pypi.org/project/pqc-binary-format/ v1.0.9
+- ✅ **npm**: https://www.npmjs.com/package/pqc-binary-format v1.0.9
+- ✅ **pkg.go.dev**: https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go@v1.0.9
+
+### Added
+- **Pure Go implementation** - Complete rewrite of Go bindings eliminating CGO dependencies
+- Comprehensive Go test suite with 12 tests and benchmarks
+- Go examples directory with detailed usage examples
+- MIT LICENSE file in Go bindings directory for pkg.go.dev compliance
+- Full pkg.go.dev documentation now visible and indexed
+
+### Changed
+- **Breaking change in Go**: Go bindings now pure Go implementation (no CGO)
+  - API changed from CGO-based to pure Go functions
+  - Old: `NewPqcBinaryFormat()` → New: `pqc.New()`
+  - Removed dependency on Rust library compilation
+  - Fully portable across all Go-supported platforms
+- Updated all language binding versions to 1.0.9 for consistency
+- Updated all documentation references to version 1.0.9
+
+### Fixed
+- Go bindings now properly indexed on pkg.go.dev
+- Go package documentation now displays correctly (license issue resolved)
+- Cross-platform compatibility improved with pure Go implementation
+
+### Performance
+- Go bindings performance: Serialize 1KB ~50μs, Parse 1KB ~40μs
+- Constant-time checksum verification
+- Zero-copy operations where possible
+
 ## [1.0.7] - 2026-01-10
 
 ### Published

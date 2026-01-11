@@ -15,7 +15,7 @@ Pure Go implementation of the PQC Binary Format v1.0 specification, providing a 
 ## Installation
 
 ```bash
-go get github.com/PQCrypta/pqcrypta-community/bindings/go@v1.0.7
+go get github.com/PQCrypta/pqcrypta-community/bindings/go@v1.0.9
 ```
 
 No build dependencies required - pure Go!
