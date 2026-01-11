@@ -1,4 +1,4 @@
-# PQC Binary Format v1.0.7
+# PQC Binary Format v1.0.9
 
 [![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
 [![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
@@ -207,7 +207,7 @@ int main() {
 
 PQC Binary Format provides **production-ready, fully tested bindings** for multiple programming languages. All bindings support the complete API and produce cross-compatible binary formats.
 
-### Available Bindings (v1.0.7)
+### Available Bindings (v1.0.9)
 
 | Language | Status | Package | Documentation | Examples |
 |----------|--------|---------|---------------|----------|
@@ -274,7 +274,7 @@ All bindings support:
 
 | Platform | Status | Notes |
 |----------|--------|-------|
-| crates.io (Rust) | ✅ **Published** | **[v1.0.7 live!](https://crates.io/crates/pqc-binary-format)** |
+| crates.io (Rust) | ✅ **Published** | **[v1.0.9 live!](https://crates.io/crates/pqc-binary-format)** |
 | PyPI (Python) | ⏳ Ready | Maturin build tested, ready for `maturin publish` |
 | npm (JavaScript) | ⏳ Ready | WASM package built with wasm-pack |
 | pkg.go.dev (Go) | ⏳ Ready | Will auto-index on tag push |
@@ -604,7 +604,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Current Status
 
-- **Language Bindings**: ✅ **Rust** (native), ✅ **Python** (tested v1.0.7), ✅ **JavaScript/WASM** (tested v1.0.7), ✅ **Go** (tested v1.0.7), ✅ **C/C++** (tested v1.0.7)
+- **Language Bindings**: ✅ **Rust** (native), ✅ **Python** (tested v1.0.9), ✅ **JavaScript/WASM** (tested v1.0.9), ✅ **Go** (tested v1.0.9), ✅ **C/C++** (tested v1.0.9)
 - **Examples**: ✅ 9 validated examples across 6 languages
 - **Package Distribution**: ✅ **crates.io published!** | ⏳ PyPI, npm, pkg.go.dev ready
 
