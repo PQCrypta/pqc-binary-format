@@ -214,7 +214,7 @@ PQC Binary Format provides **production-ready, fully tested bindings** for multi
 | **Rust** | ✅ Native | `pqc-binary-format` | [docs.rs](https://docs.rs/pqc-binary-format) | [3 examples](examples/) |
 | **Python** | ✅ Tested | `pqc_binary_format` | [Python README](bindings/python/README.md) | [2 examples](examples/python/) |
 | **JavaScript/WASM** | ✅ Tested | `pqc_binary_format` (npm) | [JS README](bindings/javascript/README.md) | [1 example](examples/javascript/) |
-| **Go** | ✅ Tested | `github.com/PQCrypta/pqcrypta-community/bindings/go` | [Go README](bindings/go/README.md) | [1 example](examples/go/) |
+| **Go** | ✅ Tested | `github.com/PQCrypta/pqcrypta-community/bindings/go` | [pkg.go.dev](https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go) | [1 example](bindings/go/examples/) |
 | **C** | ✅ Tested | FFI via Rust | [C/C++ README](bindings/c-cpp/README.md) | [1 example](examples/c/) |
 | **C++** | ✅ Tested | FFI via Rust | [C/C++ README](bindings/c-cpp/README.md) | [1 example](examples/cpp/) |
 
