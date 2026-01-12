@@ -1,4 +1,4 @@
-# PQC Binary Format v1.0.9
+# PQC Binary Format v1.0.10
 
 [![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
 [![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
@@ -15,7 +15,7 @@ Post-quantum cryptography (PQC) implementations suffer from the "Babel Tower pro
 
 PQC Binary Format provides a universal, algorithm-agnostic format that:
 
-- ✅ Works across **28+ cryptographic algorithms**
+- ✅ Works across **31+ cryptographic algorithms**
 - ✅ **Self-describing metadata** enables seamless decryption
 - ✅ **Integrity verification** with SHA-256 checksums
 - ✅ **Cross-platform compatible** (Rust, Python, JavaScript, Go, etc.)
@@ -263,7 +263,7 @@ cd examples/go && go run basic_usage.go < ../../data.bin
 ### Binding Features
 
 All bindings support:
-- ✅ Full algorithm suite (28 algorithms)
+- ✅ Full algorithm suite (31 algorithms)
 - ✅ Metadata serialization/deserialization
 - ✅ SHA-256 integrity verification
 - ✅ Feature flags (compression, streaming, etc.)
@@ -305,7 +305,7 @@ All bindings support:
 
 ## 🔐 Supported Algorithms
 
-The format supports 28 cryptographic algorithm identifiers:
+The format supports 31 cryptographic algorithm identifiers:
 
 ### Classical Algorithms
 - **Classical** (0x0050): X25519 + Ed25519 + AES-256-GCM
@@ -330,6 +330,9 @@ Falcon-based signature algorithms
 
 ### Experimental (0x0500-0x0506)
 Research and next-generation algorithms
+
+### HQC Code-Based Series (0x0600-0x0602)
+NIST 2025 Backup KEM standard - code-based cryptography
 
 [View full algorithm list](docs/algorithms.md)
 
