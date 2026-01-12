@@ -2,7 +2,7 @@
 //
 // This package implements the PQC Binary Format specification for post-quantum
 // cryptographic data encapsulation. It provides constant-time parsing and
-// serialization of encrypted data with support for 31+ cryptographic algorithms.
+// serialization of encrypted data with support for 31+ cryptographic algorithms including HQC.
 //
 // Example usage:
 //

@@ -6,7 +6,7 @@ Pure Go implementation of the PQC Binary Format v1.0 specification, providing a 
 
 ✅ **Pure Go** - No CGO, no external dependencies
 ✅ **Fully Portable** - Works on any platform Go supports
-✅ **30+ Algorithms** - Support for all PQC Binary Format algorithms
+✅ **31+ Algorithms** - Support for all PQC Binary Format algorithms
 ✅ **Constant-time operations** - Side-channel resistant parsing
 ✅ **Zero-copy where possible** - Optimized for performance
 ✅ **100% Test Coverage** - Comprehensive test suite
@@ -15,7 +15,7 @@ Pure Go implementation of the PQC Binary Format v1.0 specification, providing a 
 ## Installation
 
 ```bash
-go get github.com/PQCrypta/pqcrypta-community/bindings/go@v1.0.9
+go get github.com/PQCrypta/pqcrypta-community/bindings/go@v1.0.12
 ```
 
 No build dependencies required - pure Go!
