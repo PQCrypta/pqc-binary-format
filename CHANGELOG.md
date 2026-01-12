@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.10] - 2026-01-12
+
+### Added
+- **HQC Code-Based Cryptography** - NIST 2025 Backup KEM standard
+  - HQC-128 (0x0600) - NIST Level 1, 128-bit security
+  - HQC-192 (0x0601) - NIST Level 3, 192-bit security
+  - HQC-256 (0x0602) - NIST Level 5, 256-bit security
+- Algorithm family 0x0600-0x06FF reserved for code-based algorithms
+- HQC constants in C/C++ FFI (`PQC_ALGORITHM_HQC_128/192/256`)
+- HQC constants in Go bindings (`AlgorithmHqc128/192/256`)
+
+### Changed
+- Updated algorithm count from 28+ to 31+ algorithms
+- Updated Rust crate documentation
+- Updated Go package documentation
+- Updated JavaScript package documentation
+- Updated Python package documentation
+
+### Impact
+- **Cryptographic Diversity**: Adds code-based cryptography alongside lattice-based algorithms
+- **NIST Compliance**: Implements NIST 2025 backup KEM standard
+- **Quantum Resistance**: Provides additional security layer with different mathematical foundation
+
 ## [1.0.9] - 2026-01-11
 
 ### Published

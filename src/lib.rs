@@ -10,7 +10,7 @@
 //!
 //! ## Features
 //!
-//! - **Algorithm-agnostic**: Works with 28+ cryptographic algorithms
+//! - **Algorithm-agnostic**: Works with 31+ cryptographic algorithms
 //! - **Self-describing metadata**: Algorithm parameters, compression settings, and custom fields
 //! - **Integrity verification**: SHA-256 checksum of entire structure
 //! - **Feature flags**: Compression, streaming, authentication, experimental features

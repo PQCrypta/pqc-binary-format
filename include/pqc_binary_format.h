@@ -91,6 +91,21 @@ extern const uint16_t PQC_ALGORITHM_PQ3_STACK;
 extern const uint16_t PQC_ALGORITHM_LATTICE_CODE_HYBRID;
 
 /**
+ * Algorithm ID for HQC-128 (NIST Level 1, 128-bit security)
+ */
+extern const uint16_t PQC_ALGORITHM_HQC_128;
+
+/**
+ * Algorithm ID for HQC-192 (NIST Level 3, 192-bit security)
+ */
+extern const uint16_t PQC_ALGORITHM_HQC_192;
+
+/**
+ * Algorithm ID for HQC-256 (NIST Level 5, 256-bit security)
+ */
+extern const uint16_t PQC_ALGORITHM_HQC_256;
+
+/**
  * Free a byte buffer allocated by this library
  *
  * # Safety
