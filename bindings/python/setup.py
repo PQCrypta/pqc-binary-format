@@ -8,7 +8,7 @@ from setuptools_rust import Binding, RustExtension
 
 setup(
     name="pqc-binary-format",
-    version="1.0.11",
+    version="1.0.12",
     description="Standardized binary format for post-quantum cryptography encrypted data interchange",
     long_description=open("../../README.md").read(),
     long_description_content_type="text/markdown",
