@@ -1,6 +1,6 @@
 # Supported Cryptographic Algorithms
 
-This document provides detailed specifications for all 28 supported cryptographic algorithms in PQC Binary Format v1.0.
+This document provides detailed specifications for all 31 supported cryptographic algorithms in PQC Binary Format v1.0.
 
 ## Algorithm Categories
 
@@ -10,6 +10,7 @@ This document provides detailed specifications for all 28 supported cryptographi
 4. [Max Secure Series](#max-secure-series) (0x0300-0x03FF)
 5. [FN-DSA Series](#fn-dsa-series-falcon-based) (0x0400-0x04FF)
 6. [Experimental Algorithms](#experimental-algorithms) (0x0500-0x05FF)
+7. [HQC Code-Based Series](#hqc-code-based-series) (0x0600-0x06FF)
 
 ---
 
@@ -885,6 +886,78 @@ Generic experimental algorithm placeholder for research.
 
 ---
 
+## HQC Code-Based Series
+
+### 29. HQC-128 (0x0600)
+
+**Name:** HQC-128
+**ID:** `0x0600`
+**Security Level:** NIST Level 1 (128-bit security)
+
+**Description:**
+Hamming Quasi-Cyclic (HQC) code-based key encapsulation mechanism. NIST 2025 Backup KEM standard providing cryptographic diversity through code-based mathematics.
+
+**Cryptographic Stack:**
+- **Key Exchange:** HQC-128 (code-based KEM)
+- **Signatures:** Ed25519
+- **Symmetric Encryption:** AES-256-GCM
+- **Key Size:** 2249 bytes (public), 2289 bytes (private)
+- **Ciphertext:** 4481 bytes
+
+**Use Cases:**
+- Cryptographic diversity (different math from lattice-based)
+- Defense-in-depth with multiple PQ families
+- NIST compliance requirements
+
+**Performance:**
+- Key Generation: ~10 ms
+- Encapsulation: ~15 ms
+- Decapsulation: ~20 ms
+
+**Quantum Resistant:** ✅ Yes (code-based)
+
+---
+
+### 30. HQC-192 (0x0601)
+
+**Name:** HQC-192
+**ID:** `0x0601`
+**Security Level:** NIST Level 3 (192-bit security)
+
+**Description:**
+Medium-security HQC variant with enhanced security parameters.
+
+**Cryptographic Stack:**
+- **Key Exchange:** HQC-192 (code-based KEM)
+- **Signatures:** Ed25519
+- **Symmetric Encryption:** AES-256-GCM
+- **Key Size:** 4522 bytes (public), 4562 bytes (private)
+- **Ciphertext:** 9026 bytes
+
+**Quantum Resistant:** ✅ Yes (code-based)
+
+---
+
+### 31. HQC-256 (0x0602)
+
+**Name:** HQC-256
+**ID:** `0x0602`
+**Security Level:** NIST Level 5 (256-bit security)
+
+**Description:**
+Maximum-security HQC variant for high-assurance applications.
+
+**Cryptographic Stack:**
+- **Key Exchange:** HQC-256 (code-based KEM)
+- **Signatures:** Ed25519
+- **Symmetric Encryption:** AES-256-GCM
+- **Key Size:** 7245 bytes (public), 7285 bytes (private)
+- **Ciphertext:** 14469 bytes
+
+**Quantum Resistant:** ✅ Yes (code-based)
+
+---
+
 ## References
 
 - [NIST Post-Quantum Cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
@@ -898,4 +971,4 @@ Generic experimental algorithm placeholder for research.
 
 **Last Updated:** January 9, 2026
 **Format Version:** PQC Binary Format v1.0
-**Total Algorithms:** 28 production + 6 experimental = 34 total
+**Total Algorithms:** 31 (includes 3 HQC code-based algorithms)
