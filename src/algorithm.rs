@@ -89,6 +89,14 @@ pub enum Algorithm {
     AiSynthesizedCryptoAgile = 0x0505,
     /// Experimental Engine (generic)
     Experimental = 0x0506,
+
+    // HQC Code-Based series (NIST 2025 Backup KEM) (0x0600-0x06FF)
+    /// HQC-128 (NIST Level 1, 128-bit security)
+    Hqc128 = 0x0600,
+    /// HQC-192 (NIST Level 3, 192-bit security)
+    Hqc192 = 0x0601,
+    /// HQC-256 (NIST Level 5, 256-bit security)
+    Hqc256 = 0x0602,
 }
 
 impl Algorithm {
@@ -138,6 +146,9 @@ impl Algorithm {
             0x0504 => Some(Self::LatticeCodeHybridFn),
             0x0505 => Some(Self::AiSynthesizedCryptoAgile),
             0x0506 => Some(Self::Experimental),
+            0x0600 => Some(Self::Hqc128),
+            0x0601 => Some(Self::Hqc192),
+            0x0602 => Some(Self::Hqc256),
             _ => None,
         }
     }
@@ -201,6 +212,9 @@ impl Algorithm {
             Self::LatticeCodeHybridFn => "Lattice-Code Hybrid FN",
             Self::AiSynthesizedCryptoAgile => "AI-Synthesized Crypto-Agile",
             Self::Experimental => "Experimental Engine",
+            Self::Hqc128 => "HQC-128",
+            Self::Hqc192 => "HQC-192",
+            Self::Hqc256 => "HQC-256",
         }
     }
 
@@ -261,6 +275,9 @@ impl Algorithm {
             Self::LatticeCodeHybridFn,
             Self::AiSynthesizedCryptoAgile,
             Self::Experimental,
+            Self::Hqc128,
+            Self::Hqc192,
+            Self::Hqc256,
         ]
     }
 }

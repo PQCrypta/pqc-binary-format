@@ -2,7 +2,7 @@
 //
 // This package implements the PQC Binary Format specification for post-quantum
 // cryptographic data encapsulation. It provides constant-time parsing and
-// serialization of encrypted data with support for 30+ cryptographic algorithms.
+// serialization of encrypted data with support for 31+ cryptographic algorithms.
 //
 // Example usage:
 //
@@ -89,6 +89,13 @@ const (
 	AlgorithmAISynthesizedCryptoAgile uint16 = 0x0504
 )
 
+// Algorithm IDs - HQC Code-Based Series (NIST 2025 Backup KEM)
+const (
+	AlgorithmHqc128 uint16 = 0x0600
+	AlgorithmHqc192 uint16 = 0x0601
+	AlgorithmHqc256 uint16 = 0x0602
+)
+
 // Algorithm name mappings
 var algorithmNames = map[uint16]string{
 	AlgorithmClassical:                  "Classical",
@@ -120,6 +127,9 @@ var algorithmNames = map[uint16]string{
 	AlgorithmQuantumResistantConsensus:  "Quantum-Resistant-Consensus",
 	AlgorithmEntropyOrchestrated:        "Entropy-Orchestrated",
 	AlgorithmAISynthesizedCryptoAgile:   "AI-Synthesized-Crypto-Agile",
+	AlgorithmHqc128:                     "HQC-128",
+	AlgorithmHqc192:                     "HQC-192",
+	AlgorithmHqc256:                     "HQC-256",
 }
 
 // Errors

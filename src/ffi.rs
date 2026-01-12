@@ -415,3 +415,15 @@ pub static PQC_ALGORITHM_PQ3_STACK: u16 = 0x0207;
 /// Algorithm ID for Lattice-Code Hybrid Stack
 #[no_mangle]
 pub static PQC_ALGORITHM_LATTICE_CODE_HYBRID: u16 = 0x0208;
+
+/// Algorithm ID for HQC-128 (NIST Level 1, 128-bit security)
+#[no_mangle]
+pub static PQC_ALGORITHM_HQC_128: u16 = 0x0600;
+
+/// Algorithm ID for HQC-192 (NIST Level 3, 192-bit security)
+#[no_mangle]
+pub static PQC_ALGORITHM_HQC_192: u16 = 0x0601;
+
+/// Algorithm ID for HQC-256 (NIST Level 5, 256-bit security)
+#[no_mangle]
+pub static PQC_ALGORITHM_HQC_256: u16 = 0x0602;
