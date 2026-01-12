@@ -22,7 +22,7 @@ jobs:
         uses: jetli/wasm-pack-action@v0.4.0
 
       - name: Build WASM package
-        run: wasm-pack build --target bundler --features wasm
+        run: wasm-pack build --target bundler -- --features wasm
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,7 +32,7 @@ jobs:
 
       - name: Publish to npm
         working-directory: ./pkg
-        run: npm publish --access public
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
