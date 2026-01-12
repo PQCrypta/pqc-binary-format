@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.11] - 2026-01-12
+
+### Fixed
+- **Documentation Sync**: Updated all README files to show correct version (v1.0.11)
+- **Algorithm Counts**: Corrected all references from "28 algorithms" to "31 algorithms"
+- **pkg/README.md**: Updated version header and algorithm counts
+- **docs/algorithms.md**: Added complete HQC algorithm specifications and updated totals
+- **npm Workflow**: Fixed wasm-pack build command syntax for automated publishing
+
+### Changed
+- All package versions incremented to 1.0.11 for consistency
+- README documentation now accurately reflects 31 total algorithms
+- Algorithm documentation expanded with HQC code-based series details
+
+### Documentation
+- Added comprehensive HQC-128/192/256 specifications to docs/algorithms.md
+- Updated algorithm category index to include HQC series
+- Corrected package registry status tables
+
 ## [1.0.10] - 2026-01-12
 
 ### Added
