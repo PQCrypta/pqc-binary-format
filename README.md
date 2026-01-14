@@ -275,9 +275,9 @@ All bindings support:
 | Platform | Status | Notes |
 |----------|--------|-------|
 | crates.io (Rust) | ✅ **Published** | **[v1.0.11 live!](https://crates.io/crates/pqc-binary-format)** |
-| PyPI (Python) | ⏳ Ready | Maturin build tested, ready for `maturin publish` |
-| npm (JavaScript) | ⏳ Ready | WASM package built with wasm-pack |
-| pkg.go.dev (Go) | ⏳ Ready | Will auto-index on tag push |
+| PyPI (Python) | ✅ **Published** | **[v1.0.12 live!](https://pypi.org/project/pqc-binary-format/)** |
+| npm (JavaScript) | ✅ **Published** | **[v1.0.12 live!](https://www.npmjs.com/package/pqc-binary-format)** |
+| pkg.go.dev (Go) | ✅ **Indexed** | **[v1.0.12 live!](https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go)** |
 
 ## 📦 Binary Format Specification
 
@@ -609,7 +609,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 - **Language Bindings**: ✅ **Rust** (native), ✅ **Python** (tested v1.0.11), ✅ **JavaScript/WASM** (tested v1.0.11), ✅ **Go** (tested v1.0.11), ✅ **C/C++** (tested v1.0.11)
 - **Examples**: ✅ 9 validated examples across 6 languages
-- **Package Distribution**: ✅ **crates.io published!** | ⏳ PyPI, npm, pkg.go.dev ready
+- **Package Distribution**: ✅ **All platforms published!** crates.io, PyPI, npm, pkg.go.dev
 
 ### Areas for Contribution
 
@@ -618,7 +618,6 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - **Testing**: Additional test cases, fuzzing, property-based testing
 - **Performance**: SIMD optimizations, benchmark improvements
 - **Standards**: Help draft RFC for IETF standardization submission
-- **Package Publishing**: Help publish to PyPI, npm, and other package registries
 
 ## 📄 License
 
