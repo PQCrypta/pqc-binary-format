@@ -97,6 +97,34 @@ pub enum Algorithm {
     Hqc192 = 0x0601,
     /// HQC-256 (NIST Level 5, 256-bit security)
     Hqc256 = 0x0602,
+
+    // NIST ML-KEM variants (FIPS 203) (0x0700-0x07FF)
+    /// ML-KEM-512 (NIST Level 1, 128-bit security)
+    MlKem512 = 0x0700,
+    /// ML-KEM-768 (NIST Level 3, 192-bit security)
+    MlKem768 = 0x0701,
+
+    // NIST ML-DSA variants (FIPS 204) (0x0800-0x08FF)
+    /// ML-DSA-44 (NIST Level 2, 128-bit security)
+    MlDsa44 = 0x0800,
+    /// ML-DSA-65 (NIST Level 3, 192-bit security)
+    MlDsa65 = 0x0801,
+    /// ML-DSA-87 (NIST Level 5, 256-bit security)
+    MlDsa87 = 0x0802,
+
+    // NIST SLH-DSA variants (FIPS 205) (0x0900-0x09FF)
+    /// SLH-DSA-SHA2-128s (NIST Level 1, small signatures)
+    SlhDsaSha2_128s = 0x0900,
+    /// SLH-DSA-SHA2-128f (NIST Level 1, fast signatures)
+    SlhDsaSha2_128f = 0x0901,
+    /// SLH-DSA-SHA2-192s (NIST Level 3, small signatures)
+    SlhDsaSha2_192s = 0x0902,
+    /// SLH-DSA-SHA2-192f (NIST Level 3, fast signatures)
+    SlhDsaSha2_192f = 0x0903,
+    /// SLH-DSA-SHA2-256s (NIST Level 5, small signatures)
+    SlhDsaSha2_256s = 0x0904,
+    /// SLH-DSA-SHA2-256f (NIST Level 5, fast signatures)
+    SlhDsaSha2_256f = 0x0905,
 }
 
 impl Algorithm {
@@ -149,6 +177,17 @@ impl Algorithm {
             0x0600 => Some(Self::Hqc128),
             0x0601 => Some(Self::Hqc192),
             0x0602 => Some(Self::Hqc256),
+            0x0700 => Some(Self::MlKem512),
+            0x0701 => Some(Self::MlKem768),
+            0x0800 => Some(Self::MlDsa44),
+            0x0801 => Some(Self::MlDsa65),
+            0x0802 => Some(Self::MlDsa87),
+            0x0900 => Some(Self::SlhDsaSha2_128s),
+            0x0901 => Some(Self::SlhDsaSha2_128f),
+            0x0902 => Some(Self::SlhDsaSha2_192s),
+            0x0903 => Some(Self::SlhDsaSha2_192f),
+            0x0904 => Some(Self::SlhDsaSha2_256s),
+            0x0905 => Some(Self::SlhDsaSha2_256f),
             _ => None,
         }
     }
@@ -215,6 +254,17 @@ impl Algorithm {
             Self::Hqc128 => "HQC-128",
             Self::Hqc192 => "HQC-192",
             Self::Hqc256 => "HQC-256",
+            Self::MlKem512 => "ML-KEM-512",
+            Self::MlKem768 => "ML-KEM-768",
+            Self::MlDsa44 => "ML-DSA-44",
+            Self::MlDsa65 => "ML-DSA-65",
+            Self::MlDsa87 => "ML-DSA-87",
+            Self::SlhDsaSha2_128s => "SLH-DSA-SHA2-128s",
+            Self::SlhDsaSha2_128f => "SLH-DSA-SHA2-128f",
+            Self::SlhDsaSha2_192s => "SLH-DSA-SHA2-192s",
+            Self::SlhDsaSha2_192f => "SLH-DSA-SHA2-192f",
+            Self::SlhDsaSha2_256s => "SLH-DSA-SHA2-256s",
+            Self::SlhDsaSha2_256f => "SLH-DSA-SHA2-256f",
         }
     }
 
@@ -278,6 +328,17 @@ impl Algorithm {
             Self::Hqc128,
             Self::Hqc192,
             Self::Hqc256,
+            Self::MlKem512,
+            Self::MlKem768,
+            Self::MlDsa44,
+            Self::MlDsa65,
+            Self::MlDsa87,
+            Self::SlhDsaSha2_128s,
+            Self::SlhDsaSha2_128f,
+            Self::SlhDsaSha2_192s,
+            Self::SlhDsaSha2_192f,
+            Self::SlhDsaSha2_256s,
+            Self::SlhDsaSha2_256f,
         ]
     }
 }

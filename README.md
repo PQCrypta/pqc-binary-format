@@ -1,4 +1,4 @@
-# PQC Binary Format v1.0.12
+# PQC Binary Format v1.0.13
 
 [![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
 [![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
@@ -15,7 +15,7 @@ Post-quantum cryptography (PQC) implementations suffer from the "Babel Tower pro
 
 PQC Binary Format provides a universal, algorithm-agnostic format that:
 
-- ✅ Works across **31+ cryptographic algorithms**
+- ✅ Works across **42 cryptographic algorithms**
 - ✅ **Self-describing metadata** enables seamless decryption
 - ✅ **Integrity verification** with SHA-256 checksums
 - ✅ **Cross-platform compatible** (Rust, Python, JavaScript, Go, etc.)
@@ -263,7 +263,7 @@ cd examples/go && go run basic_usage.go < ../../data.bin
 ### Binding Features
 
 All bindings support:
-- ✅ Full algorithm suite (31 algorithms)
+- ✅ Full algorithm suite (42 algorithms)
 - ✅ Metadata serialization/deserialization
 - ✅ SHA-256 integrity verification
 - ✅ Feature flags (compression, streaming, etc.)
@@ -287,7 +287,7 @@ All bindings support:
 +-------------------+
 | Version (1 byte)  | 0x01 - Format version
 +-------------------+
-| Algorithm (2 bytes)| Algorithm identifier (0x0050 - 0x0506)
+| Algorithm (2 bytes)| Algorithm identifier (0x0050 - 0x0905)
 +-------------------+
 | Flags (1 byte)    | Feature flags (compression, streaming, etc.)
 +-------------------+
@@ -305,16 +305,16 @@ All bindings support:
 
 ## 🔐 Supported Algorithms
 
-The format supports 31 cryptographic algorithm identifiers:
+The format supports 42 cryptographic algorithm identifiers:
 
-### Classical Algorithms
+### Classical Algorithms (0x0050-0x00FF)
 - **Classical** (0x0050): X25519 + Ed25519 + AES-256-GCM
 - **Password Classical** (0x0051): Password-based encryption
 
-### Hybrid Algorithms
+### Hybrid Algorithms (0x0100-0x01FF)
 - **Hybrid** (0x0100): ML-KEM-1024 + X25519 + ML-DSA-87 + Ed25519
 
-### Post-Quantum Algorithms
+### Post-Quantum Algorithms (0x0200-0x02FF)
 - **Post-Quantum** (0x0200): ML-KEM-1024 + ML-DSA-87
 - **ML-KEM-1024** (0x0202): Pure ML-KEM with AES-256-GCM
 - **Multi-KEM** (0x0203): Dual-layer KEM
@@ -333,6 +333,26 @@ Research and next-generation algorithms
 
 ### HQC Code-Based Series (0x0600-0x0602)
 NIST 2025 Backup KEM standard - code-based cryptography
+- **HQC-128** (0x0600): NIST Level 1, 128-bit security
+- **HQC-192** (0x0601): NIST Level 3, 192-bit security
+- **HQC-256** (0x0602): NIST Level 5, 256-bit security
+
+### NIST ML-KEM Variants - FIPS 203 (0x0700-0x07FF)
+- **ML-KEM-512** (0x0700): NIST Level 1, 128-bit security
+- **ML-KEM-768** (0x0701): NIST Level 3, 192-bit security
+
+### NIST ML-DSA Variants - FIPS 204 (0x0800-0x08FF)
+- **ML-DSA-44** (0x0800): NIST Level 2, 128-bit security
+- **ML-DSA-65** (0x0801): NIST Level 3, 192-bit security
+- **ML-DSA-87** (0x0802): NIST Level 5, 256-bit security
+
+### NIST SLH-DSA Variants - FIPS 205 (0x0900-0x09FF)
+- **SLH-DSA-SHA2-128s** (0x0900): NIST Level 1, small signatures
+- **SLH-DSA-SHA2-128f** (0x0901): NIST Level 1, fast signatures
+- **SLH-DSA-SHA2-192s** (0x0902): NIST Level 3, small signatures
+- **SLH-DSA-SHA2-192f** (0x0903): NIST Level 3, fast signatures
+- **SLH-DSA-SHA2-256s** (0x0904): NIST Level 5, small signatures
+- **SLH-DSA-SHA2-256f** (0x0905): NIST Level 5, fast signatures
 
 [View full algorithm list](docs/algorithms.md)
 

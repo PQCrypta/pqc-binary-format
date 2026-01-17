@@ -427,3 +427,53 @@ pub static PQC_ALGORITHM_HQC_192: u16 = 0x0601;
 /// Algorithm ID for HQC-256 (NIST Level 5, 256-bit security)
 #[no_mangle]
 pub static PQC_ALGORITHM_HQC_256: u16 = 0x0602;
+
+// NIST ML-KEM variants (FIPS 203)
+
+/// Algorithm ID for ML-KEM-512 (NIST Level 1, 128-bit security)
+#[no_mangle]
+pub static PQC_ALGORITHM_ML_KEM_512: u16 = 0x0700;
+
+/// Algorithm ID for ML-KEM-768 (NIST Level 3, 192-bit security)
+#[no_mangle]
+pub static PQC_ALGORITHM_ML_KEM_768: u16 = 0x0701;
+
+// NIST ML-DSA variants (FIPS 204)
+
+/// Algorithm ID for ML-DSA-44 (NIST Level 2, 128-bit security)
+#[no_mangle]
+pub static PQC_ALGORITHM_ML_DSA_44: u16 = 0x0800;
+
+/// Algorithm ID for ML-DSA-65 (NIST Level 3, 192-bit security)
+#[no_mangle]
+pub static PQC_ALGORITHM_ML_DSA_65: u16 = 0x0801;
+
+/// Algorithm ID for ML-DSA-87 (NIST Level 5, 256-bit security)
+#[no_mangle]
+pub static PQC_ALGORITHM_ML_DSA_87: u16 = 0x0802;
+
+// NIST SLH-DSA variants (FIPS 205)
+
+/// Algorithm ID for SLH-DSA-SHA2-128s (NIST Level 1, small signatures)
+#[no_mangle]
+pub static PQC_ALGORITHM_SLH_DSA_SHA2_128S: u16 = 0x0900;
+
+/// Algorithm ID for SLH-DSA-SHA2-128f (NIST Level 1, fast signatures)
+#[no_mangle]
+pub static PQC_ALGORITHM_SLH_DSA_SHA2_128F: u16 = 0x0901;
+
+/// Algorithm ID for SLH-DSA-SHA2-192s (NIST Level 3, small signatures)
+#[no_mangle]
+pub static PQC_ALGORITHM_SLH_DSA_SHA2_192S: u16 = 0x0902;
+
+/// Algorithm ID for SLH-DSA-SHA2-192f (NIST Level 3, fast signatures)
+#[no_mangle]
+pub static PQC_ALGORITHM_SLH_DSA_SHA2_192F: u16 = 0x0903;
+
+/// Algorithm ID for SLH-DSA-SHA2-256s (NIST Level 5, small signatures)
+#[no_mangle]
+pub static PQC_ALGORITHM_SLH_DSA_SHA2_256S: u16 = 0x0904;
+
+/// Algorithm ID for SLH-DSA-SHA2-256f (NIST Level 5, fast signatures)
+#[no_mangle]
+pub static PQC_ALGORITHM_SLH_DSA_SHA2_256F: u16 = 0x0905;
