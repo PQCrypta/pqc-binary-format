@@ -5,21 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.12] - 2026-01-12
+## [1.0.13] - 2026-01-17
 
 ### Added
+- **NIST Standard Algorithm IDs** - Complete FIPS algorithm identifier registry
+  - **ML-KEM Variants (FIPS 203)** - Key Encapsulation Mechanisms
+    - ML-KEM-512 (0x0700) - NIST Level 1, 128-bit security
+    - ML-KEM-768 (0x0701) - NIST Level 3, 192-bit security
+  - **ML-DSA Variants (FIPS 204)** - Digital Signature Algorithm
+    - ML-DSA-44 (0x0800) - NIST Level 2, 128-bit security
+    - ML-DSA-65 (0x0801) - NIST Level 3, 192-bit security
+    - ML-DSA-87 (0x0802) - NIST Level 5, 256-bit security
+  - **SLH-DSA Variants (FIPS 205)** - Stateless Hash-Based Digital Signatures
+    - SLH-DSA-SHA2-128s (0x0900) - NIST Level 1, small signatures
+    - SLH-DSA-SHA2-128f (0x0901) - NIST Level 1, fast signatures
+    - SLH-DSA-SHA2-192s (0x0902) - NIST Level 3, small signatures
+    - SLH-DSA-SHA2-192f (0x0903) - NIST Level 3, fast signatures
+    - SLH-DSA-SHA2-256s (0x0904) - NIST Level 5, small signatures
+    - SLH-DSA-SHA2-256f (0x0905) - NIST Level 5, fast signatures
+- New algorithm ID ranges reserved: 0x0700-0x07FF (ML-KEM), 0x0800-0x08FF (ML-DSA), 0x0900-0x09FF (SLH-DSA)
+- C/C++ FFI constants for all NIST algorithms (PQC_ALGORITHM_ML_KEM_512, etc.)
 - **docs.rs Build Configuration**: Added `[package.metadata.docs.rs]` section to Cargo.toml
   - Configured `all-features = true` for comprehensive documentation
   - Added rustdoc-args for docs.rs environment detection
   - Specified target platform for consistent builds
 
-### Fixed
-- **docs.rs Documentation Build**: Force docs.rs rebuild with updated metadata configuration
-- Ensures all 31 algorithms (including HQC-128/192/256) appear in online documentation
-
 ### Changed
-- All package versions incremented to 1.0.12 for clean republish
+- Algorithm count increased from 31 to 42 algorithms
+- All package versions at 1.0.12 for consistency
 - Improved documentation build reliability across all registries
+
+### Impact
+- **NIST FIPS Compliance**: Full implementation of NIST PQC standard algorithm identifiers
+- **Interoperability**: Dedicated IDs enable standardized cross-implementation communication
+- **Future-Proof**: Reserved ID ranges for future NIST algorithm variants
 
 ## [1.0.11] - 2026-01-12
 

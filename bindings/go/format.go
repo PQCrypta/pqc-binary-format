@@ -2,7 +2,8 @@
 //
 // This package implements the PQC Binary Format specification for post-quantum
 // cryptographic data encapsulation. It provides constant-time parsing and
-// serialization of encrypted data with support for 31+ cryptographic algorithms including HQC.
+// serialization of encrypted data with support for 42 cryptographic algorithms
+// including HQC, ML-KEM, ML-DSA, and SLH-DSA NIST FIPS standards.
 //
 // Example usage:
 //
@@ -96,6 +97,29 @@ const (
 	AlgorithmHqc256 uint16 = 0x0602
 )
 
+// Algorithm IDs - NIST ML-KEM Variants (FIPS 203)
+const (
+	AlgorithmMlKem512 uint16 = 0x0700
+	AlgorithmMlKem768 uint16 = 0x0701
+)
+
+// Algorithm IDs - NIST ML-DSA Variants (FIPS 204)
+const (
+	AlgorithmMlDsa44 uint16 = 0x0800
+	AlgorithmMlDsa65 uint16 = 0x0801
+	AlgorithmMlDsa87 uint16 = 0x0802
+)
+
+// Algorithm IDs - NIST SLH-DSA Variants (FIPS 205)
+const (
+	AlgorithmSlhDsaSha2_128s uint16 = 0x0900
+	AlgorithmSlhDsaSha2_128f uint16 = 0x0901
+	AlgorithmSlhDsaSha2_192s uint16 = 0x0902
+	AlgorithmSlhDsaSha2_192f uint16 = 0x0903
+	AlgorithmSlhDsaSha2_256s uint16 = 0x0904
+	AlgorithmSlhDsaSha2_256f uint16 = 0x0905
+)
+
 // Algorithm name mappings
 var algorithmNames = map[uint16]string{
 	AlgorithmClassical:                  "Classical",
@@ -130,6 +154,17 @@ var algorithmNames = map[uint16]string{
 	AlgorithmHqc128:                     "HQC-128",
 	AlgorithmHqc192:                     "HQC-192",
 	AlgorithmHqc256:                     "HQC-256",
+	AlgorithmMlKem512:                   "ML-KEM-512",
+	AlgorithmMlKem768:                   "ML-KEM-768",
+	AlgorithmMlDsa44:                    "ML-DSA-44",
+	AlgorithmMlDsa65:                    "ML-DSA-65",
+	AlgorithmMlDsa87:                    "ML-DSA-87",
+	AlgorithmSlhDsaSha2_128s:            "SLH-DSA-SHA2-128s",
+	AlgorithmSlhDsaSha2_128f:            "SLH-DSA-SHA2-128f",
+	AlgorithmSlhDsaSha2_192s:            "SLH-DSA-SHA2-192s",
+	AlgorithmSlhDsaSha2_192f:            "SLH-DSA-SHA2-192f",
+	AlgorithmSlhDsaSha2_256s:            "SLH-DSA-SHA2-256s",
+	AlgorithmSlhDsaSha2_256f:            "SLH-DSA-SHA2-256f",
 }
 
 // Errors
