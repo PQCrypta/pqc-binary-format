@@ -1,6 +1,6 @@
 {
   "name": "pqc-binary-format",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Standardized binary format for post-quantum cryptography encrypted data interchange",
   "main": "index.js",
   "types": "index.d.ts",
