@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.14] - 2026-01-17
+
+### Changed
+- **Universal Algorithm Count**: Updated from 36/42 to **47 algorithm identifiers** across all documentation
+  - Format is designed for universal PQC ecosystem use, not just PQ Crypta engines
+  - Includes all NIST FIPS standalone variants (ML-KEM-512/768, ML-DSA-44/65/87, SLH-DSA-*)
+- All package versions synchronized to 1.0.14
+- Updated README.md, Go bindings, and all documentation to reflect 47 algorithms
+
+### Documentation
+- Comprehensive algorithm breakdown across 9 categories:
+  - Core Algorithms (6)
+  - Multi-KEM & Stacks (5)
+  - Max-Secure Series (7)
+  - HQC Code-Based (3)
+  - ML-KEM FIPS 203 (2)
+  - FN-DSA Signatures (8)
+  - Experimental (7)
+  - ML-DSA FIPS 204 (3)
+  - SLH-DSA FIPS 205 (6)
+
 ## [1.0.13] - 2026-01-17
 
 ### Added
@@ -31,8 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Specified target platform for consistent builds
 
 ### Changed
-- Algorithm count increased from 31 to 42 algorithms
-- All package versions at 1.0.12 for consistency
+- Algorithm count increased from 31 to 47 algorithms (universal PQC support)
+- All package versions at 1.0.14 for consistency
 - Improved documentation build reliability across all registries
 
 ### Impact
