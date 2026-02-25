@@ -327,7 +327,7 @@ impl PyPqcBinaryFormat {
     ///
     /// Returns:
     ///     Bytes object containing serialized format
-    fn to_bytes<'py>(&self, py: Python<'py>) -> PyResult<&'py PyBytes> {
+    fn to_bytes<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyBytes>> {
         let bytes = self
             .inner
             .to_bytes()
@@ -394,7 +394,7 @@ impl PyPqcBinaryFormat {
 
 /// Python module initialization
 #[pymodule]
-fn pqc_binary_format(_py: Python, m: &PyModule) -> PyResult<()> {
+fn pqc_binary_format(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyAlgorithm>()?;
     m.add_class::<PyEncParameters>()?;
     m.add_class::<PyKemParameters>()?;
