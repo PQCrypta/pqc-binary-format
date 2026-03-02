@@ -20,7 +20,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 # Serialization
 serde = { version = "1.0", features = ["derive"] }
-bincode = "1.3"
+bincode = "3.0"
 
 # Hashing for checksums
 sha2 = "0.10"
