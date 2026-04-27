@@ -44,7 +44,7 @@ wasm = ["wasm-bindgen", "serde-wasm-bindgen", "js-sys"]
 [dev-dependencies]
 # Testing
 criterion = "0.5"
-proptest = { version = "1.4", default-features = false, features = ["std"] }
+proptest = { version = "1.11", default-features = false, features = ["std"] }
 hex = "0.4"
 
 [[bench]]
