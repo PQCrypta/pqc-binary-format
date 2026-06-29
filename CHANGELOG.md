@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/PQCrypta/pqc-binary-format/compare/v1.0.7...v1.1.0) (2026-06-29)
+
+
+### Features
+
+* Add HQC code-based cryptography support (v1.0.10) ([f79cd0c](https://github.com/PQCrypta/pqc-binary-format/commit/f79cd0cdce7a632b20d5e6e5a7826e02d4b01e60))
+* Add NIST FIPS algorithm IDs to v1.0.13 ([81e92d7](https://github.com/PQCrypta/pqc-binary-format/commit/81e92d7afc968ab38e65484ccbeae9c35bc418f0))
+* **go:** Add MIT license to Go bindings directory ([985c730](https://github.com/PQCrypta/pqc-binary-format/commit/985c73014b2f93287760c0292f6c2fb22e3665ad))
+* **go:** Rewrite Go bindings as pure Go implementation ([151e95d](https://github.com/PQCrypta/pqc-binary-format/commit/151e95d9f66f134138ca4047569c096ad47c99db))
+
+
+### Bug Fixes
+
+* Add id-token permission for npm provenance and disable redundant release workflow ([c3a7684](https://github.com/PQCrypta/pqc-binary-format/commit/c3a768434385dc629a7d4c482e5a0e52977930fb))
+* Correct wasm-pack build command syntax for npm workflow ([0452d88](https://github.com/PQCrypta/pqc-binary-format/commit/0452d88b87b90ff82da6405fb0ab98d06ee9ae1d))
+* disable proptest fork feature to remove quick-error 1.2.3 compile_error ([721a3c2](https://github.com/PQCrypta/pqc-binary-format/commit/721a3c2b0a7731e1d2fc6ae85f94b4ba96345170))
+* **go:** update stale examples to match pure-Go binding API ([7e86d3b](https://github.com/PQCrypta/pqc-binary-format/commit/7e86d3b363daaa22c6052e0631aa13b8470d42df))
+* ignore RUSTSEC-2025-0134 in cargo-deny advisories check ([d1b18fb](https://github.com/PQCrypta/pqc-binary-format/commit/d1b18fb62b777295b5f4f26b9fdf7c2f66a660cc))
+* migrate deny.toml to cargo-deny 0.16+ format (remove deprecated keys) ([029838c](https://github.com/PQCrypta/pqc-binary-format/commit/029838ce8c009c583b75f00a2b415c5aebf50ee1))
+* update deny.toml for cargo-deny 0.19.0 advisory changes ([35e6015](https://github.com/PQCrypta/pqc-binary-format/commit/35e60152bc0528e533d11538e3b42e26f2533f1e))
+* update deny.toml unmaintained field for cargo-deny v2 compatibility ([0910126](https://github.com/PQCrypta/pqc-binary-format/commit/09101264264e9a4759f0194325ae56adc032abb8))
+* upgrade pyo3 0.20→0.24 to resolve RUSTSEC-2025-0020 ([2cd9716](https://github.com/PQCrypta/pqc-binary-format/commit/2cd9716e6451f4f774a767e375cabc82a8d40f86))
+
 ## [1.0.14] - 2026-01-17
 
 ### Changed
