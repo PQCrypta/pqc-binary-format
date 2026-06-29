@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("=== PQC Binary Format v1.0 - Pure Go Example ===\n")
+	fmt.Print("=== PQC Binary Format v1.0 - Pure Go Example ===\n\n")
 
 	// Example 1: Create and serialize a Hybrid algorithm format
 	fmt.Println("Example 1: Creating Hybrid Algorithm Format")
