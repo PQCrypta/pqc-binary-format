@@ -1,4 +1,4 @@
-# PQC Binary Format v1.0.14
+# PQC Binary Format
 
 [![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
 [![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
@@ -20,7 +20,7 @@ PQC Binary Format provides a universal, algorithm-agnostic format that:
 - ✅ **Integrity verification** with SHA-256 checksums
 - ✅ **Cross-platform compatible** (Rust, Python, JavaScript, Go, etc.)
 - ✅ **Future-proof** design allows algorithm migration
-- ✅ **Zero dependencies** except serde and sha2
+- ✅ **Minimal dependencies**: serde, serde_json, sha2, base64
 
 ## 🚀 Quick Start
 
@@ -30,7 +30,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-pqc-binary-format = "1.0"
+pqc-binary-format = "2.0"
 ```
 
 ### Basic Usage (Rust)
@@ -208,7 +208,7 @@ int main() {
 
 PQC Binary Format provides **production-ready, fully tested bindings** for multiple programming languages. All bindings support the complete API and produce cross-compatible binary formats.
 
-### Available Bindings (v1.0.14)
+### Available Bindings
 
 | Language | Status | Package | Documentation | Examples |
 |----------|--------|---------|---------------|----------|
@@ -275,10 +275,10 @@ All bindings support:
 
 | Platform | Status | Notes |
 |----------|--------|-------|
-| crates.io (Rust) | ✅ **Published** | **[v1.0.14 live!](https://crates.io/crates/pqc-binary-format)** |
-| PyPI (Python) | ✅ **Published** | **[v1.0.14 live!](https://pypi.org/project/pqc-binary-format/)** |
-| npm (JavaScript) | ✅ **Published** | **[v1.0.14 live!](https://www.npmjs.com/package/pqc-binary-format)** |
-| pkg.go.dev (Go) | ✅ **Indexed** | **[v1.0.14 live!](https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go)** |
+| crates.io (Rust) | ✅ **Published** | **[v2.0.1 live!](https://crates.io/crates/pqc-binary-format)** |
+| PyPI (Python) | ✅ **Published** | **[v2.0.1 live!](https://pypi.org/project/pqc-binary-format/)** |
+| npm (JavaScript) | ✅ **Published** | **[v2.0.1 live!](https://www.npmjs.com/package/pqc-binary-format)** |
+| pkg.go.dev (Go) | ✅ **Indexed** | **[v2.0.1 live!](https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go)** |
 
 ## 📦 Binary Format Specification
 
@@ -637,7 +637,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Current Status
 
-- **Language Bindings**: ✅ **Rust** (native), ✅ **Python** (tested v1.0.14), ✅ **JavaScript/WASM** (tested v1.0.14), ✅ **Go** (tested v1.0.14), ✅ **C/C++** (tested v1.0.14)
+- **Language Bindings**: ✅ **Rust** (native), ✅ **Python** (tested v2.0.1), ✅ **JavaScript/WASM** (tested v2.0.1), ✅ **Go** (tested v2.0.1), ✅ **C/C++** (tested v2.0.1)
 - **Examples**: ✅ 9 validated examples across 6 languages
 - **Package Distribution**: ✅ **All platforms published!** crates.io, PyPI, npm, pkg.go.dev
 

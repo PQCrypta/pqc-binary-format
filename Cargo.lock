@@ -405,7 +405,7 @@ dependencies = [
 
 [[package]]
 name = "pqc-binary-format"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "base64",
  "criterion",
