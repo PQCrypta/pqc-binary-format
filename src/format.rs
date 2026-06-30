@@ -7,6 +7,25 @@ use crate::{
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
+/// Fixed header size in bytes: magic(4) + version(1) + algorithm_id(2) +
+/// flags(1) + metadata_len(4) + data_len(8) is split across the metadata
+/// section, so the bytes preceding the metadata section total 12.
+const HEADER_SIZE: usize = 12;
+
+/// SHA-256 checksum size in bytes.
+const CHECKSUM_SIZE: usize = 32;
+
+/// Branch-free, fixed-length equality for two 32-byte checksums.
+///
+/// Avoids leaking checksum-correctness information through timing.
+fn constant_time_eq(a: &[u8; 32], b: &[u8; 32]) -> bool {
+    let mut diff = 0u8;
+    for i in 0..32 {
+        diff |= a[i] ^ b[i];
+    }
+    diff == 0
+}
+
 /// PQC Binary Format v1.0 specification
 ///
 /// This structure represents encrypted data in a standardized, self-describing format
@@ -265,8 +284,36 @@ impl PqcBinaryFormat {
         // Validate format before serialization
         self.validate()?;
 
-        bincode::serialize(self)
-            .map_err(|e| CryptoError::BinaryFormatError(format!("Serialization failed: {e}")))
+        // Build the packed little-endian layout defined by the PQC Binary
+        // Format specification (draft-riddel-pqc-binary-format-00, Section 3):
+        //   magic[4] | version[1] | algorithm_id[2 LE] | flags[1]
+        //   | metadata_len[4 LE] | metadata(JSON) | data_len[8 LE] | data
+        //   | checksum[32]
+        let mut buf = self.serialize_prefix();
+        let checksum: [u8; 32] = Sha256::digest(&buf).into();
+        buf.extend_from_slice(&checksum);
+        Ok(buf)
+    }
+
+    /// Serialize every field preceding the checksum, in spec order. The SHA-256
+    /// of this byte sequence is the integrity checksum.
+    ///
+    /// Lengths are written as the spec's fixed-width little-endian integers. A
+    /// metadata section larger than `u32::MAX` (4 GB) is saturated to `u32::MAX`;
+    /// such inputs are rejected by the practical size limits in any caller.
+    fn serialize_prefix(&self) -> Vec<u8> {
+        let metadata = self.metadata.to_json_bytes();
+        let mut buf = Vec::with_capacity(HEADER_SIZE + metadata.len() + self.data.len());
+        buf.extend_from_slice(&self.magic);
+        buf.push(self.version);
+        buf.extend_from_slice(&self.algorithm.as_id().to_le_bytes());
+        buf.push(self.flags);
+        let metadata_len = u32::try_from(metadata.len()).unwrap_or(u32::MAX);
+        buf.extend_from_slice(&metadata_len.to_le_bytes());
+        buf.extend_from_slice(&metadata);
+        buf.extend_from_slice(&(self.data.len() as u64).to_le_bytes());
+        buf.extend_from_slice(&self.data);
+        buf
     }
 
     /// Deserialize from binary format with checksum verification
@@ -298,26 +345,91 @@ impl PqcBinaryFormat {
     /// let recovered = PqcBinaryFormat::from_bytes(&bytes).unwrap();
     /// ```
     pub fn from_bytes(data: &[u8]) -> Result<Self> {
-        let format: Self = bincode::deserialize(data)
-            .map_err(|e| CryptoError::BinaryFormatError(format!("Deserialization failed: {e}")))?;
+        // Smallest valid envelope: 12-byte pre-metadata header + 0-byte metadata
+        // + 8-byte data length + 0-byte data + 32-byte checksum = 52 bytes.
+        const MIN_SIZE: usize = HEADER_SIZE + 8 + CHECKSUM_SIZE;
+        if data.len() < MIN_SIZE {
+            return Err(CryptoError::BinaryFormatError(format!(
+                "Buffer too small: {} bytes, minimum {MIN_SIZE}",
+                data.len(),
+            )));
+        }
 
-        // Validate deserialized format
-        format.validate()?;
+        // Magic bytes
+        let magic: [u8; 4] = [data[0], data[1], data[2], data[3]];
+        if magic != PQC_MAGIC {
+            return Err(CryptoError::InvalidMagic);
+        }
 
-        // Verify checksum
-        let stored_checksum = format.checksum;
-        let mut format_copy = format;
-        format_copy.checksum = [0u8; 32]; // Zero out for recalculation
-        let calculated_checksum = format_copy.calculate_checksum();
+        // Version
+        let version = data[4];
+        if version != PQC_BINARY_VERSION {
+            return Err(CryptoError::UnsupportedVersion(version));
+        }
 
-        // Restore checksum
-        format_copy.checksum = stored_checksum;
+        // Algorithm ID (little-endian) + flags
+        let algorithm_id = u16::from_le_bytes([data[5], data[6]]);
+        let algorithm = Algorithm::from_id(algorithm_id).ok_or_else(|| {
+            CryptoError::UnknownAlgorithm(format!("Invalid algorithm ID: {algorithm_id:#x}"))
+        })?;
+        let flags = data[7];
 
-        if stored_checksum != calculated_checksum {
+        // Metadata length (little-endian) + metadata section
+        let metadata_len = u32::from_le_bytes([data[8], data[9], data[10], data[11]]) as usize;
+        let meta_start = HEADER_SIZE;
+        let meta_end = meta_start
+            .checked_add(metadata_len)
+            .ok_or_else(|| CryptoError::BinaryFormatError("Metadata length overflow".into()))?;
+        if meta_end + CHECKSUM_SIZE > data.len() {
+            return Err(CryptoError::BinaryFormatError(
+                "Metadata length exceeds buffer".into(),
+            ));
+        }
+        let metadata = PqcMetadata::from_json_bytes(&data[meta_start..meta_end])?;
+
+        // Data length (little-endian) + data section
+        let len_end = meta_end + 8;
+        if len_end + CHECKSUM_SIZE > data.len() {
+            return Err(CryptoError::BinaryFormatError(
+                "Truncated before data length".into(),
+            ));
+        }
+        let mut data_len_bytes = [0u8; 8];
+        data_len_bytes.copy_from_slice(&data[meta_end..len_end]);
+        let data_len = usize::try_from(u64::from_le_bytes(data_len_bytes))
+            .map_err(|_| CryptoError::BinaryFormatError("Data length exceeds usize".into()))?;
+        let data_end = len_end
+            .checked_add(data_len)
+            .ok_or_else(|| CryptoError::BinaryFormatError("Data length overflow".into()))?;
+        if data_end + CHECKSUM_SIZE != data.len() {
+            return Err(CryptoError::BinaryFormatError(format!(
+                "Length mismatch: expected {} bytes, got {}",
+                data_end + CHECKSUM_SIZE,
+                data.len()
+            )));
+        }
+        let payload = data[len_end..data_end].to_vec();
+
+        // Verify checksum over everything preceding it (constant-time compare).
+        // The exact-length check above guarantees 32 trailing bytes.
+        let mut stored = [0u8; 32];
+        stored.copy_from_slice(&data[data_end..]);
+        let calculated: [u8; 32] = Sha256::digest(&data[..data_end]).into();
+        if !constant_time_eq(&stored, &calculated) {
             return Err(CryptoError::ChecksumMismatch);
         }
 
-        Ok(format_copy)
+        let format = Self {
+            magic,
+            version,
+            algorithm,
+            flags,
+            metadata,
+            data: payload,
+            checksum: stored,
+        };
+        format.validate()?;
+        Ok(format)
     }
 
     /// Validate the binary format structure
@@ -361,112 +473,13 @@ impl PqcBinaryFormat {
         self.checksum = self.calculate_checksum();
     }
 
-    /// Calculate SHA-256 checksum with deterministic field-by-field hashing
+    /// Calculate the SHA-256 integrity checksum over all fields preceding it.
     ///
-    /// Uses a deterministic approach to ensure consistent checksums across platforms.
+    /// Equivalent to `SHA-256(serialize_prefix())`, where the metadata is the
+    /// canonical (sorted-key) JSON section — matching the deterministic checksum
+    /// definition in Section 3.3 of the specification.
     fn calculate_checksum(&self) -> [u8; 32] {
-        let mut hasher = Sha256::new();
-
-        // Hash fixed fields with guaranteed deterministic ordering
-        hasher.update(self.magic);
-        hasher.update([self.version]);
-        hasher.update(self.algorithm.as_id().to_le_bytes());
-        hasher.update([self.flags]);
-
-        // Hash metadata deterministically
-        self.hash_metadata_deterministic(&mut hasher);
-
-        // Hash data length and content
-        hasher.update((self.data.len() as u64).to_le_bytes());
-        hasher.update(&self.data);
-
-        hasher.finalize().into()
-    }
-
-    /// Hash metadata in a deterministic way, field by field
-    ///
-    /// Ensures `HashMap` contents are sorted before hashing for consistency.
-    #[allow(clippy::cast_possible_truncation)]
-    fn hash_metadata_deterministic(&self, hasher: &mut Sha256) {
-        // Hash KEM parameters if present
-        if let Some(ref kem_params) = self.metadata.kem_params {
-            hasher.update([1u8]); // Present flag
-            hasher.update((kem_params.public_key.len() as u32).to_le_bytes());
-            hasher.update(&kem_params.public_key);
-            hasher.update((kem_params.ciphertext.len() as u32).to_le_bytes());
-            hasher.update(&kem_params.ciphertext);
-            // Hash params map deterministically by sorting keys
-            let mut sorted_params: Vec<_> = kem_params.params.iter().collect();
-            sorted_params.sort_by(|a, b| a.0.cmp(b.0));
-            hasher.update((sorted_params.len() as u32).to_le_bytes());
-            for (key, value) in sorted_params {
-                hasher.update((key.len() as u32).to_le_bytes());
-                hasher.update(key.as_bytes());
-                hasher.update((value.len() as u32).to_le_bytes());
-                hasher.update(value);
-            }
-        } else {
-            hasher.update([0u8]); // Not present flag
-        }
-
-        // Hash signature parameters if present
-        if let Some(ref sig_params) = self.metadata.sig_params {
-            hasher.update([1u8]); // Present flag
-            hasher.update((sig_params.public_key.len() as u32).to_le_bytes());
-            hasher.update(&sig_params.public_key);
-            hasher.update((sig_params.signature.len() as u32).to_le_bytes());
-            hasher.update(&sig_params.signature);
-            // Hash params map deterministically
-            let mut sorted_params: Vec<_> = sig_params.params.iter().collect();
-            sorted_params.sort_by(|a, b| a.0.cmp(b.0));
-            hasher.update((sorted_params.len() as u32).to_le_bytes());
-            for (key, value) in sorted_params {
-                hasher.update((key.len() as u32).to_le_bytes());
-                hasher.update(key.as_bytes());
-                hasher.update((value.len() as u32).to_le_bytes());
-                hasher.update(value);
-            }
-        } else {
-            hasher.update([0u8]); // Not present flag
-        }
-
-        // Hash encryption parameters
-        hasher.update((self.metadata.enc_params.iv.len() as u32).to_le_bytes());
-        hasher.update(&self.metadata.enc_params.iv);
-        hasher.update((self.metadata.enc_params.tag.len() as u32).to_le_bytes());
-        hasher.update(&self.metadata.enc_params.tag);
-        // Hash enc params map deterministically
-        let mut sorted_params: Vec<_> = self.metadata.enc_params.params.iter().collect();
-        sorted_params.sort_by(|a, b| a.0.cmp(b.0));
-        hasher.update((sorted_params.len() as u32).to_le_bytes());
-        for (key, value) in sorted_params {
-            hasher.update((key.len() as u32).to_le_bytes());
-            hasher.update(key.as_bytes());
-            hasher.update((value.len() as u32).to_le_bytes());
-            hasher.update(value);
-        }
-
-        // Hash compression params if present
-        if let Some(ref comp_params) = self.metadata.compression_params {
-            hasher.update([1u8]); // Present flag
-            hasher.update((comp_params.algorithm.len() as u32).to_le_bytes());
-            hasher.update(comp_params.algorithm.as_bytes());
-            hasher.update(comp_params.level.to_le_bytes());
-            hasher.update(comp_params.original_size.to_le_bytes());
-        } else {
-            hasher.update([0u8]); // Not present flag
-        }
-
-        // Hash custom fields deterministically by sorting keys
-        let mut sorted_custom: Vec<_> = self.metadata.custom.iter().collect();
-        sorted_custom.sort_by(|a, b| a.0.cmp(b.0));
-        hasher.update((sorted_custom.len() as u32).to_le_bytes());
-        for (key, value) in sorted_custom {
-            hasher.update((key.len() as u32).to_le_bytes());
-            hasher.update(key.as_bytes());
-            hasher.update((value.len() as u32).to_le_bytes());
-            hasher.update(value);
-        }
+        Sha256::digest(self.serialize_prefix()).into()
     }
 
     /// Get format flags

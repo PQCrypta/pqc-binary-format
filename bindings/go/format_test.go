@@ -159,24 +159,27 @@ func TestParseInvalidChecksum(t *testing.T) {
 func TestVerifyChecksum(t *testing.T) {
 	format := New(AlgorithmPostQuantum, []byte("test metadata"), []byte("test data"))
 
-	// Calculate correct checksum
+	// Calculate correct checksum (spec order, little-endian)
 	buf := new(bytes.Buffer)
 	buf.Write(format.Magic)
 	buf.WriteByte(format.Version)
 
 	algID := make([]byte, 2)
-	binary.BigEndian.PutUint16(algID, format.AlgorithmID)
+	binary.LittleEndian.PutUint16(algID, format.AlgorithmID)
 	buf.Write(algID)
 
+	buf.WriteByte(format.Flags)
+
 	metaLen := make([]byte, 4)
-	binary.BigEndian.PutUint32(metaLen, uint32(len(format.Metadata)))
+	binary.LittleEndian.PutUint32(metaLen, uint32(len(format.Metadata)))
 	buf.Write(metaLen)
 
+	buf.Write(format.Metadata)
+
 	dataLen := make([]byte, 8)
-	binary.BigEndian.PutUint64(dataLen, uint64(len(format.Data)))
+	binary.LittleEndian.PutUint64(dataLen, uint64(len(format.Data)))
 	buf.Write(dataLen)
 
-	buf.Write(format.Metadata)
 	buf.Write(format.Data)
 
 	format.Checksum = sha256.Sum256(buf.Bytes())
@@ -202,11 +205,11 @@ func TestAlgorithmName(t *testing.T) {
 		{AlgorithmHybrid, "Hybrid"},
 		{AlgorithmPostQuantum, "Post-Quantum"},
 		{AlgorithmMlKem1024, "ML-KEM-1024"},
-		{AlgorithmMultiKem, "Multi-KEM"},
+		{AlgorithmMultiKem, "Multi-KEM Dual Layer"},
 		{AlgorithmQuadLayer, "Quad-Layer"},
-		{AlgorithmMaxSecurePurePQ, "Max-Secure-Pure-PQ"},
-		{AlgorithmFnDsa1024Security, "FN-DSA-1024-Security"},
-		{AlgorithmQuantumLatticeFusion, "Quantum-Lattice-Fusion"},
+		{AlgorithmMaxSecurePurePQ, "Max Secure: Pure PQ"},
+		{AlgorithmFnDsa1024Security, "FN-DSA 1024: High-Security"},
+		{AlgorithmQuantumLatticeFusion, "Quantum-Inspired Lattice Fusion"},
 		{0x9999, "Unknown-0x9999"},
 	}
 
@@ -249,10 +252,10 @@ func TestSize(t *testing.T) {
 		dataLen      int
 		expectedSize int
 	}{
-		{"Empty", 0, 0, 51},
-		{"With metadata", 100, 0, 151},
-		{"With data", 0, 500, 551},
-		{"With both", 100, 500, 651},
+		{"Empty", 0, 0, 52},
+		{"With metadata", 100, 0, 152},
+		{"With data", 0, 500, 552},
+		{"With both", 100, 500, 652},
 	}
 
 	for _, tt := range tests {

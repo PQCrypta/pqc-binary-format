@@ -56,38 +56,42 @@ const (
 
 // Algorithm IDs - Advanced Stacks
 const (
+	AlgorithmLatticeCodeHybrid uint16 = 0x0206
 	AlgorithmPq3Stack          uint16 = 0x0207
-	AlgorithmLatticeCodeHybrid uint16 = 0x0208
 )
 
 // Algorithm IDs - Max Secure Series
 const (
 	AlgorithmMaxSecureLightweight      uint16 = 0x0300
 	AlgorithmMaxSecurePurePQ           uint16 = 0x0301
-	AlgorithmMaxSecureHybridTransition uint16 = 0x0302
+	AlgorithmMaxSecureHybrid           uint16 = 0x0302
 	AlgorithmMaxSecureStateless        uint16 = 0x0303
 	AlgorithmMaxSecureCryptoAgile      uint16 = 0x0304
 	AlgorithmMaxSecurePQCZK            uint16 = 0x0305
-	AlgorithmMaxSecureHybrid           uint16 = 0x0306
+	AlgorithmMaxSecureHybridTransition uint16 = 0x0306
 )
 
 // Algorithm IDs - FN-DSA Signature Series
 const (
-	AlgorithmFnDsa512Compact     uint16 = 0x0400
-	AlgorithmFnDsa1024Security   uint16 = 0x0401
-	AlgorithmFnDsaFPHardened     uint16 = 0x0402
-	AlgorithmFnDsaDualSignature  uint16 = 0x0403
-	AlgorithmFnDsaTransitionStack uint16 = 0x0404
-	AlgorithmFnDsaZKStack        uint16 = 0x0405
+	AlgorithmFnDsa512Compact      uint16 = 0x0400
+	AlgorithmFnDsa1024Security    uint16 = 0x0401
+	AlgorithmFnDsaFPHardened      uint16 = 0x0402
+	AlgorithmFnDsaDualSignature   uint16 = 0x0403
+	AlgorithmFnDsaTransition      uint16 = 0x0404
+	AlgorithmFnDsaZK              uint16 = 0x0405
+	AlgorithmFnDsaZKStack         uint16 = 0x0406
+	AlgorithmFnDsaTransitionStack uint16 = 0x0407
 )
 
 // Algorithm IDs - Experimental Series
 const (
-	AlgorithmQuantumLatticeFusion   uint16 = 0x0500
-	AlgorithmPostZKHomomorphic      uint16 = 0x0501
+	AlgorithmQuantumLatticeFusion      uint16 = 0x0500
+	AlgorithmPostZKHomomorphic         uint16 = 0x0501
 	AlgorithmQuantumResistantConsensus uint16 = 0x0502
-	AlgorithmEntropyOrchestrated    uint16 = 0x0503
-	AlgorithmAISynthesizedCryptoAgile uint16 = 0x0504
+	AlgorithmEntropyOrchestrated       uint16 = 0x0503
+	AlgorithmLatticeCodeHybridFn       uint16 = 0x0504
+	AlgorithmAISynthesizedCryptoAgile  uint16 = 0x0505
+	AlgorithmExperimental              uint16 = 0x0506
 )
 
 // Algorithm IDs - HQC Code-Based Series (NIST 2025 Backup KEM)
@@ -122,49 +126,53 @@ const (
 
 // Algorithm name mappings
 var algorithmNames = map[uint16]string{
-	AlgorithmClassical:                  "Classical",
-	AlgorithmPasswordClassical:          "Password-Classical",
-	AlgorithmHybrid:                     "Hybrid",
-	AlgorithmPostQuantum:                "Post-Quantum",
-	AlgorithmMlKem1024:                  "ML-KEM-1024",
-	AlgorithmMultiAlgorithm:             "Multi-Algorithm",
-	AlgorithmMultiKem:                   "Multi-KEM",
-	AlgorithmMultiKemTriple:             "Multi-KEM-Triple",
-	AlgorithmQuadLayer:                  "Quad-Layer",
-	AlgorithmPq3Stack:                   "PQ3-Stack",
-	AlgorithmLatticeCodeHybrid:          "Lattice-Code-Hybrid",
-	AlgorithmMaxSecureLightweight:       "Max-Secure-Lightweight",
-	AlgorithmMaxSecurePurePQ:            "Max-Secure-Pure-PQ",
-	AlgorithmMaxSecureHybridTransition:  "Max-Secure-Hybrid-Transition",
-	AlgorithmMaxSecureStateless:         "Max-Secure-Stateless",
-	AlgorithmMaxSecureCryptoAgile:       "Max-Secure-Crypto-Agile",
-	AlgorithmMaxSecurePQCZK:             "Max-Secure-PQC-ZK",
-	AlgorithmMaxSecureHybrid:            "Max-Secure-Hybrid",
-	AlgorithmFnDsa512Compact:            "FN-DSA-512-Compact",
-	AlgorithmFnDsa1024Security:          "FN-DSA-1024-Security",
-	AlgorithmFnDsaFPHardened:            "FN-DSA-FP-Hardened",
-	AlgorithmFnDsaDualSignature:         "FN-DSA-Dual-Signature",
-	AlgorithmFnDsaTransitionStack:       "FN-DSA-Transition-Stack",
-	AlgorithmFnDsaZKStack:               "FN-DSA-ZK-Stack",
-	AlgorithmQuantumLatticeFusion:       "Quantum-Lattice-Fusion",
-	AlgorithmPostZKHomomorphic:          "Post-ZK-Homomorphic",
-	AlgorithmQuantumResistantConsensus:  "Quantum-Resistant-Consensus",
-	AlgorithmEntropyOrchestrated:        "Entropy-Orchestrated",
-	AlgorithmAISynthesizedCryptoAgile:   "AI-Synthesized-Crypto-Agile",
-	AlgorithmHqc128:                     "HQC-128",
-	AlgorithmHqc192:                     "HQC-192",
-	AlgorithmHqc256:                     "HQC-256",
-	AlgorithmMlKem512:                   "ML-KEM-512",
-	AlgorithmMlKem768:                   "ML-KEM-768",
-	AlgorithmMlDsa44:                    "ML-DSA-44",
-	AlgorithmMlDsa65:                    "ML-DSA-65",
-	AlgorithmMlDsa87:                    "ML-DSA-87",
-	AlgorithmSlhDsaSha2_128s:            "SLH-DSA-SHA2-128s",
-	AlgorithmSlhDsaSha2_128f:            "SLH-DSA-SHA2-128f",
-	AlgorithmSlhDsaSha2_192s:            "SLH-DSA-SHA2-192s",
-	AlgorithmSlhDsaSha2_192f:            "SLH-DSA-SHA2-192f",
-	AlgorithmSlhDsaSha2_256s:            "SLH-DSA-SHA2-256s",
-	AlgorithmSlhDsaSha2_256f:            "SLH-DSA-SHA2-256f",
+	AlgorithmClassical:                 "Classical",
+	AlgorithmPasswordClassical:         "Password-Classical",
+	AlgorithmHybrid:                    "Hybrid",
+	AlgorithmPostQuantum:               "Post-Quantum",
+	AlgorithmMlKem1024:                 "ML-KEM-1024",
+	AlgorithmMultiAlgorithm:            "Multi-Algorithm",
+	AlgorithmMultiKem:                  "Multi-KEM Dual Layer",
+	AlgorithmMultiKemTriple:            "Multi-KEM Triple Layer",
+	AlgorithmQuadLayer:                 "Quad-Layer",
+	AlgorithmLatticeCodeHybrid:         "Lattice-Code Hybrid",
+	AlgorithmPq3Stack:                  "PQ3-Stack",
+	AlgorithmMaxSecureLightweight:      "Max Secure: PQ Lightweight",
+	AlgorithmMaxSecurePurePQ:           "Max Secure: Pure PQ",
+	AlgorithmMaxSecureHybrid:           "Max Secure: Hybrid",
+	AlgorithmMaxSecureStateless:        "Max Secure: Stateless",
+	AlgorithmMaxSecureCryptoAgile:      "Max Secure: Crypto-Agile",
+	AlgorithmMaxSecurePQCZK:            "Max Secure: PQC + ZK",
+	AlgorithmMaxSecureHybridTransition: "Max Secure: Hybrid Transition",
+	AlgorithmFnDsa512Compact:           "FN-DSA 512: Compact",
+	AlgorithmFnDsa1024Security:         "FN-DSA 1024: High-Security",
+	AlgorithmFnDsaFPHardened:           "FN-DSA: Floating-Point Hardened",
+	AlgorithmFnDsaDualSignature:        "FN-DSA: Dual Signature",
+	AlgorithmFnDsaTransition:           "FN-DSA: Transition Stack",
+	AlgorithmFnDsaZK:                   "FN-DSA + ZK Stack",
+	AlgorithmFnDsaZKStack:              "FN-DSA + ZK Stack Enhanced",
+	AlgorithmFnDsaTransitionStack:      "FN-DSA: Transition Stack Enhanced",
+	AlgorithmQuantumLatticeFusion:      "Quantum-Inspired Lattice Fusion",
+	AlgorithmPostZKHomomorphic:         "Post-ZK Homomorphic",
+	AlgorithmQuantumResistantConsensus: "Quantum-Resistant Consensus",
+	AlgorithmEntropyOrchestrated:       "Entropy-Orchestrated",
+	AlgorithmLatticeCodeHybridFn:       "Lattice-Code Hybrid FN",
+	AlgorithmAISynthesizedCryptoAgile:  "AI-Synthesized Crypto-Agile",
+	AlgorithmExperimental:              "Experimental Engine",
+	AlgorithmHqc128:                    "HQC-128",
+	AlgorithmHqc192:                    "HQC-192",
+	AlgorithmHqc256:                    "HQC-256",
+	AlgorithmMlKem512:                  "ML-KEM-512",
+	AlgorithmMlKem768:                  "ML-KEM-768",
+	AlgorithmMlDsa44:                   "ML-DSA-44",
+	AlgorithmMlDsa65:                   "ML-DSA-65",
+	AlgorithmMlDsa87:                   "ML-DSA-87",
+	AlgorithmSlhDsaSha2_128s:           "SLH-DSA-SHA2-128s",
+	AlgorithmSlhDsaSha2_128f:           "SLH-DSA-SHA2-128f",
+	AlgorithmSlhDsaSha2_192s:           "SLH-DSA-SHA2-192s",
+	AlgorithmSlhDsaSha2_192f:           "SLH-DSA-SHA2-192f",
+	AlgorithmSlhDsaSha2_256s:           "SLH-DSA-SHA2-256s",
+	AlgorithmSlhDsaSha2_256f:           "SLH-DSA-SHA2-256f",
 }
 
 // Errors
@@ -186,6 +194,9 @@ type PqcBinaryFormat struct {
 
 	// Algorithm identifier (16-bit)
 	AlgorithmID uint16
+
+	// Feature flags (reserved, MUST be 0x00 in version 0x01)
+	Flags byte
 
 	// Metadata length (32-bit)
 	MetadataLen uint32
@@ -209,6 +220,7 @@ func New(algorithmID uint16, metadata, data []byte) *PqcBinaryFormat {
 		Magic:       make([]byte, 4),
 		Version:     Version1,
 		AlgorithmID: algorithmID,
+		Flags:       0,
 		MetadataLen: uint32(len(metadata)),
 		DataLen:     uint64(len(data)),
 		Metadata:    metadata,
@@ -220,7 +232,7 @@ func New(algorithmID uint16, metadata, data []byte) *PqcBinaryFormat {
 
 // Parse parses a PQC Binary Format from bytes
 func Parse(data []byte) (*PqcBinaryFormat, error) {
-	if len(data) < 51 { // Minimum size: 4 + 1 + 2 + 4 + 8 + 32 = 51 bytes
+	if len(data) < 52 { // Minimum size: 4 + 1 + 2 + 1 + 4 + 8 + 32 = 52 bytes
 		return nil, ErrBufferTooSmall
 	}
 
@@ -241,31 +253,38 @@ func Parse(data []byte) (*PqcBinaryFormat, error) {
 	}
 	offset += 1
 
-	// Parse algorithm ID (big-endian)
-	format.AlgorithmID = binary.BigEndian.Uint16(data[offset : offset+2])
+	// Parse algorithm ID (little-endian)
+	format.AlgorithmID = binary.LittleEndian.Uint16(data[offset : offset+2])
 	offset += 2
 
-	// Parse metadata length (big-endian)
-	format.MetadataLen = binary.BigEndian.Uint32(data[offset : offset+4])
+	// Parse flags
+	format.Flags = data[offset]
+	offset += 1
+
+	// Parse metadata length (little-endian)
+	format.MetadataLen = binary.LittleEndian.Uint32(data[offset : offset+4])
 	offset += 4
 
-	// Parse data length (big-endian)
-	format.DataLen = binary.BigEndian.Uint64(data[offset : offset+8])
-	offset += 8
-
-	// Validate total length
-	totalLen := 51 + int(format.MetadataLen) + int(format.DataLen)
-	if len(data) != totalLen {
+	// Parse metadata
+	if int(format.MetadataLen) > len(data)-offset-32 {
 		return nil, ErrInvalidLength
 	}
-
-	// Parse metadata
 	if format.MetadataLen > 0 {
 		format.Metadata = data[offset : offset+int(format.MetadataLen)]
 		offset += int(format.MetadataLen)
 	}
 
-	// Parse data
+	// Parse data length (little-endian)
+	format.DataLen = binary.LittleEndian.Uint64(data[offset : offset+8])
+	offset += 8
+
+	// Validate total length
+	totalLen := 52 + int(format.MetadataLen) + int(format.DataLen)
+	if len(data) != totalLen {
+		return nil, ErrInvalidLength
+	}
+
+	// Parse data (metadata was already consumed before the data length field)
 	if format.DataLen > 0 {
 		format.Data = data[offset : offset+int(format.DataLen)]
 		offset += int(format.DataLen)
@@ -286,7 +305,7 @@ func Parse(data []byte) (*PqcBinaryFormat, error) {
 // Serialize serializes the format to bytes with checksum
 func (f *PqcBinaryFormat) Serialize() ([]byte, error) {
 	// Calculate total size
-	totalSize := 51 + len(f.Metadata) + len(f.Data)
+	totalSize := 52 + len(f.Metadata) + len(f.Data)
 	buf := make([]byte, totalSize)
 	offset := 0
 
@@ -298,23 +317,27 @@ func (f *PqcBinaryFormat) Serialize() ([]byte, error) {
 	buf[offset] = f.Version
 	offset += 1
 
-	// Write algorithm ID (big-endian)
-	binary.BigEndian.PutUint16(buf[offset:], f.AlgorithmID)
+	// Write algorithm ID (little-endian)
+	binary.LittleEndian.PutUint16(buf[offset:], f.AlgorithmID)
 	offset += 2
 
-	// Write metadata length (big-endian)
-	binary.BigEndian.PutUint32(buf[offset:], uint32(len(f.Metadata)))
-	offset += 4
+	// Write flags
+	buf[offset] = f.Flags
+	offset += 1
 
-	// Write data length (big-endian)
-	binary.BigEndian.PutUint64(buf[offset:], uint64(len(f.Data)))
-	offset += 8
+	// Write metadata length (little-endian)
+	binary.LittleEndian.PutUint32(buf[offset:], uint32(len(f.Metadata)))
+	offset += 4
 
 	// Write metadata
 	if len(f.Metadata) > 0 {
 		copy(buf[offset:], f.Metadata)
 		offset += len(f.Metadata)
 	}
+
+	// Write data length (little-endian)
+	binary.LittleEndian.PutUint64(buf[offset:], uint64(len(f.Data)))
+	offset += 8
 
 	// Write data
 	if len(f.Data) > 0 {
@@ -338,23 +361,26 @@ func (f *PqcBinaryFormat) VerifyChecksum() bool {
 	// Reconstruct the data that was checksummed
 	buf := new(bytes.Buffer)
 
-	// Write all fields except checksum
+	// Write all fields except checksum, in spec order (little-endian)
 	buf.Write(f.Magic)
 	buf.WriteByte(f.Version)
 
 	algID := make([]byte, 2)
-	binary.BigEndian.PutUint16(algID, f.AlgorithmID)
+	binary.LittleEndian.PutUint16(algID, f.AlgorithmID)
 	buf.Write(algID)
 
+	buf.WriteByte(f.Flags)
+
 	metaLen := make([]byte, 4)
-	binary.BigEndian.PutUint32(metaLen, uint32(len(f.Metadata)))
+	binary.LittleEndian.PutUint32(metaLen, uint32(len(f.Metadata)))
 	buf.Write(metaLen)
 
+	buf.Write(f.Metadata)
+
 	dataLen := make([]byte, 8)
-	binary.BigEndian.PutUint64(dataLen, uint64(len(f.Data)))
+	binary.LittleEndian.PutUint64(dataLen, uint64(len(f.Data)))
 	buf.Write(dataLen)
 
-	buf.Write(f.Metadata)
 	buf.Write(f.Data)
 
 	// Calculate checksum
@@ -384,7 +410,7 @@ func (f *PqcBinaryFormat) IsQuantumResistant() bool {
 
 // Size returns the total size of the serialized format in bytes
 func (f *PqcBinaryFormat) Size() int {
-	return 51 + len(f.Metadata) + len(f.Data)
+	return 52 + len(f.Metadata) + len(f.Data)
 }
 
 // String returns a string representation of the format

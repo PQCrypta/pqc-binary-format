@@ -142,21 +142,22 @@ import (
 )
 
 func main() {
-    iv := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-    tag := make([]byte, 16)
+    // Metadata is an opaque, length-prefixed section (UTF-8 JSON by convention).
+    metadata := []byte(`{"encryption_params":{"iv":"...","tag":"...","params":{}}}`)
     data := []byte{1, 2, 3, 4, 5}
 
-    format, err := pqc.NewPqcBinaryFormat(pqc.AlgorithmHybrid, iv, tag, data)
+    format := pqc.New(pqc.AlgorithmHybrid, metadata, data)
+
+    serialized, err := format.Serialize()
     if err != nil {
         log.Fatal(err)
     }
-    defer format.Free()
+    deserialized, err := pqc.Parse(serialized) // verifies the checksum
+    if err != nil {
+        log.Fatal(err)
+    }
 
-    serialized, _ := format.ToBytes()
-    deserialized, _ := pqc.FromBytes(serialized)
-    defer deserialized.Free()
-
-    fmt.Printf("Algorithm: %s\n", deserialized.GetAlgorithmName())
+    fmt.Printf("Algorithm: %s (0x%04X)\n", deserialized.AlgorithmName(), deserialized.AlgorithmID)
 }
 ```
 
@@ -281,27 +282,36 @@ All bindings support:
 
 ## 📦 Binary Format Specification
 
+All multi-byte integers are **little-endian**; the metadata section is a
+**UTF-8 JSON** object. Fields appear in this exact order (see
+`draft-riddel-pqc-binary-format-00`, Section 3):
+
 ```text
 +-------------------+
 | Magic (4 bytes)   | "PQC\x01" - Format identifier
 +-------------------+
 | Version (1 byte)  | 0x01 - Format version
 +-------------------+
-| Algorithm (2 bytes)| Algorithm identifier (0x0050 - 0x0905)
+| Algorithm (2 bytes)| Algorithm identifier (0x0050 - 0x0905), little-endian
 +-------------------+
-| Flags (1 byte)    | Feature flags (compression, streaming, etc.)
+| Flags (1 byte)    | Feature flags (reserved, 0x00 in v1)
 +-------------------+
-| Metadata Len (4)  | Length of metadata section
+| Metadata Len (4)  | Length of metadata section, little-endian
 +-------------------+
-| Data Len (8)      | Length of encrypted payload
+| Metadata (var)    | Algorithm-specific parameters (UTF-8 JSON)
 +-------------------+
-| Metadata (var)    | Algorithm-specific parameters
+| Data Len (8)      | Length of encrypted payload, little-endian
 +-------------------+
 | Data (var)        | Encrypted data
 +-------------------+
-| Checksum (32)     | SHA-256 integrity checksum
+| Checksum (32)     | SHA-256 over all preceding bytes
 +-------------------+
 ```
+
+Fixed-header size (excluding the variable metadata/data sections) is **52 bytes**.
+The checksum is `SHA-256(magic ‖ version ‖ algorithm_id ‖ flags ‖ metadata_len ‖
+metadata ‖ data_len ‖ data)`; because the JSON metadata is emitted with sorted
+keys it is deterministic across implementations.
 
 ## 🔐 Supported Algorithms
 

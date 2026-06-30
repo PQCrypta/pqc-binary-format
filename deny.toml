@@ -5,13 +5,7 @@ db-urls = ["https://github.com/rustsec/advisory-db"]
 # "vulnerability", "notice" keys removed in cargo-deny 0.16+
 unmaintained = "workspace"
 yanked = "warn"
-ignore = [
-    # bincode 1.3.3 is used for PQC binary format serialization. The authors
-    # explicitly state 1.3.3 is a complete, stable release requiring no updates
-    # (RUSTSEC-2025-0141). No CVE exists; migrating would break binary format
-    # compatibility with all existing serialized payloads.
-    { id = "RUSTSEC-2025-0141", reason = "bincode 1.3.3 declared complete by authors; no CVE, no safe in-place upgrade; migration breaks binary format compatibility" },
-]
+ignore = []
 
 [licenses]
 # "version", "unlicensed", "copyleft" keys removed in cargo-deny 0.16+

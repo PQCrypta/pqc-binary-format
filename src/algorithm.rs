@@ -192,6 +192,91 @@ impl Algorithm {
         }
     }
 
+    /// Resolve an algorithm from its name.
+    ///
+    /// Accepts the canonical kebab-case names used by the PQCrypta API and web
+    /// UI (e.g. `"ml-kem-1024"`, `"max-secure-pure-pq"`) as well as compact
+    /// aliases with separators stripped (e.g. `"mlkem1024"`). Matching is
+    /// case-insensitive.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use pqc_binary_format::Algorithm;
+    ///
+    /// assert_eq!(Algorithm::from_name("ml-kem-1024"), Some(Algorithm::MlKem1024));
+    /// assert_eq!(Algorithm::from_name("Max-Secure-Pure-PQ"), Some(Algorithm::MaxSecurePurePq));
+    /// assert_eq!(Algorithm::from_name("nope"), None);
+    /// ```
+    #[must_use]
+    pub fn from_name(name: &str) -> Option<Self> {
+        let lower = name.to_lowercase();
+        // Compact form: strip separators so "ml-kem-1024" == "mlkem1024".
+        let compact: String = lower.chars().filter(|c| c.is_alphanumeric()).collect();
+        Self::all().into_iter().find(|algo| {
+            let canon = algo.canonical_name();
+            let canon_compact: String = canon.chars().filter(char::is_ascii_alphanumeric).collect();
+            lower == canon || compact == canon_compact
+        })
+    }
+
+    /// Canonical kebab-case name matching the PQCrypta API / web UI identifier.
+    ///
+    /// This is the stable machine name (e.g. `"ml-kem-1024"`), distinct from
+    /// [`Algorithm::name`] which is the human-readable display label.
+    #[must_use]
+    pub const fn canonical_name(self) -> &'static str {
+        match self {
+            Self::Classical => "classical",
+            Self::PasswordClassical => "password-classical",
+            Self::Hybrid => "hybrid",
+            Self::PostQuantum => "post-quantum",
+            Self::MultiAlgorithm => "multi-algorithm",
+            Self::MlKem1024 => "ml-kem-1024",
+            Self::MultiKem => "multi-kem",
+            Self::MultiKemTriple => "multi-kem-triple",
+            Self::QuadLayer => "quad-layer",
+            Self::LatticeCodeHybrid => "lattice-code-hybrid",
+            Self::Pq3Stack => "pq3-stack",
+            Self::MaxSecureLightweight => "max-secure-lightweight",
+            Self::MaxSecurePurePq => "max-secure-pure-pq",
+            Self::MaxSecureHybrid => "max-secure-hybrid",
+            Self::MaxSecureStateless => "max-secure-stateless",
+            Self::MaxSecureCryptoAgile => "max-secure-crypto-agile",
+            Self::MaxSecurePqcZk => "max-secure-pqc-zk",
+            Self::MaxSecureHybridTransition => "max-secure-hybrid-transition",
+            Self::FnDsa512Compact => "fn-dsa-512-compact",
+            Self::FnDsa1024Security => "fn-dsa-1024-security",
+            Self::FnDsaFpHardened => "fn-dsa-fp-hardened",
+            Self::FnDsaDualSignature => "fn-dsa-dual-signature",
+            Self::FnDsaTransition => "fn-dsa-transition",
+            Self::FnDsaZk => "fn-dsa-zk",
+            Self::FnDsaZkStack => "fn-dsa-zk-stack",
+            Self::FnDsaTransitionStack => "fn-dsa-transition-stack",
+            Self::QuantumLatticeFusion => "quantum-lattice-fusion",
+            Self::PostZkHomomorphic => "post-zk-homomorphic",
+            Self::QuantumResistantConsensus => "quantum-resistant-consensus",
+            Self::EntropyOrchestrated => "entropy-orchestrated",
+            Self::LatticeCodeHybridFn => "lattice-code-hybrid-fn",
+            Self::AiSynthesizedCryptoAgile => "ai-synthesized-crypto-agile",
+            Self::Experimental => "experimental",
+            Self::Hqc128 => "hqc-128",
+            Self::Hqc192 => "hqc-192",
+            Self::Hqc256 => "hqc-256",
+            Self::MlKem512 => "ml-kem-512",
+            Self::MlKem768 => "ml-kem-768",
+            Self::MlDsa44 => "ml-dsa-44",
+            Self::MlDsa65 => "ml-dsa-65",
+            Self::MlDsa87 => "ml-dsa-87",
+            Self::SlhDsaSha2_128s => "slh-dsa-sha2-128s",
+            Self::SlhDsaSha2_128f => "slh-dsa-sha2-128f",
+            Self::SlhDsaSha2_192s => "slh-dsa-sha2-192s",
+            Self::SlhDsaSha2_192f => "slh-dsa-sha2-192f",
+            Self::SlhDsaSha2_256s => "slh-dsa-sha2-256s",
+            Self::SlhDsaSha2_256f => "slh-dsa-sha2-256f",
+        }
+    }
+
     /// Get u16 identifier for this algorithm
     ///
     /// # Example

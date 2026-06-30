@@ -26,24 +26,9 @@ pub struct PyAlgorithm {
 impl PyAlgorithm {
     #[new]
     fn new(name: &str) -> PyResult<Self> {
-        let inner = match name.to_lowercase().as_str() {
-            "classical" => Algorithm::Classical,
-            "hybrid" => Algorithm::Hybrid,
-            "post-quantum" | "postquantum" => Algorithm::PostQuantum,
-            "ml-kem-1024" | "mlkem1024" => Algorithm::MlKem1024,
-            "multi-algorithm" | "multialgorithm" => Algorithm::MultiAlgorithm,
-            "multi-kem" | "multikem" => Algorithm::MultiKem,
-            "multi-kem-triple" | "multikemtriple" => Algorithm::MultiKemTriple,
-            "quad-layer" | "quadlayer" => Algorithm::QuadLayer,
-            "pq3-stack" | "pq3stack" => Algorithm::Pq3Stack,
-            "lattice-code-hybrid" | "latticecodehybrid" => Algorithm::LatticeCodeHybrid,
-            _ => {
-                return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
-                    "Unknown algorithm: {}",
-                    name
-                )))
-            }
-        };
+        let inner = Algorithm::from_name(name).ok_or_else(|| {
+            PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Unknown algorithm: {}", name))
+        })?;
         Ok(Self { inner })
     }
 
