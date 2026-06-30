@@ -1,23 +1,32 @@
-//! # PQC Binary Format v1.0
+//! # PQC Binary Format
 //!
-//! A standardized binary format specification for post-quantum cryptography encrypted data interchange.
+//! A standardized binary format for post-quantum cryptography encrypted data interchange.
+//!
+//! This crate implements **wire format version 1** (the `0x01` version byte, see
+//! [`PQC_BINARY_VERSION`]) as defined by `draft-riddel-pqc-binary-format-00`. The
+//! crate's own SemVer (2.x) is independent of the wire format version.
 //!
 //! ## Overview
 //!
 //! This crate provides a universal, self-describing binary format for encrypted data that works
 //! across different post-quantum cryptographic algorithms. It solves the "Babel Tower problem"
 //! where different PQC implementations cannot interoperate due to incompatible data formats.
+//! Serialized envelopes are byte-compatible across the Rust, Python, WASM/JavaScript, C/C++,
+//! and Go bindings.
 //!
 //! ## Features
 //!
-//! - **Algorithm-agnostic**: Works with 31+ cryptographic algorithms
-//! - **Self-describing metadata**: Algorithm parameters, compression settings, and custom fields
-//! - **Integrity verification**: SHA-256 checksum of entire structure
+//! - **Algorithm-agnostic**: Works with 47 cryptographic algorithm identifiers
+//! - **Self-describing metadata**: UTF-8 JSON parameters, compression settings, and custom fields
+//! - **Integrity verification**: SHA-256 checksum over all preceding bytes
 //! - **Feature flags**: Compression, streaming, authentication, experimental features
 //! - **Extensible**: Custom parameters for algorithm-specific needs
-//! - **Cross-platform**: Compatible across languages and platforms
+//! - **Cross-platform**: Little-endian encoding, interoperable across languages and platforms
 //!
 //! ## Binary Layout
+//!
+//! All multi-byte integers are little-endian; the metadata section is a UTF-8
+//! JSON object. Fixed-header size is 52 bytes.
 //!
 //! ```text
 //! +-------------------+
@@ -25,19 +34,19 @@
 //! +-------------------+
 //! | Version (1 byte)  | 0x01
 //! +-------------------+
-//! | Algorithm (2 bytes)| Algorithm identifier
+//! | Algorithm (2 bytes)| Algorithm identifier (little-endian)
 //! +-------------------+
-//! | Flags (1 byte)    | Feature flags
+//! | Flags (1 byte)    | Feature flags (reserved, 0x00 in v1)
 //! +-------------------+
-//! | Metadata Len (4)  | Length of metadata section
+//! | Metadata Len (4)  | Length of metadata section (little-endian)
 //! +-------------------+
-//! | Data Len (8)      | Length of encrypted data
+//! | Metadata (var)    | Algorithm-specific metadata (UTF-8 JSON)
 //! +-------------------+
-//! | Metadata (var)    | Algorithm-specific metadata
+//! | Data Len (8)      | Length of encrypted data (little-endian)
 //! +-------------------+
 //! | Data (var)        | Encrypted payload
 //! +-------------------+
-//! | Checksum (32)     | SHA-256 of entire structure
+//! | Checksum (32)     | SHA-256 over all preceding bytes
 //! +-------------------+
 //! ```
 //!
@@ -77,7 +86,7 @@
 //! - **ML-KEM-1024**: Pure ML-KEM with AES-256-GCM
 //! - **Multi-KEM**: Multiple key encapsulation layers
 //! - **Quad-Layer**: Four independent cryptographic layers
-//! - And 22 more algorithm identifiers...
+//! - And 41 more algorithm identifiers (Max-Secure, FN-DSA, HQC, ML-KEM/DSA, SLH-DSA, ...)
 //!
 //! ## Use Cases
 //!
