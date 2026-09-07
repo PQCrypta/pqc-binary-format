@@ -27,7 +27,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 # Byte-valued metadata fields (IV, tag, keys, ciphertext) are base64-encoded
 # inside the JSON object so the section stays valid UTF-8.
-base64 = "0.22"
+base64 = "0.23"
 
 # Hashing for checksums
 sha2 = "0.10"
