@@ -528,8 +528,8 @@ let bytes = format.to_bytes().unwrap();
 from pqc_binary_format import PqcBinaryFormat
 
 format = PqcBinaryFormat.from_bytes(bytes)
-print(f"Algorithm: {format.algorithm().name()}")
-print(f"Data: {len(format.data())} bytes")
+print(f"Algorithm: {format.algorithm.name}")
+print(f"Data: {len(format.data)} bytes")
 ```
 
 **JavaScript (Decryption)**
