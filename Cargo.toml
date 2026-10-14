@@ -36,7 +36,8 @@ sha2 = "0.10"
 thiserror = "1.0"
 
 # Python bindings (optional)
-pyo3 = { version = "0.24", features = ["extension-module"], optional = true }
+# abi3: one wheel per platform for every CPython from requires-python up
+pyo3 = { version = "0.24", features = ["extension-module", "abi3-py38"], optional = true }
 
 # WebAssembly bindings (optional)
 wasm-bindgen = { version = "0.2", optional = true }

@@ -15,7 +15,7 @@ Pure Go implementation of the PQC Binary Format v1.0 specification, providing a 
 ## Installation
 
 ```bash
-go get github.com/PQCrypta/pqcrypta-community/bindings/go@v1.0.14
+go get github.com/PQCrypta/pqc-binary-format/bindings/go/v2
 ```
 
 No build dependencies required - pure Go!
@@ -28,7 +28,7 @@ package main
 import (
     "fmt"
     "log"
-    pqc "github.com/PQCrypta/pqcrypta-community/bindings/go"
+    pqc "github.com/PQCrypta/pqc-binary-format/bindings/go/v2"
 )
 
 func main() {
@@ -337,8 +337,8 @@ at your option.
 
 ## Links
 
-- **GitHub Repository**: https://github.com/PQCrypta/pqcrypta-community
-- **Documentation**: https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go
+- **GitHub Repository**: https://github.com/PQCrypta/pqc-binary-format
+- **Documentation**: https://pkg.go.dev/github.com/PQCrypta/pqc-binary-format/bindings/go/v2
 - **White Paper**: https://pqcrypta.com/pqcbv1/
 - **Rust Crate**: https://crates.io/crates/pqc-binary-format
 - **Python Package**: https://pypi.org/project/pqc-binary-format/

@@ -6,8 +6,13 @@ on:
       - 'v*'
   workflow_dispatch:  # Allow manual trigger
 
+# Trusted publishing: npm takes the workflow's OIDC identity instead of a
+# token (the NPM_TOKEN this used had expired; 2.0.x went out by hand). It
+# needs npm 11.5.1 or later, and the package's trusted publisher set on
+# npmjs.com to this repository and publish-npm.yml. Provenance is
+# attached automatically.
 permissions:
-  id-token: write  # Required for provenance
+  id-token: write
   contents: read
 
 jobs:
@@ -31,14 +36,21 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: npm with trusted publishing
+        run: npm install -g npm@^11.5.1
 
       - name: Publish to npm
         working-directory: ./pkg
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if npm view "pqc-binary-format@$version" version > /dev/null 2>&1; then
+            echo "pqc-binary-format $version is already published"
+          else
+            npm publish --access public
+          fi
 
       - name: Verify publication
         run: |

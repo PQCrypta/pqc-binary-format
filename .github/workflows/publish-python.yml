@@ -1,44 +1,84 @@
 name: Publish to PyPI
 
+# A v* tag publishes the release. abi3 wheels (one per platform, every
+# CPython from requires-python up) for Linux (glibc and musl), macOS and
+# Windows on x86-64 and ARM, and the sdist for anything else. Until 2.0.2
+# this built one cp311 manylinux_2_34 x86-64 wheel, so pip on any other
+# Python or platform found nothing it could install.
+
 on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:  # Allow manual trigger
+  workflow_dispatch:
 
 permissions:
-  id-token: write  # IMPORTANT: Required for trusted publishing
   contents: read
 
 jobs:
-  publish-pypi:
+  wheels:
+    name: Wheels (${{ matrix.name }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: manylinux x86-64, runner: ubuntu-latest, target: x86_64, manylinux: auto }
+          - { name: manylinux aarch64, runner: ubuntu-latest, target: aarch64, manylinux: auto }
+          - { name: musllinux x86-64, runner: ubuntu-latest, target: x86_64, manylinux: musllinux_1_2 }
+          - { name: musllinux aarch64, runner: ubuntu-latest, target: aarch64, manylinux: musllinux_1_2 }
+          - { name: macOS arm64, runner: macos-latest, target: aarch64, manylinux: auto }
+          - { name: macOS x86-64, runner: macos-latest, target: x86_64, manylinux: auto }
+          - { name: Windows x64, runner: windows-latest, target: x64, manylinux: auto }
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build wheel
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux }}
+          args: --release --out dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheel-${{ matrix.runner }}-${{ matrix.target }}-${{ matrix.manylinux }}
+          path: dist
+
+  sdist:
+    name: Source distribution
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Build sdist
+        uses: PyO3/maturin-action@v1
         with:
-          python-version: '3.11'
+          command: sdist
+          args: --out dist
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist
 
-      - name: Install maturin
-        run: pip install maturin
-
-      - name: Build Python wheels
-        run: maturin build --release
+  publish-pypi:
+    name: Publish to PyPI
+    needs: [wheels, sdist]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # PyPI trusted publishing (configured for this workflow)
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: target/wheels/
+          packages-dir: dist/
           skip-existing: true
           verbose: true
-
-      - name: Verify publication
-        run: |
-          sleep 30
-          pip index versions pqc-binary-format

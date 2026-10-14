@@ -30,7 +30,7 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://pqcrypta.com"
-Repository = "https://github.com/PQCrypta/pqcrypta-community"
+Repository = "https://github.com/PQCrypta/pqc-binary-format"
 Documentation = "https://docs.rs/pqc-binary-format"
 
 [tool.maturin]
