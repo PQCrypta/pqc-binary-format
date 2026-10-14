@@ -1,7 +1,7 @@
 //! Metadata structures for algorithm-specific parameters.
 
-use crate::{error::CryptoError, Result};
-use base64::{engine::general_purpose::STANDARD, Engine};
+use crate::{Result, error::CryptoError};
+use base64::{Engine, engine::general_purpose::STANDARD};
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use std::collections::HashMap;

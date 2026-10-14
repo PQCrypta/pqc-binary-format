@@ -1,8 +1,8 @@
 [package]
 name = "pqc-binary-format"
 version = "2.0.2"
-edition = "2021"
-rust-version = "1.75"
+edition = "2024"
+rust-version = "1.85"
 authors = ["PQCrypta <contact@pqcrypta.com>"]
 license = "MIT OR Apache-2.0"
 description = "Standardized binary format for post-quantum cryptography encrypted data interchange"
@@ -27,17 +27,17 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 # Byte-valued metadata fields (IV, tag, keys, ciphertext) are base64-encoded
 # inside the JSON object so the section stays valid UTF-8.
-base64 = "0.22"
+base64 = "0.23"
 
 # Hashing for checksums
 sha2 = "0.10"
 
 # Error handling
-thiserror = "1.0"
+thiserror = "2.0"
 
 # Python bindings (optional)
 # abi3: one wheel per platform for every CPython from requires-python up
-pyo3 = { version = "0.24", features = ["extension-module", "abi3-py38"], optional = true }
+pyo3 = { version = "0.30", features = ["extension-module", "abi3-py310"], optional = true }
 
 # WebAssembly bindings (optional)
 wasm-bindgen = { version = "0.2", optional = true }
@@ -51,7 +51,7 @@ wasm = ["wasm-bindgen", "serde-wasm-bindgen", "js-sys"]
 
 [dev-dependencies]
 # Testing
-criterion = "0.5"
+criterion = "0.8"
 proptest = { version = "1.4", default-features = false, features = ["std"] }
 hex = "0.4"
 

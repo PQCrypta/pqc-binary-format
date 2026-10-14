@@ -19,7 +19,7 @@ npm run build:bundler  # Webpack/Rollup/Parcel
 ### Requirements
 
 - Node.js 16 or higher
-- Rust 1.75 or higher
+- Rust 1.85 or higher
 - wasm-pack
 
 ## Quick Start

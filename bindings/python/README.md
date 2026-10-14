@@ -20,8 +20,8 @@ pip install target/wheels/*.whl
 
 ### Requirements
 
-- Python 3.8 or higher
-- Rust 1.75 or higher (for building from source)
+- Python 3.10 or higher
+- Rust 1.85 or higher (for building from source)
 
 ## Quick Start
 
