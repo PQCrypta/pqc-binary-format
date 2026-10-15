@@ -20,8 +20,8 @@ pip install target/wheels/*.whl
 
 ### Requirements
 
-- Python 3.8 or higher
-- Rust 1.75 or higher (for building from source)
+- Python 3.10 or higher
+- Rust 1.85 or higher (for building from source)
 
 ## Quick Start
 
@@ -150,6 +150,6 @@ at your option.
 
 ## Links
 
-- [Main Repository](https://github.com/PQCrypta/pqcrypta-community)
+- [Main Repository](https://github.com/PQCrypta/pqc-binary-format)
 - [Documentation](https://docs.rs/pqc-binary-format)
 - [PQCrypta Platform](https://pqcrypta.com)

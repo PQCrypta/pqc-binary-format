@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	pqc "github.com/PQCrypta/pqcrypta-community/bindings/go"
+	pqc "github.com/PQCrypta/pqc-binary-format/bindings/go/v2"
 )
 
 func main() {

@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Go**: the module path is `github.com/PQCrypta/pqc-binary-format/bindings/go/v2`. A v2
+  module needs `/v2` in its path, so the module proxy ignored the 2.0.x tags and served 1.0.14;
+  it also still named the repository by its old name.
+- **Python**: abi3 wheels for Linux (glibc and musl), macOS and Windows on x86-64 and ARM, and
+  the sdist. 2.0.x shipped one cp311 manylinux_2_34 x86-64 wheel, so `pip install` failed on
+  any other Python or platform.
+- **Publishing**: a `v*` tag publishes to crates.io, PyPI and npm with trusted publishing (no
+  stored tokens) and tags the Go module; see PUBLISHING.md. The crates.io workflow waited for a
+  GitHub release and had no trusted publisher, the npm token had expired, and release-please
+  never opened a release, so 2.0.x was published by hand.
+- `bindings/javascript/package.json` and `pyproject.toml` point at this repository, and the
+  former is at the released version.
+
+## [2.0.2] - 2026-06-29
+
+### Fixed
+- README title, badges and dependency claims still described 1.0.14.
+
+## [2.0.1] - 2026-06-29
+
+### Fixed
+- Crate-level documentation describes the v2 wire format.
+
+## [2.0.0] - 2026-06-29
+
+### Changed
+- **Breaking**: the wire format follows the specification and is byte-for-byte interoperable
+  across the Rust, Python, JavaScript, Go and C/C++ bindings.
+- pyo3 0.20 → 0.24 (RUSTSEC-2025-0020).
+
+### Fixed
+- Go examples match the pure-Go binding's API.
+
+### Added
+- CI: CodeQL, OSSF Scorecard, secret scanning, cargo-deny, dependabot and a stale bot.
+
 ## [1.0.14] - 2026-01-17
 
 ### Changed

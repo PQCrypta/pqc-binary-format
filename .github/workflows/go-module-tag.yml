@@ -1,0 +1,62 @@
+name: Go module tag
+
+# A v* tag releases the Go module too: Go finds a module in a subdirectory
+# by a tag carrying its path, bindings/go/vX.Y.Z, which this makes and asks
+# the module proxy to fetch. From v2 the module path ends in /vN (semantic
+# import versioning); the 2.0.x tags were made without it, so the proxy
+# never served 2.x.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    name: Tag bindings/go/${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: The module path carries the tag's major version
+        run: |
+          major="${GITHUB_REF_NAME#v}"
+          major="${major%%.*}"
+          module=$(sed -n 's/^module //p' bindings/go/go.mod)
+          if [ "$major" -ge 2 ] && [ "${module##*/}" != "v$major" ]; then
+            echo "::error file=bindings/go/go.mod::declares $module; a v$major tag needs a path ending in /v$major"
+            exit 1
+          fi
+          echo "MODULE=$module" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: bindings/go/go.mod
+
+      - name: Vet and test
+        working-directory: bindings/go
+        run: go vet ./... && go test ./...
+
+      - name: Tag
+        run: |
+          tag="bindings/go/${GITHUB_REF_NAME}"
+          if git ls-remote --exit-code --tags origin "refs/tags/$tag" > /dev/null; then
+            echo "$tag already exists"
+          else
+            git tag "$tag" "$GITHUB_SHA"
+            git push origin "$tag"
+          fi
+
+      - name: Ask the module proxy for it
+        run: |
+          escaped=$(printf '%s' "$MODULE" | sed -E 's/[A-Z]/!\L&/g')
+          for attempt in 1 2 3 4 5; do
+            curl -fsS "https://proxy.golang.org/${escaped}/@v/${GITHUB_REF_NAME}.info" && exit 0
+            sleep 20
+          done
+          echo "::error::the module proxy did not serve ${MODULE}@${GITHUB_REF_NAME}"
+          exit 1

@@ -19,7 +19,7 @@ npm run build:bundler  # Webpack/Rollup/Parcel
 ### Requirements
 
 - Node.js 16 or higher
-- Rust 1.75 or higher
+- Rust 1.85 or higher
 - wasm-pack
 
 ## Quick Start
@@ -232,6 +232,6 @@ at your option.
 
 ## Links
 
-- [Main Repository](https://github.com/PQCrypta/pqcrypta-community)
+- [Main Repository](https://github.com/PQCrypta/pqc-binary-format)
 - [Documentation](https://docs.rs/pqc-binary-format)
 - [PQCrypta Platform](https://pqcrypta.com)

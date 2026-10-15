@@ -16,7 +16,7 @@ use crate::{
 };
 
 /// Python wrapper for Algorithm enum
-#[pyclass(name = "Algorithm")]
+#[pyclass(name = "Algorithm", from_py_object)]
 #[derive(Clone)]
 pub struct PyAlgorithm {
     inner: Algorithm,
@@ -52,7 +52,7 @@ impl PyAlgorithm {
 }
 
 /// Python wrapper for EncParameters
-#[pyclass(name = "EncParameters")]
+#[pyclass(name = "EncParameters", from_py_object)]
 #[derive(Clone)]
 pub struct PyEncParameters {
     #[pyo3(get, set)]
@@ -77,7 +77,7 @@ impl PyEncParameters {
 }
 
 /// Python wrapper for KemParameters
-#[pyclass(name = "KemParameters")]
+#[pyclass(name = "KemParameters", from_py_object)]
 #[derive(Clone)]
 pub struct PyKemParameters {
     #[pyo3(get, set)]
@@ -98,7 +98,7 @@ impl PyKemParameters {
 }
 
 /// Python wrapper for SigParameters
-#[pyclass(name = "SigParameters")]
+#[pyclass(name = "SigParameters", from_py_object)]
 #[derive(Clone)]
 pub struct PySigParameters {
     #[pyo3(get, set)]
@@ -119,7 +119,7 @@ impl PySigParameters {
 }
 
 /// Python wrapper for CompressionParameters
-#[pyclass(name = "CompressionParameters")]
+#[pyclass(name = "CompressionParameters", from_py_object)]
 #[derive(Clone)]
 pub struct PyCompressionParameters {
     #[pyo3(get, set)]
@@ -143,7 +143,7 @@ impl PyCompressionParameters {
 }
 
 /// Python wrapper for PqcMetadata
-#[pyclass(name = "PqcMetadata")]
+#[pyclass(name = "PqcMetadata", from_py_object)]
 #[derive(Clone)]
 pub struct PyPqcMetadata {
     #[pyo3(get, set)]
@@ -211,7 +211,7 @@ impl PyPqcMetadata {
 }
 
 /// Python wrapper for FormatFlags
-#[pyclass(name = "FormatFlags")]
+#[pyclass(name = "FormatFlags", from_py_object)]
 #[derive(Clone)]
 pub struct PyFormatFlags {
     inner: FormatFlags,

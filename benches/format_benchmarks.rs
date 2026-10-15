@@ -1,8 +1,9 @@
 //! Benchmarks for PQC Binary Format serialization and deserialization
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput};
+use criterion::{Criterion, Throughput, criterion_group, criterion_main};
 use pqc_binary_format::{Algorithm, EncParameters, PqcBinaryFormat, PqcMetadata};
 use std::collections::HashMap;
+use std::hint::black_box;
 
 fn create_test_format(data_size: usize) -> PqcBinaryFormat {
     let metadata = PqcMetadata {

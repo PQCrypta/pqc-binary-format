@@ -356,6 +356,6 @@ at your option.
 
 ## Links
 
-- [Main Repository](https://github.com/PQCrypta/pqcrypta-community)
+- [Main Repository](https://github.com/PQCrypta/pqc-binary-format)
 - [Documentation](https://docs.rs/pqc-binary-format)
 - [PQCrypta Platform](https://pqcrypta.com)

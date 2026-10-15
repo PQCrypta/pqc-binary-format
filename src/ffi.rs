@@ -43,10 +43,12 @@ impl ByteBuffer {
 
     #[allow(dead_code)]
     unsafe fn to_vec(&self) -> Vec<u8> {
-        if self.data.is_null() {
-            return Vec::new();
+        unsafe {
+            if self.data.is_null() {
+                return Vec::new();
+            }
+            slice::from_raw_parts(self.data, self.len).to_vec()
         }
-        slice::from_raw_parts(self.data, self.len).to_vec()
     }
 }
 
@@ -54,14 +56,16 @@ impl ByteBuffer {
 ///
 /// # Safety
 /// The buffer must have been allocated by this library
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_free_buffer(buffer: ByteBuffer) {
-    if !buffer.data.is_null() {
-        drop(Vec::from_raw_parts(
-            buffer.data,
-            buffer.len,
-            buffer.capacity,
-        ));
+    unsafe {
+        if !buffer.data.is_null() {
+            drop(Vec::from_raw_parts(
+                buffer.data,
+                buffer.len,
+                buffer.capacity,
+            ));
+        }
     }
 }
 
@@ -69,10 +73,12 @@ pub unsafe extern "C" fn pqc_free_buffer(buffer: ByteBuffer) {
 ///
 /// # Safety
 /// The string must have been allocated by this library
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_free_string(s: *mut c_char) {
-    if !s.is_null() {
-        drop(CString::from_raw(s));
+    unsafe {
+        if !s.is_null() {
+            drop(CString::from_raw(s));
+        }
     }
 }
 
@@ -92,7 +98,7 @@ pub unsafe extern "C" fn pqc_free_string(s: *mut c_char) {
 ///
 /// # Safety
 /// All pointers must be valid. The returned handle must be freed with `pqc_format_free`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_new(
     algorithm_id: u16,
     iv: *const c_uchar,
@@ -102,46 +108,48 @@ pub unsafe extern "C" fn pqc_format_new(
     data: *const c_uchar,
     data_len: usize,
 ) -> *mut PqcFormatHandle {
-    // Validate pointers
-    if iv.is_null() || tag.is_null() || data.is_null() {
-        return ptr::null_mut();
+    unsafe {
+        // Validate pointers
+        if iv.is_null() || tag.is_null() || data.is_null() {
+            return ptr::null_mut();
+        }
+
+        // Convert algorithm ID
+        let algorithm = match Algorithm::from_id(algorithm_id) {
+            Some(a) => a,
+            None => return ptr::null_mut(),
+        };
+
+        // Convert byte slices
+        let iv_vec = slice::from_raw_parts(iv, iv_len).to_vec();
+        let tag_vec = slice::from_raw_parts(tag, tag_len).to_vec();
+        let data_vec = slice::from_raw_parts(data, data_len).to_vec();
+
+        // Create metadata
+        let metadata = PqcMetadata {
+            enc_params: EncParameters {
+                iv: iv_vec,
+                tag: tag_vec,
+                params: HashMap::new(),
+            },
+            kem_params: None,
+            sig_params: None,
+            compression_params: None,
+            custom: HashMap::new(),
+        };
+
+        // Create format
+        let format = PqcBinaryFormat::new(algorithm, metadata, data_vec);
+
+        Box::into_raw(Box::new(format)) as *mut PqcFormatHandle
     }
-
-    // Convert algorithm ID
-    let algorithm = match Algorithm::from_id(algorithm_id) {
-        Some(a) => a,
-        None => return ptr::null_mut(),
-    };
-
-    // Convert byte slices
-    let iv_vec = slice::from_raw_parts(iv, iv_len).to_vec();
-    let tag_vec = slice::from_raw_parts(tag, tag_len).to_vec();
-    let data_vec = slice::from_raw_parts(data, data_len).to_vec();
-
-    // Create metadata
-    let metadata = PqcMetadata {
-        enc_params: EncParameters {
-            iv: iv_vec,
-            tag: tag_vec,
-            params: HashMap::new(),
-        },
-        kem_params: None,
-        sig_params: None,
-        compression_params: None,
-        custom: HashMap::new(),
-    };
-
-    // Create format
-    let format = PqcBinaryFormat::new(algorithm, metadata, data_vec);
-
-    Box::into_raw(Box::new(format)) as *mut PqcFormatHandle
 }
 
 /// Create PQC Binary Format with KEM parameters
 ///
 /// # Safety
 /// All pointers must be valid
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_new_with_kem(
     algorithm_id: u16,
     iv: *const c_uchar,
@@ -155,40 +163,42 @@ pub unsafe extern "C" fn pqc_format_new_with_kem(
     data: *const c_uchar,
     data_len: usize,
 ) -> *mut PqcFormatHandle {
-    if iv.is_null()
-        || tag.is_null()
-        || kem_public_key.is_null()
-        || kem_ciphertext.is_null()
-        || data.is_null()
-    {
-        return ptr::null_mut();
+    unsafe {
+        if iv.is_null()
+            || tag.is_null()
+            || kem_public_key.is_null()
+            || kem_ciphertext.is_null()
+            || data.is_null()
+        {
+            return ptr::null_mut();
+        }
+
+        let algorithm = match Algorithm::from_id(algorithm_id) {
+            Some(a) => a,
+            None => return ptr::null_mut(),
+        };
+
+        let metadata = PqcMetadata {
+            enc_params: EncParameters {
+                iv: slice::from_raw_parts(iv, iv_len).to_vec(),
+                tag: slice::from_raw_parts(tag, tag_len).to_vec(),
+                params: HashMap::new(),
+            },
+            kem_params: Some(KemParameters {
+                public_key: slice::from_raw_parts(kem_public_key, kem_public_key_len).to_vec(),
+                ciphertext: slice::from_raw_parts(kem_ciphertext, kem_ciphertext_len).to_vec(),
+                params: HashMap::new(),
+            }),
+            sig_params: None,
+            compression_params: None,
+            custom: HashMap::new(),
+        };
+
+        let data_vec = slice::from_raw_parts(data, data_len).to_vec();
+        let format = PqcBinaryFormat::new(algorithm, metadata, data_vec);
+
+        Box::into_raw(Box::new(format)) as *mut PqcFormatHandle
     }
-
-    let algorithm = match Algorithm::from_id(algorithm_id) {
-        Some(a) => a,
-        None => return ptr::null_mut(),
-    };
-
-    let metadata = PqcMetadata {
-        enc_params: EncParameters {
-            iv: slice::from_raw_parts(iv, iv_len).to_vec(),
-            tag: slice::from_raw_parts(tag, tag_len).to_vec(),
-            params: HashMap::new(),
-        },
-        kem_params: Some(KemParameters {
-            public_key: slice::from_raw_parts(kem_public_key, kem_public_key_len).to_vec(),
-            ciphertext: slice::from_raw_parts(kem_ciphertext, kem_ciphertext_len).to_vec(),
-            params: HashMap::new(),
-        }),
-        sig_params: None,
-        compression_params: None,
-        custom: HashMap::new(),
-    };
-
-    let data_vec = slice::from_raw_parts(data, data_len).to_vec();
-    let format = PqcBinaryFormat::new(algorithm, metadata, data_vec);
-
-    Box::into_raw(Box::new(format)) as *mut PqcFormatHandle
 }
 
 /// Serialize PQC Binary Format to bytes
@@ -201,25 +211,27 @@ pub unsafe extern "C" fn pqc_format_new_with_kem(
 ///
 /// # Safety
 /// Handle must be valid. Returned buffer must be freed with `pqc_free_buffer`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_to_bytes(handle: *const PqcFormatHandle) -> ByteBuffer {
-    if handle.is_null() {
-        return ByteBuffer {
-            data: ptr::null_mut(),
-            len: 0,
-            capacity: 0,
-        };
-    }
+    unsafe {
+        if handle.is_null() {
+            return ByteBuffer {
+                data: ptr::null_mut(),
+                len: 0,
+                capacity: 0,
+            };
+        }
 
-    let format = &*(handle as *const PqcBinaryFormat);
+        let format = &*(handle as *const PqcBinaryFormat);
 
-    match format.to_bytes() {
-        Ok(bytes) => ByteBuffer::from_vec(bytes),
-        Err(_) => ByteBuffer {
-            data: ptr::null_mut(),
-            len: 0,
-            capacity: 0,
-        },
+        match format.to_bytes() {
+            Ok(bytes) => ByteBuffer::from_vec(bytes),
+            Err(_) => ByteBuffer {
+                data: ptr::null_mut(),
+                len: 0,
+                capacity: 0,
+            },
+        }
     }
 }
 
@@ -234,20 +246,22 @@ pub unsafe extern "C" fn pqc_format_to_bytes(handle: *const PqcFormatHandle) -> 
 ///
 /// # Safety
 /// Data pointer must be valid. Returned handle must be freed with `pqc_format_free`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_from_bytes(
     data: *const c_uchar,
     len: usize,
 ) -> *mut PqcFormatHandle {
-    if data.is_null() {
-        return ptr::null_mut();
-    }
+    unsafe {
+        if data.is_null() {
+            return ptr::null_mut();
+        }
 
-    let bytes = slice::from_raw_parts(data, len);
+        let bytes = slice::from_raw_parts(data, len);
 
-    match PqcBinaryFormat::from_bytes(bytes) {
-        Ok(format) => Box::into_raw(Box::new(format)) as *mut PqcFormatHandle,
-        Err(_) => ptr::null_mut(),
+        match PqcBinaryFormat::from_bytes(bytes) {
+            Ok(format) => Box::into_raw(Box::new(format)) as *mut PqcFormatHandle,
+            Err(_) => ptr::null_mut(),
+        }
     }
 }
 
@@ -255,14 +269,16 @@ pub unsafe extern "C" fn pqc_format_from_bytes(
 ///
 /// # Safety
 /// Handle must be valid
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_get_algorithm_id(handle: *const PqcFormatHandle) -> u16 {
-    if handle.is_null() {
-        return 0;
-    }
+    unsafe {
+        if handle.is_null() {
+            return 0;
+        }
 
-    let format = &*(handle as *const PqcBinaryFormat);
-    format.algorithm().as_id()
+        let format = &*(handle as *const PqcBinaryFormat);
+        format.algorithm().as_id()
+    }
 }
 
 /// Get algorithm name from format
@@ -272,20 +288,22 @@ pub unsafe extern "C" fn pqc_format_get_algorithm_id(handle: *const PqcFormatHan
 ///
 /// # Safety
 /// Handle must be valid
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_get_algorithm_name(
     handle: *const PqcFormatHandle,
 ) -> *mut c_char {
-    if handle.is_null() {
-        return ptr::null_mut();
-    }
+    unsafe {
+        if handle.is_null() {
+            return ptr::null_mut();
+        }
 
-    let format = &*(handle as *const PqcBinaryFormat);
-    let name = format.algorithm().name();
+        let format = &*(handle as *const PqcBinaryFormat);
+        let name = format.algorithm().name();
 
-    match CString::new(name) {
-        Ok(cstr) => cstr.into_raw(),
-        Err(_) => ptr::null_mut(),
+        match CString::new(name) {
+            Ok(cstr) => cstr.into_raw(),
+            Err(_) => ptr::null_mut(),
+        }
     }
 }
 
@@ -296,18 +314,20 @@ pub unsafe extern "C" fn pqc_format_get_algorithm_name(
 ///
 /// # Safety
 /// Handle must be valid
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_get_data(handle: *const PqcFormatHandle) -> ByteBuffer {
-    if handle.is_null() {
-        return ByteBuffer {
-            data: ptr::null_mut(),
-            len: 0,
-            capacity: 0,
-        };
-    }
+    unsafe {
+        if handle.is_null() {
+            return ByteBuffer {
+                data: ptr::null_mut(),
+                len: 0,
+                capacity: 0,
+            };
+        }
 
-    let format = &*(handle as *const PqcBinaryFormat);
-    ByteBuffer::from_vec(format.data().to_vec())
+        let format = &*(handle as *const PqcBinaryFormat);
+        ByteBuffer::from_vec(format.data().to_vec())
+    }
 }
 
 /// Validate format structure
@@ -317,17 +337,19 @@ pub unsafe extern "C" fn pqc_format_get_data(handle: *const PqcFormatHandle) -> 
 ///
 /// # Safety
 /// Handle must be valid
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_validate(handle: *const PqcFormatHandle) -> c_int {
-    if handle.is_null() {
-        return -1;
-    }
+    unsafe {
+        if handle.is_null() {
+            return -1;
+        }
 
-    let format = &*(handle as *const PqcBinaryFormat);
+        let format = &*(handle as *const PqcBinaryFormat);
 
-    match format.validate() {
-        Ok(()) => 0,
-        Err(_) => -1,
+        match format.validate() {
+            Ok(()) => 0,
+            Err(_) => -1,
+        }
     }
 }
 
@@ -335,24 +357,28 @@ pub unsafe extern "C" fn pqc_format_validate(handle: *const PqcFormatHandle) -> 
 ///
 /// # Safety
 /// Handle must be valid
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_get_total_size(handle: *const PqcFormatHandle) -> usize {
-    if handle.is_null() {
-        return 0;
-    }
+    unsafe {
+        if handle.is_null() {
+            return 0;
+        }
 
-    let format = &*(handle as *const PqcBinaryFormat);
-    format.total_size()
+        let format = &*(handle as *const PqcBinaryFormat);
+        format.total_size()
+    }
 }
 
 /// Free a PqcBinaryFormat handle
 ///
 /// # Safety
 /// Handle must have been allocated by this library and not previously freed
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn pqc_format_free(handle: *mut PqcFormatHandle) {
-    if !handle.is_null() {
-        drop(Box::from_raw(handle as *mut PqcBinaryFormat));
+    unsafe {
+        if !handle.is_null() {
+            drop(Box::from_raw(handle as *mut PqcBinaryFormat));
+        }
     }
 }
 
@@ -360,7 +386,7 @@ pub unsafe extern "C" fn pqc_format_free(handle: *mut PqcFormatHandle) {
 ///
 /// # Returns
 /// Null-terminated version string. Must be freed with `pqc_free_string`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn pqc_get_version() -> *mut c_char {
     match CString::new(crate::VERSION) {
         Ok(cstr) => cstr.into_raw(),
@@ -369,7 +395,7 @@ pub extern "C" fn pqc_get_version() -> *mut c_char {
 }
 
 /// Get binary format version
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn pqc_get_binary_version() -> u8 {
     crate::PQC_BINARY_VERSION
 }
@@ -377,103 +403,103 @@ pub extern "C" fn pqc_get_binary_version() -> u8 {
 // Algorithm ID constants for C/C++ convenience
 
 /// Algorithm ID for Classical (X25519 + Ed25519 + AES-256-GCM)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_CLASSICAL: u16 = 0x0050;
 
 /// Algorithm ID for Password-based Classical encryption
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_PASSWORD_CLASSICAL: u16 = 0x0051;
 
 /// Algorithm ID for Hybrid (ML-KEM-1024 + X25519 + ML-DSA-87 + Ed25519)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_HYBRID: u16 = 0x0100;
 
 /// Algorithm ID for Post-Quantum (ML-KEM-1024 + ML-DSA-87)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_POST_QUANTUM: u16 = 0x0200;
 
 /// Algorithm ID for ML-KEM-1024 pure implementation
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_ML_KEM_1024: u16 = 0x0202;
 
 /// Algorithm ID for Multi-KEM (multiple key encapsulation layers)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_MULTI_KEM: u16 = 0x0203;
 
 /// Algorithm ID for Multi-KEM Triple Layer
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_MULTI_KEM_TRIPLE: u16 = 0x0204;
 
 /// Algorithm ID for Quad-Layer redundant encryption
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_QUAD_LAYER: u16 = 0x0205;
 
 /// Algorithm ID for PQ3-Stack with forward secrecy
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_PQ3_STACK: u16 = 0x0207;
 
 /// Algorithm ID for Lattice-Code Hybrid Stack
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_LATTICE_CODE_HYBRID: u16 = 0x0208;
 
 /// Algorithm ID for HQC-128 (NIST Level 1, 128-bit security)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_HQC_128: u16 = 0x0600;
 
 /// Algorithm ID for HQC-192 (NIST Level 3, 192-bit security)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_HQC_192: u16 = 0x0601;
 
 /// Algorithm ID for HQC-256 (NIST Level 5, 256-bit security)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_HQC_256: u16 = 0x0602;
 
 // NIST ML-KEM variants (FIPS 203)
 
 /// Algorithm ID for ML-KEM-512 (NIST Level 1, 128-bit security)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_ML_KEM_512: u16 = 0x0700;
 
 /// Algorithm ID for ML-KEM-768 (NIST Level 3, 192-bit security)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_ML_KEM_768: u16 = 0x0701;
 
 // NIST ML-DSA variants (FIPS 204)
 
 /// Algorithm ID for ML-DSA-44 (NIST Level 2, 128-bit security)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_ML_DSA_44: u16 = 0x0800;
 
 /// Algorithm ID for ML-DSA-65 (NIST Level 3, 192-bit security)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_ML_DSA_65: u16 = 0x0801;
 
 /// Algorithm ID for ML-DSA-87 (NIST Level 5, 256-bit security)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_ML_DSA_87: u16 = 0x0802;
 
 // NIST SLH-DSA variants (FIPS 205)
 
 /// Algorithm ID for SLH-DSA-SHA2-128s (NIST Level 1, small signatures)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_SLH_DSA_SHA2_128S: u16 = 0x0900;
 
 /// Algorithm ID for SLH-DSA-SHA2-128f (NIST Level 1, fast signatures)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_SLH_DSA_SHA2_128F: u16 = 0x0901;
 
 /// Algorithm ID for SLH-DSA-SHA2-192s (NIST Level 3, small signatures)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_SLH_DSA_SHA2_192S: u16 = 0x0902;
 
 /// Algorithm ID for SLH-DSA-SHA2-192f (NIST Level 3, fast signatures)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_SLH_DSA_SHA2_192F: u16 = 0x0903;
 
 /// Algorithm ID for SLH-DSA-SHA2-256s (NIST Level 5, small signatures)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_SLH_DSA_SHA2_256S: u16 = 0x0904;
 
 /// Algorithm ID for SLH-DSA-SHA2-256f (NIST Level 5, fast signatures)
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static PQC_ALGORITHM_SLH_DSA_SHA2_256F: u16 = 0x0905;

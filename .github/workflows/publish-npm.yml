@@ -6,8 +6,13 @@ on:
       - 'v*'
   workflow_dispatch:  # Allow manual trigger
 
+# Trusted publishing: npm takes the workflow's OIDC identity instead of a
+# token (the NPM_TOKEN this used had expired; 2.0.x went out by hand). It
+# needs npm 11.5.1 or later, and the package's trusted publisher set on
+# npmjs.com to this repository and publish-npm.yml. Provenance is
+# attached automatically.
 permissions:
-  id-token: write  # Required for provenance
+  id-token: write
   contents: read
 
 jobs:
@@ -15,30 +20,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
         with:
           targets: wasm32-unknown-unknown
 
       - name: Install wasm-pack
-        uses: jetli/wasm-pack-action@v0.4.0
+        uses: jetli/wasm-pack-action@0d096b08b4e5a7de8c28de67e11e945404e9eefa # v0.4.0
 
       - name: Build WASM package
         run: wasm-pack build --target bundler -- --features wasm
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '20'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: npm with trusted publishing
+        run: npm install -g npm@^11.5.1
 
       - name: Publish to npm
         working-directory: ./pkg
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if npm view "pqc-binary-format@$version" version > /dev/null 2>&1; then
+            echo "pqc-binary-format $version is already published"
+          else
+            npm publish --access public
+          fi
 
       - name: Verify publication
         run: |

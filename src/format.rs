@@ -1,8 +1,8 @@
 //! Core binary format implementation with serialization and validation.
 
 use crate::{
-    algorithm::Algorithm, error::CryptoError, metadata::PqcMetadata, Result, PQC_BINARY_VERSION,
-    PQC_MAGIC,
+    PQC_BINARY_VERSION, PQC_MAGIC, Result, algorithm::Algorithm, error::CryptoError,
+    metadata::PqcMetadata,
 };
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

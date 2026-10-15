@@ -23,7 +23,7 @@ def main():
 
     # Create algorithm
     algorithm = Algorithm("hybrid")
-    print(f"Algorithm: {algorithm.name()} (ID: {algorithm.id()})")
+    print(f"Algorithm: {algorithm.name} (ID: {algorithm.id})")
 
     # Create encryption parameters
     enc_params = EncParameters(
@@ -52,8 +52,8 @@ def main():
 
     # Deserialize from bytes
     deserialized = PqcBinaryFormat.from_bytes(serialized)
-    print(f"Deserialized algorithm: {deserialized.algorithm().name()}")
-    print(f"Data length: {len(deserialized.data())} bytes")
+    print(f"Deserialized algorithm: {deserialized.algorithm.name}")
+    print(f"Data length: {len(deserialized.data)} bytes")
 
     # Validate
     deserialized.validate()
@@ -88,9 +88,9 @@ def main():
 
     # Create flags
     flags = FormatFlags().with_compression().with_streaming()
-    print(f"Compression enabled: {flags.has_compression()}")
-    print(f"Streaming enabled: {flags.has_streaming()}")
-    print(f"Additional auth: {flags.has_additional_auth()}")
+    print(f"Compression enabled: {flags.has_compression}")
+    print(f"Streaming enabled: {flags.has_streaming}")
+    print(f"Additional auth: {flags.has_additional_auth}")
 
     # Create format with flags
     pqc_with_flags = PqcBinaryFormat.with_flags(
@@ -108,7 +108,7 @@ def main():
         alg = Algorithm(alg_name)
         fmt = PqcBinaryFormat(alg, metadata, encrypted_data)
         size = fmt.total_size()
-        print(f"{alg.name():<20} - {size} bytes")
+        print(f"{alg.name:<20} - {size} bytes")
 
     print("\n✓ All examples completed successfully!")
 

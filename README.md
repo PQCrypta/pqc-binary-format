@@ -3,7 +3,7 @@
 [![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
 [![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
 [![License](https://img.shields.io/crates/l/pqc-binary-format.svg)](LICENSE-MIT)
-[![Build Status](https://github.com/PQCrypta/pqcrypta-community/workflows/CI/badge.svg)](https://github.com/PQCrypta/pqcrypta-community/actions)
+[![Build Status](https://github.com/PQCrypta/pqc-binary-format/workflows/CI/badge.svg)](https://github.com/PQCrypta/pqc-binary-format/actions)
 
 **A standardized, self-describing binary format for post-quantum cryptography encrypted data interchange.**
 
@@ -138,7 +138,7 @@ package main
 import (
     "fmt"
     "log"
-    pqc "github.com/PQCrypta/pqcrypta-community/bindings/go"
+    pqc "github.com/PQCrypta/pqc-binary-format/bindings/go/v2"
 )
 
 func main() {
@@ -214,8 +214,8 @@ PQC Binary Format provides **production-ready, fully tested bindings** for multi
 |----------|--------|---------|---------------|----------|
 | **Rust** | ✅ Native | `pqc-binary-format` | [docs.rs](https://docs.rs/pqc-binary-format) | [3 examples](examples/) |
 | **Python** | ✅ Tested | `pqc_binary_format` | [Python README](bindings/python/README.md) | [2 examples](examples/python/) |
-| **JavaScript/WASM** | ✅ Tested | `pqc_binary_format` (npm) | [JS README](bindings/javascript/README.md) | [1 example](examples/javascript/) |
-| **Go** | ✅ Tested | `github.com/PQCrypta/pqcrypta-community/bindings/go` | [pkg.go.dev](https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go) | [1 example](bindings/go/examples/) |
+| **JavaScript/WASM** | ✅ Tested | `pqc-binary-format` (npm) | [JS README](bindings/javascript/README.md) | [1 example](examples/javascript/) |
+| **Go** | ✅ Tested | `github.com/PQCrypta/pqc-binary-format/bindings/go/v2` | [pkg.go.dev](https://pkg.go.dev/github.com/PQCrypta/pqc-binary-format/bindings/go/v2) | [1 example](bindings/go/examples/) |
 | **C** | ✅ Tested | FFI via Rust | [C/C++ README](bindings/c-cpp/README.md) | [1 example](examples/c/) |
 | **C++** | ✅ Tested | FFI via Rust | [C/C++ README](bindings/c-cpp/README.md) | [1 example](examples/cpp/) |
 
@@ -225,16 +225,14 @@ PQC Binary Format provides **production-ready, fully tested bindings** for multi
 # Rust
 cargo add pqc-binary-format
 
-# Python (via maturin)
-python3 -m venv .venv && source .venv/bin/activate
-pip install maturin
-maturin develop --release
+# Python
+pip install pqc-binary-format
 
-# JavaScript/WASM (via wasm-pack)
-wasm-pack build --target web --features wasm
+# JavaScript/WASM
+npm install pqc-binary-format
 
 # Go
-go get github.com/PQCrypta/pqcrypta-community/bindings/go
+go get github.com/PQCrypta/pqc-binary-format/bindings/go/v2
 
 # C/C++ (build from source)
 cargo build --release --no-default-features
@@ -275,10 +273,10 @@ All bindings support:
 
 | Platform | Status | Notes |
 |----------|--------|-------|
-| crates.io (Rust) | ✅ **Published** | **[v2.0.1 live!](https://crates.io/crates/pqc-binary-format)** |
-| PyPI (Python) | ✅ **Published** | **[v2.0.1 live!](https://pypi.org/project/pqc-binary-format/)** |
-| npm (JavaScript) | ✅ **Published** | **[v2.0.1 live!](https://www.npmjs.com/package/pqc-binary-format)** |
-| pkg.go.dev (Go) | ✅ **Indexed** | **[v2.0.1 live!](https://pkg.go.dev/github.com/PQCrypta/pqcrypta-community/bindings/go)** |
+| crates.io (Rust) | ✅ **Published** | [2.0.2](https://crates.io/crates/pqc-binary-format) |
+| PyPI (Python) | ✅ **Published** | [2.0.2](https://pypi.org/project/pqc-binary-format/) |
+| npm (JavaScript) | ✅ **Published** | [2.0.2](https://www.npmjs.com/package/pqc-binary-format) |
+| Go module proxy | ⏳ From the next release | 2.x needs the `/v2` module path, which the 2.0.x tags lack; the proxy serves 1.0.14 until then |
 
 ## 📦 Binary Format Specification
 
@@ -530,8 +528,8 @@ let bytes = format.to_bytes().unwrap();
 from pqc_binary_format import PqcBinaryFormat
 
 format = PqcBinaryFormat.from_bytes(bytes)
-print(f"Algorithm: {format.algorithm().name()}")
-print(f"Data: {len(format.data())} bytes")
+print(f"Algorithm: {format.algorithm.name}")
+print(f"Data: {len(format.data)} bytes")
 ```
 
 **JavaScript (Decryption)**
@@ -618,8 +616,8 @@ Performance characteristics:
 ### Building from Source
 
 ```bash
-git clone https://github.com/PQCrypta/pqcrypta-community.git
-cd pqcrypta-community
+git clone https://github.com/PQCrypta/pqc-binary-format.git
+cd pqc-binary-format
 cargo build --release
 ```
 
@@ -681,8 +679,8 @@ This format was developed as part of the [PQCrypta](https://pqcrypta.com) enterp
 
 ## 💬 Community & Support
 
-- **GitHub Issues**: [Report bugs](https://github.com/PQCrypta/pqcrypta-community/issues)
-- **Discussions**: [Ask questions](https://github.com/PQCrypta/pqcrypta-community/discussions)
+- **GitHub Issues**: [Report bugs](https://github.com/PQCrypta/pqc-binary-format/issues)
+- **Discussions**: [Ask questions](https://github.com/PQCrypta/pqc-binary-format/discussions)
 - **Website**: [pqcrypta.com](https://pqcrypta.com)
 - **Documentation**: [docs.rs/pqc-binary-format](https://docs.rs/pqc-binary-format)
 
