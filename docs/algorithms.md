@@ -1,6 +1,6 @@
 # Supported Cryptographic Algorithms
 
-This document provides detailed specifications for all 31 supported cryptographic algorithms in PQC Binary Format v1.0.
+One section for each of the 51 algorithms in the registry (`Algorithm::ALL`, `src/algorithm.rs`), in identifier order; `tests/registry.rs` holds this document to it.
 
 ## Algorithm Categories
 
@@ -8,9 +8,12 @@ This document provides detailed specifications for all 31 supported cryptographi
 2. [Hybrid Algorithms](#hybrid-algorithms) (0x0100-0x01FF)
 3. [Pure Post-Quantum Algorithms](#pure-post-quantum-algorithms) (0x0200-0x02FF)
 4. [Max Secure Series](#max-secure-series) (0x0300-0x03FF)
-5. [FN-DSA Series](#fn-dsa-series-falcon-based) (0x0400-0x04FF)
+5. [FN-DSA Series (Falcon-based)](#fn-dsa-series-falcon-based) (0x0400-0x04FF)
 6. [Experimental Algorithms](#experimental-algorithms) (0x0500-0x05FF)
 7. [HQC Code-Based Series](#hqc-code-based-series) (0x0600-0x06FF)
+8. [NIST ML-KEM (FIPS 203)](#nist-ml-kem-fips-203) (0x0700-0x07FF)
+9. [NIST ML-DSA (FIPS 204)](#nist-ml-dsa-fips-204) (0x0800-0x08FF)
+10. [NIST SLH-DSA (FIPS 205)](#nist-slh-dsa-fips-205) (0x0900-0x09FF)
 
 ---
 
@@ -340,11 +343,119 @@ Post-quantum forward secrecy with continuous key ratcheting.
 
 ---
 
+### 12. X25519MLKEM768 (0x0208)
+**Name:** X25519MLKEM768 (X-Wing)
+**ID:** `0x0208`
+**Security Level:** NIST Level 3 (ML-KEM-768), with X25519 alongside
+
+**Description:**
+The X-Wing hybrid KEM (draft-connolly-cfrg-xwing-kem): ML-KEM-768 and X25519 combined so the shared secret holds while either holds. It is the pairing TLS 1.3 negotiates as X25519MLKEM768, so data sealed with it matches what browsers and servers already use on the wire.
+
+**Cryptographic Stack:**
+- **KEM:** ML-KEM-768 (FIPS 203) + X25519 (RFC 7748), X-Wing combiner (SHA3-256)
+- **Symmetric Encryption:** AES-256-GCM
+
+**Sizes:**
+- Public Key: 1,216 bytes
+- Private Key: 32 bytes (seed)
+- Ciphertext: 1,120 bytes
+- Shared Secret: 32 bytes
+
+**Use Cases:**
+- Matching the key exchange of TLS 1.3 hybrid deployments
+- Migration: classical security stays while ML-KEM is new
+- Small ciphertexts where Level 5 is not required
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 13. FrodoKEM-1344 (0x0209)
+**Name:** FrodoKEM-1344
+**ID:** `0x0209`
+**Security Level:** NIST Level 5
+
+**Description:**
+FrodoKEM over unstructured lattices (plain LWE): no ring or module structure for an attack to exploit, at the cost of large keys. ISO/IEC 18033-2 track; recommended by BSI and ANSSI as a conservative choice.
+
+**Cryptographic Stack:**
+- **KEM:** FrodoKEM-1344 (SHAKE)
+- **Symmetric Encryption:** AES-256-GCM
+
+**Sizes:**
+- Public Key: 21,520 bytes
+- Private Key: 43,088 bytes
+- Ciphertext: 21,632 bytes
+- Shared Secret: 32 bytes
+
+**Use Cases:**
+- Long-term confidentiality with the most conservative lattice assumption
+- Cryptographic diversity beside ML-KEM
+- Regulated deployments following BSI TR-02102-1
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 14. Classic McEliece (0x020A)
+**Name:** Classic-McEliece-6960119
+**ID:** `0x020A`
+**Security Level:** NIST Level 5
+
+**Description:**
+Classic McEliece, the code-based KEM with the longest record of cryptanalysis (since 1978), parameter set 6960119. Very large public keys, very small ciphertexts. ISO/IEC 18033-2.
+
+**Cryptographic Stack:**
+- **KEM:** Classic McEliece 6960119
+- **Symmetric Encryption:** AES-256-GCM
+
+**Sizes:**
+- Public Key: 1,047,319 bytes
+- Private Key: 13,948 bytes
+- Ciphertext: 194 bytes
+- Shared Secret: 32 bytes
+
+**Use Cases:**
+- Archival encryption where a public key is distributed once
+- Diversity from lattices: security from decoding random linear codes
+- Small ciphertexts per message
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 15. FrodoKEM-976 (0x020B)
+**Name:** FrodoKEM-976
+**ID:** `0x020B`
+**Security Level:** NIST Level 3
+
+**Description:**
+FrodoKEM over unstructured lattices at Level 3: the conservative LWE assumption with smaller keys than FrodoKEM-1344. Cited in BSI TR-02102-1.
+
+**Cryptographic Stack:**
+- **KEM:** FrodoKEM-976 (SHAKE)
+- **Symmetric Encryption:** AES-256-GCM
+
+**Sizes:**
+- Public Key: 15,632 bytes
+- Private Key: 31,296 bytes
+- Ciphertext: 15,744 bytes
+- Shared Secret: 24 bytes
+
+**Use Cases:**
+- Conservative lattice security at Level 3
+- Diversity beside ML-KEM-768
+- Regulated deployments following BSI TR-02102-1
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
 ## Max Secure Series
 
 High-security configurations optimized for specific use cases.
 
-### 12. Max Secure: Lightweight (0x0300)
+### 16. Max Secure: Lightweight (0x0300)
 
 **Name:** Max Secure: PQ Lightweight
 **ID:** `0x0300`
@@ -372,7 +483,7 @@ Optimized for resource-constrained devices while maintaining quantum resistance.
 
 ---
 
-### 13. Max Secure: Pure PQ (0x0301)
+### 17. Max Secure: Pure PQ (0x0301)
 
 **Name:** Max Secure: Pure PQ
 **ID:** `0x0301`
@@ -396,7 +507,7 @@ Maximum quantum resistance with pure post-quantum algorithms only.
 
 ---
 
-### 14. Max Secure: Hybrid Transition (0x0302)
+### 18. Max Secure: Hybrid Transition (0x0302)
 
 **Name:** Max Secure: Hybrid Transition
 **ID:** `0x0302`
@@ -421,7 +532,7 @@ Optimized for smooth transition from classical to post-quantum.
 
 ---
 
-### 15. Max Secure: Stateless (0x0303)
+### 19. Max Secure: Stateless (0x0303)
 
 **Name:** Max Secure: Stateless
 **ID:** `0x0303`
@@ -444,7 +555,7 @@ Stateless hash-based signatures for environments requiring no state management.
 
 ---
 
-### 16. Max Secure: Crypto-Agile (0x0304)
+### 20. Max Secure: Crypto-Agile (0x0304)
 
 **Name:** Max Secure: Crypto-Agile
 **ID:** `0x0304`
@@ -467,7 +578,7 @@ Dynamic algorithm selection with hot-swapping capabilities.
 
 ---
 
-### 17. Max Secure: PQC + ZK (0x0305)
+### 21. Max Secure: PQC + ZK (0x0305)
 
 **Name:** Max Secure: PQC + Zero-Knowledge
 **ID:** `0x0305`
@@ -491,7 +602,7 @@ Combines post-quantum cryptography with zero-knowledge proofs for privacy-preser
 
 ---
 
-### 18. Max Secure: Hybrid Transition (0x0306)
+### 22. Max Secure: Hybrid Transition (0x0306)
 
 **Name:** Max Secure: Hybrid Transition
 **ID:** `0x0306`
@@ -515,7 +626,7 @@ Enhanced hybrid configuration for enterprise transition scenarios.
 
 Signature algorithms using Falcon (Fast Fourier Lattice-based Compact Signatures).
 
-### 19. FN-DSA 512: Compact (0x0400)
+### 23. FN-DSA 512: Compact (0x0400)
 
 **Name:** FN-DSA 512: Compact
 **ID:** `0x0400`
@@ -540,7 +651,7 @@ Compact signatures optimized for bandwidth-constrained environments.
 
 ---
 
-### 20. FN-DSA 1024: High-Security (0x0401)
+### 24. FN-DSA 1024: High-Security (0x0401)
 
 **Name:** FN-DSA 1024: High-Security
 **ID:** `0x0401`
@@ -565,7 +676,7 @@ Maximum security Falcon-based signatures.
 
 ---
 
-### 21. FN-DSA: Floating-Point Hardened (0x0402)
+### 25. FN-DSA: Floating-Point Hardened (0x0402)
 
 **Name:** FN-DSA: Floating-Point Hardened
 **ID:** `0x0402`
@@ -588,7 +699,7 @@ Falcon implementation with hardening against floating-point side-channels.
 
 ---
 
-### 22. FN-DSA: Dual Signature (0x0403)
+### 26. FN-DSA: Dual Signature (0x0403)
 
 **Name:** FN-DSA: Dual Signature
 **ID:** `0x0403`
@@ -611,7 +722,7 @@ Two independent signature schemes for redundancy.
 
 ---
 
-### 23. FN-DSA: Transition Stack (0x0404)
+### 27. FN-DSA: Transition Stack (0x0404)
 
 **Name:** FN-DSA: Transition Stack
 **ID:** `0x0404`
@@ -629,7 +740,7 @@ Falcon + classical signatures for transition period.
 
 ---
 
-### 24. FN-DSA + ZK Stack (0x0405)
+### 28. FN-DSA + ZK Stack (0x0405)
 
 **Name:** FN-DSA + Zero-Knowledge Stack
 **ID:** `0x0405`
@@ -652,7 +763,7 @@ Falcon signatures with zero-knowledge proof integration.
 
 ---
 
-### 25. FN-DSA: ZK Stack Enhanced (0x0406)
+### 29. FN-DSA: ZK Stack Enhanced (0x0406)
 
 **Name:** FN-DSA + ZK Stack Enhanced
 **ID:** `0x0406`
@@ -670,7 +781,7 @@ Enhanced zero-knowledge integration with advanced features.
 
 ---
 
-### 26. FN-DSA: Transition Stack Enhanced (0x0407)
+### 30. FN-DSA: Transition Stack Enhanced (0x0407)
 
 **Name:** FN-DSA: Transition Stack Enhanced
 **ID:** `0x0407`
@@ -692,7 +803,7 @@ Enhanced transition configuration with additional features.
 
 Research and next-generation algorithms. Use with caution in production.
 
-### 27. Quantum-Inspired Lattice Fusion (0x0500)
+### 31. Quantum-Inspired Lattice Fusion (0x0500)
 
 **Name:** Quantum-Inspired Lattice Fusion
 **ID:** `0x0500`
@@ -712,7 +823,7 @@ Novel lattice-based approach inspired by quantum computing principles.
 
 ---
 
-### 28. Post-ZK Homomorphic (0x0501)
+### 32. Post-ZK Homomorphic (0x0501)
 
 **Name:** Post-ZK Homomorphic Stack
 **ID:** `0x0501`
@@ -744,7 +855,7 @@ Combines post-quantum cryptography with lightweight fully homomorphic encryption
 
 ---
 
-### 29. Quantum-Resistant Consensus (0x0502)
+### 33. Quantum-Resistant Consensus (0x0502)
 
 **Name:** Quantum-Resistant Consensus
 **ID:** `0x0502`
@@ -769,7 +880,7 @@ Post-quantum algorithms optimized for blockchain consensus.
 
 ---
 
-### 30. Entropy-Orchestrated PQ Stack (0x0503)
+### 34. Entropy-Orchestrated PQ Stack (0x0503)
 
 **Name:** Entropy-Orchestrated PQ Stack
 **ID:** `0x0503`
@@ -789,7 +900,7 @@ Adaptive algorithm selection based on real-time entropy monitoring.
 
 ---
 
-### 31. Lattice-Code Hybrid FN (0x0504)
+### 35. Lattice-Code Hybrid FN (0x0504)
 
 **Name:** Lattice-Code Hybrid FN
 **ID:** `0x0504`
@@ -804,7 +915,7 @@ Falcon-based hybrid with code-based backup.
 
 ---
 
-### 32. AI-Synthesized Crypto-Agile (0x0505)
+### 36. AI-Synthesized Crypto-Agile (0x0505)
 
 **Name:** AI-Synthesized Crypto-Agile
 **ID:** `0x0505`
@@ -824,7 +935,7 @@ Machine learning-assisted algorithm selection and optimization.
 
 ---
 
-### 33. Experimental Engine (0x0506)
+### 37. Experimental Engine (0x0506)
 
 **Name:** Experimental Engine (Generic)
 **ID:** `0x0506`
@@ -836,6 +947,350 @@ Generic experimental algorithm placeholder for research.
 **Status:** ⚠️ Experimental
 
 **Quantum Resistant:** ⚠️ Unknown
+
+---
+
+## HQC Code-Based Series
+
+### 38. HQC-128 (0x0600)
+
+**Name:** HQC-128
+**ID:** `0x0600`
+**Security Level:** NIST Level 1 (128-bit security)
+
+**Description:**
+Hamming Quasi-Cyclic (HQC) code-based key encapsulation mechanism. NIST 2025 Backup KEM standard providing cryptographic diversity through code-based mathematics.
+
+**Cryptographic Stack:**
+- **Key Exchange:** HQC-128 (code-based KEM)
+- **Signatures:** Ed25519
+- **Symmetric Encryption:** AES-256-GCM
+- **Key Size:** 2249 bytes (public), 2289 bytes (private)
+- **Ciphertext:** 4481 bytes
+
+**Use Cases:**
+- Cryptographic diversity (different math from lattice-based)
+- Defense-in-depth with multiple PQ families
+- NIST compliance requirements
+
+**Performance:**
+- Key Generation: ~10 ms
+- Encapsulation: ~15 ms
+- Decapsulation: ~20 ms
+
+**Quantum Resistant:** ✅ Yes (code-based)
+
+---
+
+### 39. HQC-192 (0x0601)
+
+**Name:** HQC-192
+**ID:** `0x0601`
+**Security Level:** NIST Level 3 (192-bit security)
+
+**Description:**
+Medium-security HQC variant with enhanced security parameters.
+
+**Cryptographic Stack:**
+- **Key Exchange:** HQC-192 (code-based KEM)
+- **Signatures:** Ed25519
+- **Symmetric Encryption:** AES-256-GCM
+- **Key Size:** 4522 bytes (public), 4562 bytes (private)
+- **Ciphertext:** 9026 bytes
+
+**Quantum Resistant:** ✅ Yes (code-based)
+
+---
+
+### 40. HQC-256 (0x0602)
+
+**Name:** HQC-256
+**ID:** `0x0602`
+**Security Level:** NIST Level 5 (256-bit security)
+
+**Description:**
+Maximum-security HQC variant for high-assurance applications.
+
+**Cryptographic Stack:**
+- **Key Exchange:** HQC-256 (code-based KEM)
+- **Signatures:** Ed25519
+- **Symmetric Encryption:** AES-256-GCM
+- **Key Size:** 7245 bytes (public), 7285 bytes (private)
+- **Ciphertext:** 14469 bytes
+
+**Quantum Resistant:** ✅ Yes (code-based)
+
+---
+
+## NIST ML-KEM (FIPS 203)
+
+### 41. ML-KEM-512 (0x0700)
+**Name:** ML-KEM-512
+**ID:** `0x0700`
+**Security Level:** NIST Level 1
+
+**Description:**
+ML-KEM (FIPS 203) at its smallest parameter set.
+
+**Cryptographic Stack:**
+- **KEM:** ML-KEM-512 (FIPS 203)
+
+**Sizes:**
+- Encapsulation Key: 800 bytes
+- Decapsulation Key: 1,632 bytes
+- Ciphertext: 768 bytes
+- Shared Secret: 32 bytes
+
+**Use Cases:**
+- Constrained devices
+- Level 1 deployments
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 42. ML-KEM-768 (0x0701)
+**Name:** ML-KEM-768
+**ID:** `0x0701`
+**Security Level:** NIST Level 3
+
+**Description:**
+ML-KEM (FIPS 203) at the parameter set NIST recommends by default.
+
+**Cryptographic Stack:**
+- **KEM:** ML-KEM-768 (FIPS 203)
+
+**Sizes:**
+- Encapsulation Key: 1,184 bytes
+- Decapsulation Key: 2,400 bytes
+- Ciphertext: 1,088 bytes
+- Shared Secret: 32 bytes
+
+**Use Cases:**
+- General-purpose key establishment
+- The ML-KEM half of X25519MLKEM768
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+## NIST ML-DSA (FIPS 204)
+
+### 43. ML-DSA-44 (0x0800)
+**Name:** ML-DSA-44
+**ID:** `0x0800`
+**Security Level:** NIST Level 2
+
+**Description:**
+ML-DSA (FIPS 204), module-lattice signatures, smallest parameter set.
+
+**Cryptographic Stack:**
+- **Signature:** ML-DSA-44 (FIPS 204)
+
+**Sizes:**
+- Public Key: 1,312 bytes
+- Private Key: 2,560 bytes
+- Signature: 2,420 bytes
+
+**Use Cases:**
+- High-volume signing
+- Constrained verifiers
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 44. ML-DSA-65 (0x0801)
+**Name:** ML-DSA-65
+**ID:** `0x0801`
+**Security Level:** NIST Level 3
+
+**Description:**
+ML-DSA (FIPS 204) at Level 3.
+
+**Cryptographic Stack:**
+- **Signature:** ML-DSA-65 (FIPS 204)
+
+**Sizes:**
+- Public Key: 1,952 bytes
+- Private Key: 4,032 bytes
+- Signature: 3,309 bytes
+
+**Use Cases:**
+- General-purpose signatures
+- Certificates and code signing
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 45. ML-DSA-87 (0x0802)
+**Name:** ML-DSA-87
+**ID:** `0x0802`
+**Security Level:** NIST Level 5
+
+**Description:**
+ML-DSA (FIPS 204) at Level 5; the CNSA 2.0 signature.
+
+**Cryptographic Stack:**
+- **Signature:** ML-DSA-87 (FIPS 204)
+
+**Sizes:**
+- Public Key: 2,592 bytes
+- Private Key: 4,896 bytes
+- Signature: 4,627 bytes
+
+**Use Cases:**
+- CNSA 2.0 systems
+- Long-lived signatures
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+## NIST SLH-DSA (FIPS 205)
+
+### 46. SLH-DSA-SHA2-128s (0x0900)
+**Name:** SLH-DSA-SHA2-128s
+**ID:** `0x0900`
+**Security Level:** NIST Level 1
+
+**Description:**
+SLH-DSA (FIPS 205), stateless hash-based signatures over SHA-2: security rests on the hash function alone. The small variant: shorter signatures, slower signing.
+
+**Cryptographic Stack:**
+- **Signature:** SLH-DSA-SHA2-128s (FIPS 205)
+
+**Sizes:**
+- Public Key: 32 bytes
+- Private Key: 64 bytes
+- Signature: 7,856 bytes
+
+**Use Cases:**
+- Signatures that must outlast any structured-lattice assumption
+- Firmware and root-of-trust signing
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 47. SLH-DSA-SHA2-128f (0x0901)
+**Name:** SLH-DSA-SHA2-128f
+**ID:** `0x0901`
+**Security Level:** NIST Level 1
+
+**Description:**
+SLH-DSA (FIPS 205), stateless hash-based signatures over SHA-2: security rests on the hash function alone. The fast variant: faster signing, longer signatures.
+
+**Cryptographic Stack:**
+- **Signature:** SLH-DSA-SHA2-128f (FIPS 205)
+
+**Sizes:**
+- Public Key: 32 bytes
+- Private Key: 64 bytes
+- Signature: 17,088 bytes
+
+**Use Cases:**
+- Signatures that must outlast any structured-lattice assumption
+- Firmware and root-of-trust signing
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 48. SLH-DSA-SHA2-192s (0x0902)
+**Name:** SLH-DSA-SHA2-192s
+**ID:** `0x0902`
+**Security Level:** NIST Level 3
+
+**Description:**
+SLH-DSA (FIPS 205), stateless hash-based signatures over SHA-2: security rests on the hash function alone. The small variant: shorter signatures, slower signing.
+
+**Cryptographic Stack:**
+- **Signature:** SLH-DSA-SHA2-192s (FIPS 205)
+
+**Sizes:**
+- Public Key: 48 bytes
+- Private Key: 96 bytes
+- Signature: 16,224 bytes
+
+**Use Cases:**
+- Signatures that must outlast any structured-lattice assumption
+- Firmware and root-of-trust signing
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 49. SLH-DSA-SHA2-192f (0x0903)
+**Name:** SLH-DSA-SHA2-192f
+**ID:** `0x0903`
+**Security Level:** NIST Level 3
+
+**Description:**
+SLH-DSA (FIPS 205), stateless hash-based signatures over SHA-2: security rests on the hash function alone. The fast variant: faster signing, longer signatures.
+
+**Cryptographic Stack:**
+- **Signature:** SLH-DSA-SHA2-192f (FIPS 205)
+
+**Sizes:**
+- Public Key: 48 bytes
+- Private Key: 96 bytes
+- Signature: 35,664 bytes
+
+**Use Cases:**
+- Signatures that must outlast any structured-lattice assumption
+- Firmware and root-of-trust signing
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 50. SLH-DSA-SHA2-256s (0x0904)
+**Name:** SLH-DSA-SHA2-256s
+**ID:** `0x0904`
+**Security Level:** NIST Level 5
+
+**Description:**
+SLH-DSA (FIPS 205), stateless hash-based signatures over SHA-2: security rests on the hash function alone. The small variant: shorter signatures, slower signing.
+
+**Cryptographic Stack:**
+- **Signature:** SLH-DSA-SHA2-256s (FIPS 205)
+
+**Sizes:**
+- Public Key: 64 bytes
+- Private Key: 128 bytes
+- Signature: 29,792 bytes
+
+**Use Cases:**
+- Signatures that must outlast any structured-lattice assumption
+- Firmware and root-of-trust signing
+
+**Quantum Resistant:** ✅ Yes
+
+---
+
+### 51. SLH-DSA-SHA2-256f (0x0905)
+**Name:** SLH-DSA-SHA2-256f
+**ID:** `0x0905`
+**Security Level:** NIST Level 5
+
+**Description:**
+SLH-DSA (FIPS 205), stateless hash-based signatures over SHA-2: security rests on the hash function alone. The fast variant: faster signing, longer signatures.
+
+**Cryptographic Stack:**
+- **Signature:** SLH-DSA-SHA2-256f (FIPS 205)
+
+**Sizes:**
+- Public Key: 64 bytes
+- Private Key: 128 bytes
+- Signature: 49,856 bytes
+
+**Use Cases:**
+- Signatures that must outlast any structured-lattice assumption
+- Firmware and root-of-trust signing
+
+**Quantum Resistant:** ✅ Yes
 
 ---
 
@@ -883,78 +1338,6 @@ Generic experimental algorithm placeholder for research.
 | Quad-Layer | 8 ms | 500 KB/s | 500 KB/s | ~15 KB | ✅ |
 | FN-DSA 512 | 1 ms | 3 MB/s | 3 MB/s | 666 B | ✅ |
 | FN-DSA 1024 | 1.5 ms | 2 MB/s | 2 MB/s | 1.3 KB | ✅ |
-
----
-
-## HQC Code-Based Series
-
-### 29. HQC-128 (0x0600)
-
-**Name:** HQC-128
-**ID:** `0x0600`
-**Security Level:** NIST Level 1 (128-bit security)
-
-**Description:**
-Hamming Quasi-Cyclic (HQC) code-based key encapsulation mechanism. NIST 2025 Backup KEM standard providing cryptographic diversity through code-based mathematics.
-
-**Cryptographic Stack:**
-- **Key Exchange:** HQC-128 (code-based KEM)
-- **Signatures:** Ed25519
-- **Symmetric Encryption:** AES-256-GCM
-- **Key Size:** 2249 bytes (public), 2289 bytes (private)
-- **Ciphertext:** 4481 bytes
-
-**Use Cases:**
-- Cryptographic diversity (different math from lattice-based)
-- Defense-in-depth with multiple PQ families
-- NIST compliance requirements
-
-**Performance:**
-- Key Generation: ~10 ms
-- Encapsulation: ~15 ms
-- Decapsulation: ~20 ms
-
-**Quantum Resistant:** ✅ Yes (code-based)
-
----
-
-### 30. HQC-192 (0x0601)
-
-**Name:** HQC-192
-**ID:** `0x0601`
-**Security Level:** NIST Level 3 (192-bit security)
-
-**Description:**
-Medium-security HQC variant with enhanced security parameters.
-
-**Cryptographic Stack:**
-- **Key Exchange:** HQC-192 (code-based KEM)
-- **Signatures:** Ed25519
-- **Symmetric Encryption:** AES-256-GCM
-- **Key Size:** 4522 bytes (public), 4562 bytes (private)
-- **Ciphertext:** 9026 bytes
-
-**Quantum Resistant:** ✅ Yes (code-based)
-
----
-
-### 31. HQC-256 (0x0602)
-
-**Name:** HQC-256
-**ID:** `0x0602`
-**Security Level:** NIST Level 5 (256-bit security)
-
-**Description:**
-Maximum-security HQC variant for high-assurance applications.
-
-**Cryptographic Stack:**
-- **Key Exchange:** HQC-256 (code-based KEM)
-- **Signatures:** Ed25519
-- **Symmetric Encryption:** AES-256-GCM
-- **Key Size:** 7245 bytes (public), 7285 bytes (private)
-- **Ciphertext:** 14469 bytes
-
-**Quantum Resistant:** ✅ Yes (code-based)
 
 ---
 

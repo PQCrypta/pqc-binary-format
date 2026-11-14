@@ -7,10 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-11-14
+
+### Added
+- Four identifiers the PQCrypta platform assigns in the post-quantum range:
+  `X25519MlKem768` (0x0208, the X-Wing hybrid of ML-KEM-768 and X25519),
+  `FrodoKem1344` (0x0209), `ClassicMcEliece` (0x020A, parameter set 6960119) and
+  `FrodoKem976` (0x020B), in Rust, the C API, Python, JavaScript and Go.
+- `Algorithm::ALL`, `Algorithm::family()` with the `Family` enum, and
+  `Algorithm::c_constant()`.
+- One registry table in `src/algorithm.rs` generates the enum, every lookup and every
+  `PQC_ALGORITHM_*` constant; `tests/registry.rs` holds the C header, the Go binding, the
+  README and `docs/algorithms.md` to it.
+
+### Changed (breaking)
+- `Algorithm` is `#[non_exhaustive]`: a `match` needs a wildcard arm, and new identifiers
+  arrive in minor releases.
+- The C API exports a constant for every algorithm (it exported 24), and the header
+  declares all of them (it declared 13).
+- Go: the module path is `github.com/PQCrypta/pqc-binary-format/bindings/go/v3`.
+
 ### Fixed
-- **Go**: the module path is `github.com/PQCrypta/pqc-binary-format/bindings/go/v2`. A v2
-  module needs `/v2` in its path, so the module proxy ignored the 2.0.x tags and served 1.0.14;
-  it also still named the repository by its old name.
+- **C API**: `PQC_ALGORITHM_LATTICE_CODE_HYBRID` is 0x0206. It was 0x0208, an identifier
+  the library did not parse.
+- **Go**: Password Classical's display name matches the other bindings.
+- **Docs**: the README lists all 51 identifiers (it listed 31 of 47 and counted 47), and
+  `docs/algorithms.md` has a section for each, the ML-KEM, ML-DSA and SLH-DSA parameter
+  sets among them, numbered once.
+- **Go**: 2.x's module path lacked `/v2`, so the module proxy ignored the 2.0.x tags and
+  served 1.0.14; it also still named the repository by its old name.
 - **Python**: abi3 wheels for Linux (glibc and musl), macOS and Windows on x86-64 and ARM, and
   the sdist. 2.0.x shipped one cp311 manylinux_2_34 x86-64 wheel, so `pip install` failed on
   any other Python or platform.

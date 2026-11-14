@@ -41,69 +41,259 @@ extern "C" {
 #endif // __cplusplus
 
 /**
- * Algorithm ID for Classical (X25519 + Ed25519 + AES-256-GCM)
+ * Algorithm ID for Classical (0x0050): Classical cryptography: X25519 + Ed25519 + AES-256-GCM
  */
 extern const uint16_t PQC_ALGORITHM_CLASSICAL;
 
 /**
- * Algorithm ID for Password-based Classical encryption
+ * Algorithm ID for Password Classical (0x0051): Password-based classical encryption
  */
 extern const uint16_t PQC_ALGORITHM_PASSWORD_CLASSICAL;
 
 /**
- * Algorithm ID for Hybrid (ML-KEM-1024 + X25519 + ML-DSA-87 + Ed25519)
+ * Algorithm ID for Hybrid (0x0100): Hybrid: ML-KEM-1024 + X25519 + ML-DSA-87 + Ed25519 + AES-256-GCM
  */
 extern const uint16_t PQC_ALGORITHM_HYBRID;
 
 /**
- * Algorithm ID for Post-Quantum (ML-KEM-1024 + ML-DSA-87)
+ * Algorithm ID for Post-Quantum (0x0200): Post-quantum: ML-KEM-1024 + ML-DSA-87 + AES-256-GCM
  */
 extern const uint16_t PQC_ALGORITHM_POST_QUANTUM;
 
 /**
- * Algorithm ID for ML-KEM-1024 pure implementation
+ * Algorithm ID for Multi-Algorithm (0x0201): Multi-algorithm runtime selection
+ */
+extern const uint16_t PQC_ALGORITHM_MULTI_ALGORITHM;
+
+/**
+ * Algorithm ID for ML-KEM-1024 (0x0202): ML-KEM-1024 with AES-256-GCM
  */
 extern const uint16_t PQC_ALGORITHM_ML_KEM_1024;
 
 /**
- * Algorithm ID for Multi-KEM (multiple key encapsulation layers)
+ * Algorithm ID for Multi-KEM Dual Layer (0x0203): Multi-KEM dual layer
  */
 extern const uint16_t PQC_ALGORITHM_MULTI_KEM;
 
 /**
- * Algorithm ID for Multi-KEM Triple Layer
+ * Algorithm ID for Multi-KEM Triple Layer (0x0204): Multi-KEM triple layer
  */
 extern const uint16_t PQC_ALGORITHM_MULTI_KEM_TRIPLE;
 
 /**
- * Algorithm ID for Quad-Layer redundant encryption
+ * Algorithm ID for Quad-Layer (0x0205): Quad-layer redundant security
  */
 extern const uint16_t PQC_ALGORITHM_QUAD_LAYER;
 
 /**
- * Algorithm ID for PQ3-Stack with forward secrecy
- */
-extern const uint16_t PQC_ALGORITHM_PQ3_STACK;
-
-/**
- * Algorithm ID for Lattice-Code Hybrid Stack
+ * Algorithm ID for Lattice-Code Hybrid (0x0206): Lattice-Code hybrid stack
  */
 extern const uint16_t PQC_ALGORITHM_LATTICE_CODE_HYBRID;
 
 /**
- * Algorithm ID for HQC-128 (NIST Level 1, 128-bit security)
+ * Algorithm ID for PQ3-Stack (0x0207): PQ3-Stack with forward secrecy
+ */
+extern const uint16_t PQC_ALGORITHM_PQ3_STACK;
+
+/**
+ * Algorithm ID for X25519MLKEM768 (0x0208): X-Wing hybrid KEM: ML-KEM-768 (FIPS 203) combined with X25519, the pair TLS negotiates as X25519MLKEM768
+ */
+extern const uint16_t PQC_ALGORITHM_X25519_MLKEM768;
+
+/**
+ * Algorithm ID for FrodoKEM-1344 (0x0209): FrodoKEM-1344: unstructured-lattice KEM, NIST level 5 (ISO/IEC 18033-2)
+ */
+extern const uint16_t PQC_ALGORITHM_FRODOKEM_1344;
+
+/**
+ * Algorithm ID for Classic-McEliece-6960119 (0x020A): Classic McEliece 6960119: code-based KEM (ISO/IEC 18033-2)
+ */
+extern const uint16_t PQC_ALGORITHM_CLASSIC_MCELIECE;
+
+/**
+ * Algorithm ID for FrodoKEM-976 (0x020B): FrodoKEM-976: unstructured-lattice KEM, NIST level 3
+ */
+extern const uint16_t PQC_ALGORITHM_FRODOKEM_976;
+
+/**
+ * Algorithm ID for Max Secure: PQ Lightweight (0x0300): Max Secure: PQ Lightweight
+ */
+extern const uint16_t PQC_ALGORITHM_MAX_SECURE_LIGHTWEIGHT;
+
+/**
+ * Algorithm ID for Max Secure: Pure PQ (0x0301): Max Secure: Pure PQ
+ */
+extern const uint16_t PQC_ALGORITHM_MAX_SECURE_PURE_PQ;
+
+/**
+ * Algorithm ID for Max Secure: Hybrid (0x0302): Max Secure: Hybrid Transition
+ */
+extern const uint16_t PQC_ALGORITHM_MAX_SECURE_HYBRID;
+
+/**
+ * Algorithm ID for Max Secure: Stateless (0x0303): Max Secure: Stateless
+ */
+extern const uint16_t PQC_ALGORITHM_MAX_SECURE_STATELESS;
+
+/**
+ * Algorithm ID for Max Secure: Crypto-Agile (0x0304): Max Secure: Crypto-Agile
+ */
+extern const uint16_t PQC_ALGORITHM_MAX_SECURE_CRYPTO_AGILE;
+
+/**
+ * Algorithm ID for Max Secure: PQC + ZK (0x0305): Max Secure: PQC + Zero-Knowledge
+ */
+extern const uint16_t PQC_ALGORITHM_MAX_SECURE_PQC_ZK;
+
+/**
+ * Algorithm ID for Max Secure: Hybrid Transition (0x0306): Max Secure: Hybrid Transition
+ */
+extern const uint16_t PQC_ALGORITHM_MAX_SECURE_HYBRID_TRANSITION;
+
+/**
+ * Algorithm ID for FN-DSA 512: Compact (0x0400): FN-DSA 512: Compact
+ */
+extern const uint16_t PQC_ALGORITHM_FN_DSA_512_COMPACT;
+
+/**
+ * Algorithm ID for FN-DSA 1024: High-Security (0x0401): FN-DSA 1024: High-Security
+ */
+extern const uint16_t PQC_ALGORITHM_FN_DSA_1024_SECURITY;
+
+/**
+ * Algorithm ID for FN-DSA: Floating-Point Hardened (0x0402): FN-DSA: Floating-Point Hardened
+ */
+extern const uint16_t PQC_ALGORITHM_FN_DSA_FP_HARDENED;
+
+/**
+ * Algorithm ID for FN-DSA: Dual Signature (0x0403): FN-DSA: Dual Signature
+ */
+extern const uint16_t PQC_ALGORITHM_FN_DSA_DUAL_SIGNATURE;
+
+/**
+ * Algorithm ID for FN-DSA: Transition Stack (0x0404): FN-DSA: Transition Stack
+ */
+extern const uint16_t PQC_ALGORITHM_FN_DSA_TRANSITION;
+
+/**
+ * Algorithm ID for FN-DSA + ZK Stack (0x0405): FN-DSA + Zero-Knowledge Stack
+ */
+extern const uint16_t PQC_ALGORITHM_FN_DSA_ZK;
+
+/**
+ * Algorithm ID for FN-DSA + ZK Stack Enhanced (0x0406): FN-DSA + ZK Stack Enhanced
+ */
+extern const uint16_t PQC_ALGORITHM_FN_DSA_ZK_STACK;
+
+/**
+ * Algorithm ID for FN-DSA: Transition Stack Enhanced (0x0407): FN-DSA: Transition Stack Enhanced
+ */
+extern const uint16_t PQC_ALGORITHM_FN_DSA_TRANSITION_STACK;
+
+/**
+ * Algorithm ID for Quantum-Inspired Lattice Fusion (0x0500): Quantum-Inspired Lattice Fusion
+ */
+extern const uint16_t PQC_ALGORITHM_QUANTUM_LATTICE_FUSION;
+
+/**
+ * Algorithm ID for Post-ZK Homomorphic (0x0501): Post-ZK Homomorphic with LFHE 2023
+ */
+extern const uint16_t PQC_ALGORITHM_POST_ZK_HOMOMORPHIC;
+
+/**
+ * Algorithm ID for Quantum-Resistant Consensus (0x0502): Quantum-Resistant Consensus
+ */
+extern const uint16_t PQC_ALGORITHM_QUANTUM_RESISTANT_CONSENSUS;
+
+/**
+ * Algorithm ID for Entropy-Orchestrated (0x0503): Entropy-Orchestrated PQ Stack
+ */
+extern const uint16_t PQC_ALGORITHM_ENTROPY_ORCHESTRATED;
+
+/**
+ * Algorithm ID for Lattice-Code Hybrid FN (0x0504): Lattice-Code Hybrid FN
+ */
+extern const uint16_t PQC_ALGORITHM_LATTICE_CODE_HYBRID_FN;
+
+/**
+ * Algorithm ID for AI-Synthesized Crypto-Agile (0x0505): AI-Synthesized Crypto-Agile
+ */
+extern const uint16_t PQC_ALGORITHM_AI_SYNTHESIZED_CRYPTO_AGILE;
+
+/**
+ * Algorithm ID for Experimental Engine (0x0506): Experimental Engine (generic)
+ */
+extern const uint16_t PQC_ALGORITHM_EXPERIMENTAL;
+
+/**
+ * Algorithm ID for HQC-128 (0x0600): HQC-128 (NIST Level 1, 128-bit security)
  */
 extern const uint16_t PQC_ALGORITHM_HQC_128;
 
 /**
- * Algorithm ID for HQC-192 (NIST Level 3, 192-bit security)
+ * Algorithm ID for HQC-192 (0x0601): HQC-192 (NIST Level 3, 192-bit security)
  */
 extern const uint16_t PQC_ALGORITHM_HQC_192;
 
 /**
- * Algorithm ID for HQC-256 (NIST Level 5, 256-bit security)
+ * Algorithm ID for HQC-256 (0x0602): HQC-256 (NIST Level 5, 256-bit security)
  */
 extern const uint16_t PQC_ALGORITHM_HQC_256;
+
+/**
+ * Algorithm ID for ML-KEM-512 (0x0700): ML-KEM-512 (NIST Level 1, 128-bit security)
+ */
+extern const uint16_t PQC_ALGORITHM_ML_KEM_512;
+
+/**
+ * Algorithm ID for ML-KEM-768 (0x0701): ML-KEM-768 (NIST Level 3, 192-bit security)
+ */
+extern const uint16_t PQC_ALGORITHM_ML_KEM_768;
+
+/**
+ * Algorithm ID for ML-DSA-44 (0x0800): ML-DSA-44 (NIST Level 2, 128-bit security)
+ */
+extern const uint16_t PQC_ALGORITHM_ML_DSA_44;
+
+/**
+ * Algorithm ID for ML-DSA-65 (0x0801): ML-DSA-65 (NIST Level 3, 192-bit security)
+ */
+extern const uint16_t PQC_ALGORITHM_ML_DSA_65;
+
+/**
+ * Algorithm ID for ML-DSA-87 (0x0802): ML-DSA-87 (NIST Level 5, 256-bit security)
+ */
+extern const uint16_t PQC_ALGORITHM_ML_DSA_87;
+
+/**
+ * Algorithm ID for SLH-DSA-SHA2-128s (0x0900): SLH-DSA-SHA2-128s (NIST Level 1, small signatures)
+ */
+extern const uint16_t PQC_ALGORITHM_SLH_DSA_SHA2_128S;
+
+/**
+ * Algorithm ID for SLH-DSA-SHA2-128f (0x0901): SLH-DSA-SHA2-128f (NIST Level 1, fast signatures)
+ */
+extern const uint16_t PQC_ALGORITHM_SLH_DSA_SHA2_128F;
+
+/**
+ * Algorithm ID for SLH-DSA-SHA2-192s (0x0902): SLH-DSA-SHA2-192s (NIST Level 3, small signatures)
+ */
+extern const uint16_t PQC_ALGORITHM_SLH_DSA_SHA2_192S;
+
+/**
+ * Algorithm ID for SLH-DSA-SHA2-192f (0x0903): SLH-DSA-SHA2-192f (NIST Level 3, fast signatures)
+ */
+extern const uint16_t PQC_ALGORITHM_SLH_DSA_SHA2_192F;
+
+/**
+ * Algorithm ID for SLH-DSA-SHA2-256s (0x0904): SLH-DSA-SHA2-256s (NIST Level 5, small signatures)
+ */
+extern const uint16_t PQC_ALGORITHM_SLH_DSA_SHA2_256S;
+
+/**
+ * Algorithm ID for SLH-DSA-SHA2-256f (0x0905): SLH-DSA-SHA2-256f (NIST Level 5, fast signatures)
+ */
+extern const uint16_t PQC_ALGORITHM_SLH_DSA_SHA2_256F;
 
 /**
  * Free a byte buffer allocated by this library

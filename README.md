@@ -15,7 +15,7 @@ Post-quantum cryptography (PQC) implementations suffer from the "Babel Tower pro
 
 PQC Binary Format provides a universal, algorithm-agnostic format that:
 
-- ✅ Works across **47 cryptographic algorithms**
+- ✅ Works across **51 cryptographic algorithms**
 - ✅ **Self-describing metadata** enables seamless decryption
 - ✅ **Integrity verification** with SHA-256 checksums
 - ✅ **Cross-platform compatible** (Rust, Python, JavaScript, Go, etc.)
@@ -138,7 +138,7 @@ package main
 import (
     "fmt"
     "log"
-    pqc "github.com/PQCrypta/pqc-binary-format/bindings/go/v2"
+    pqc "github.com/PQCrypta/pqc-binary-format/bindings/go/v3"
 )
 
 func main() {
@@ -215,7 +215,7 @@ PQC Binary Format provides **production-ready, fully tested bindings** for multi
 | **Rust** | ✅ Native | `pqc-binary-format` | [docs.rs](https://docs.rs/pqc-binary-format) | [3 examples](examples/) |
 | **Python** | ✅ Tested | `pqc_binary_format` | [Python README](bindings/python/README.md) | [2 examples](examples/python/) |
 | **JavaScript/WASM** | ✅ Tested | `pqc-binary-format` (npm) | [JS README](bindings/javascript/README.md) | [1 example](examples/javascript/) |
-| **Go** | ✅ Tested | `github.com/PQCrypta/pqc-binary-format/bindings/go/v2` | [pkg.go.dev](https://pkg.go.dev/github.com/PQCrypta/pqc-binary-format/bindings/go/v2) | [1 example](bindings/go/examples/) |
+| **Go** | ✅ Tested | `github.com/PQCrypta/pqc-binary-format/bindings/go/v3` | [pkg.go.dev](https://pkg.go.dev/github.com/PQCrypta/pqc-binary-format/bindings/go/v3) | [1 example](bindings/go/examples/) |
 | **C** | ✅ Tested | FFI via Rust | [C/C++ README](bindings/c-cpp/README.md) | [1 example](examples/c/) |
 | **C++** | ✅ Tested | FFI via Rust | [C/C++ README](bindings/c-cpp/README.md) | [1 example](examples/cpp/) |
 
@@ -232,7 +232,7 @@ pip install pqc-binary-format
 npm install pqc-binary-format
 
 # Go
-go get github.com/PQCrypta/pqc-binary-format/bindings/go/v2
+go get github.com/PQCrypta/pqc-binary-format/bindings/go/v3
 
 # C/C++ (build from source)
 cargo build --release --no-default-features
@@ -262,7 +262,7 @@ cd examples/go && go run basic_usage.go < ../../data.bin
 ### Binding Features
 
 All bindings support:
-- ✅ Full algorithm suite (47 algorithms)
+- ✅ Full algorithm suite (51 algorithms)
 - ✅ Metadata serialization/deserialization
 - ✅ SHA-256 integrity verification
 - ✅ Feature flags (compression, streaming, etc.)
@@ -273,10 +273,10 @@ All bindings support:
 
 | Platform | Status | Notes |
 |----------|--------|-------|
-| crates.io (Rust) | ✅ **Published** | [2.0.2](https://crates.io/crates/pqc-binary-format) |
-| PyPI (Python) | ✅ **Published** | [2.0.2](https://pypi.org/project/pqc-binary-format/) |
-| npm (JavaScript) | ✅ **Published** | [2.0.2](https://www.npmjs.com/package/pqc-binary-format) |
-| Go module proxy | ⏳ From the next release | 2.x needs the `/v2` module path, which the 2.0.x tags lack; the proxy serves 1.0.14 until then |
+| crates.io (Rust) | ✅ **Published** | [![crates.io](https://img.shields.io/crates/v/pqc-binary-format)](https://crates.io/crates/pqc-binary-format) |
+| PyPI (Python) | ✅ **Published** | [![PyPI](https://img.shields.io/pypi/v/pqc-binary-format)](https://pypi.org/project/pqc-binary-format/) |
+| npm (JavaScript) | ✅ **Published** | [![npm](https://img.shields.io/npm/v/pqc-binary-format)](https://www.npmjs.com/package/pqc-binary-format) |
+| Go module proxy | ✅ **Published** from 3.0.0 | [![Go](https://img.shields.io/github/v/tag/PQCrypta/pqc-binary-format?filter=bindings%2Fgo%2Fv3*&label=go)](https://pkg.go.dev/github.com/PQCrypta/pqc-binary-format/bindings/go/v3) |
 
 ## 📦 Binary Format Specification
 
@@ -313,54 +313,79 @@ keys it is deterministic across implementations.
 
 ## 🔐 Supported Algorithms
 
-The format supports 47 cryptographic algorithm identifiers:
+The format supports 51 cryptographic algorithm identifiers, the registry in `src/algorithm.rs` (`Algorithm::ALL`); `tests/registry.rs` holds this list to it:
+
 
 ### Classical Algorithms (0x0050-0x00FF)
-- **Classical** (0x0050): X25519 + Ed25519 + AES-256-GCM
-- **Password Classical** (0x0051): Password-based encryption
+- **Classical** (0x0050): Classical cryptography: X25519 + Ed25519 + AES-256-GCM
+- **Password Classical** (0x0051): Password-based classical encryption
 
 ### Hybrid Algorithms (0x0100-0x01FF)
-- **Hybrid** (0x0100): ML-KEM-1024 + X25519 + ML-DSA-87 + Ed25519
+- **Hybrid** (0x0100): Hybrid: ML-KEM-1024 + X25519 + ML-DSA-87 + Ed25519 + AES-256-GCM
 
 ### Post-Quantum Algorithms (0x0200-0x02FF)
-- **Post-Quantum** (0x0200): ML-KEM-1024 + ML-DSA-87
-- **ML-KEM-1024** (0x0202): Pure ML-KEM with AES-256-GCM
-- **Multi-KEM** (0x0203): Dual-layer KEM
-- **Multi-KEM Triple** (0x0204): Triple-layer KEM
-- **Quad-Layer** (0x0205): Four independent layers
-- **PQ3-Stack** (0x0207): Forward secrecy stack
+- **Post-Quantum** (0x0200): Post-quantum: ML-KEM-1024 + ML-DSA-87 + AES-256-GCM
+- **Multi-Algorithm** (0x0201): Multi-algorithm runtime selection
+- **ML-KEM-1024** (0x0202): ML-KEM-1024 with AES-256-GCM
+- **Multi-KEM Dual Layer** (0x0203): Multi-KEM dual layer
+- **Multi-KEM Triple Layer** (0x0204): Multi-KEM triple layer
+- **Quad-Layer** (0x0205): Quad-layer redundant security
+- **Lattice-Code Hybrid** (0x0206): Lattice-Code hybrid stack
+- **PQ3-Stack** (0x0207): PQ3-Stack with forward secrecy
+- **X25519MLKEM768** (0x0208): X-Wing hybrid KEM: ML-KEM-768 (FIPS 203) combined with X25519, the pair TLS negotiates as X25519MLKEM768
+- **FrodoKEM-1344** (0x0209): FrodoKEM-1344: unstructured-lattice KEM, NIST level 5 (ISO/IEC 18033-2)
+- **Classic-McEliece-6960119** (0x020A): Classic McEliece 6960119: code-based KEM (ISO/IEC 18033-2)
+- **FrodoKEM-976** (0x020B): FrodoKEM-976: unstructured-lattice KEM, NIST level 3
 
-### Max Secure Series (0x0300-0x0306)
-High-security configurations for enterprise use
+### Max Secure Series (0x0300-0x03FF)
+- **Max Secure: PQ Lightweight** (0x0300): Max Secure: PQ Lightweight
+- **Max Secure: Pure PQ** (0x0301): Max Secure: Pure PQ
+- **Max Secure: Hybrid** (0x0302): Max Secure: Hybrid Transition
+- **Max Secure: Stateless** (0x0303): Max Secure: Stateless
+- **Max Secure: Crypto-Agile** (0x0304): Max Secure: Crypto-Agile
+- **Max Secure: PQC + ZK** (0x0305): Max Secure: PQC + Zero-Knowledge
+- **Max Secure: Hybrid Transition** (0x0306): Max Secure: Hybrid Transition
 
-### FN-DSA Series (0x0400-0x0407)
-Falcon-based signature algorithms
+### FN-DSA Series, Falcon-based (0x0400-0x04FF)
+- **FN-DSA 512: Compact** (0x0400): FN-DSA 512: Compact
+- **FN-DSA 1024: High-Security** (0x0401): FN-DSA 1024: High-Security
+- **FN-DSA: Floating-Point Hardened** (0x0402): FN-DSA: Floating-Point Hardened
+- **FN-DSA: Dual Signature** (0x0403): FN-DSA: Dual Signature
+- **FN-DSA: Transition Stack** (0x0404): FN-DSA: Transition Stack
+- **FN-DSA + ZK Stack** (0x0405): FN-DSA + Zero-Knowledge Stack
+- **FN-DSA + ZK Stack Enhanced** (0x0406): FN-DSA + ZK Stack Enhanced
+- **FN-DSA: Transition Stack Enhanced** (0x0407): FN-DSA: Transition Stack Enhanced
 
-### Experimental (0x0500-0x0506)
-Research and next-generation algorithms
+### Experimental (0x0500-0x05FF)
+- **Quantum-Inspired Lattice Fusion** (0x0500): Quantum-Inspired Lattice Fusion
+- **Post-ZK Homomorphic** (0x0501): Post-ZK Homomorphic with LFHE 2023
+- **Quantum-Resistant Consensus** (0x0502): Quantum-Resistant Consensus
+- **Entropy-Orchestrated** (0x0503): Entropy-Orchestrated PQ Stack
+- **Lattice-Code Hybrid FN** (0x0504): Lattice-Code Hybrid FN
+- **AI-Synthesized Crypto-Agile** (0x0505): AI-Synthesized Crypto-Agile
+- **Experimental Engine** (0x0506): Experimental Engine (generic)
 
-### HQC Code-Based Series (0x0600-0x0602)
-NIST 2025 Backup KEM standard - code-based cryptography
-- **HQC-128** (0x0600): NIST Level 1, 128-bit security
-- **HQC-192** (0x0601): NIST Level 3, 192-bit security
-- **HQC-256** (0x0602): NIST Level 5, 256-bit security
+### HQC Code-Based Series, NIST 2025 Backup KEM (0x0600-0x06FF)
+- **HQC-128** (0x0600): HQC-128 (NIST Level 1, 128-bit security)
+- **HQC-192** (0x0601): HQC-192 (NIST Level 3, 192-bit security)
+- **HQC-256** (0x0602): HQC-256 (NIST Level 5, 256-bit security)
 
 ### NIST ML-KEM Variants - FIPS 203 (0x0700-0x07FF)
-- **ML-KEM-512** (0x0700): NIST Level 1, 128-bit security
-- **ML-KEM-768** (0x0701): NIST Level 3, 192-bit security
+- **ML-KEM-512** (0x0700): ML-KEM-512 (NIST Level 1, 128-bit security)
+- **ML-KEM-768** (0x0701): ML-KEM-768 (NIST Level 3, 192-bit security)
 
 ### NIST ML-DSA Variants - FIPS 204 (0x0800-0x08FF)
-- **ML-DSA-44** (0x0800): NIST Level 2, 128-bit security
-- **ML-DSA-65** (0x0801): NIST Level 3, 192-bit security
-- **ML-DSA-87** (0x0802): NIST Level 5, 256-bit security
+- **ML-DSA-44** (0x0800): ML-DSA-44 (NIST Level 2, 128-bit security)
+- **ML-DSA-65** (0x0801): ML-DSA-65 (NIST Level 3, 192-bit security)
+- **ML-DSA-87** (0x0802): ML-DSA-87 (NIST Level 5, 256-bit security)
 
 ### NIST SLH-DSA Variants - FIPS 205 (0x0900-0x09FF)
-- **SLH-DSA-SHA2-128s** (0x0900): NIST Level 1, small signatures
-- **SLH-DSA-SHA2-128f** (0x0901): NIST Level 1, fast signatures
-- **SLH-DSA-SHA2-192s** (0x0902): NIST Level 3, small signatures
-- **SLH-DSA-SHA2-192f** (0x0903): NIST Level 3, fast signatures
-- **SLH-DSA-SHA2-256s** (0x0904): NIST Level 5, small signatures
-- **SLH-DSA-SHA2-256f** (0x0905): NIST Level 5, fast signatures
+- **SLH-DSA-SHA2-128s** (0x0900): SLH-DSA-SHA2-128s (NIST Level 1, small signatures)
+- **SLH-DSA-SHA2-128f** (0x0901): SLH-DSA-SHA2-128f (NIST Level 1, fast signatures)
+- **SLH-DSA-SHA2-192s** (0x0902): SLH-DSA-SHA2-192s (NIST Level 3, small signatures)
+- **SLH-DSA-SHA2-192f** (0x0903): SLH-DSA-SHA2-192f (NIST Level 3, fast signatures)
+- **SLH-DSA-SHA2-256s** (0x0904): SLH-DSA-SHA2-256s (NIST Level 5, small signatures)
+- **SLH-DSA-SHA2-256f** (0x0905): SLH-DSA-SHA2-256f (NIST Level 5, fast signatures)
 
 [View full algorithm list](docs/algorithms.md)
 
