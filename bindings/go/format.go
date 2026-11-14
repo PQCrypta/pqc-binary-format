@@ -60,6 +60,14 @@ const (
 	AlgorithmPq3Stack          uint16 = 0x0207
 )
 
+// Algorithm IDs - KEMs the PQCrypta platform assigns in the post-quantum range
+const (
+	AlgorithmX25519MlKem768  uint16 = 0x0208 // X-Wing: ML-KEM-768 + X25519
+	AlgorithmFrodoKem1344    uint16 = 0x0209
+	AlgorithmClassicMcEliece uint16 = 0x020A
+	AlgorithmFrodoKem976     uint16 = 0x020B
+)
+
 // Algorithm IDs - Max Secure Series
 const (
 	AlgorithmMaxSecureLightweight      uint16 = 0x0300
@@ -127,7 +135,7 @@ const (
 // Algorithm name mappings
 var algorithmNames = map[uint16]string{
 	AlgorithmClassical:                 "Classical",
-	AlgorithmPasswordClassical:         "Password-Classical",
+	AlgorithmPasswordClassical:         "Password Classical",
 	AlgorithmHybrid:                    "Hybrid",
 	AlgorithmPostQuantum:               "Post-Quantum",
 	AlgorithmMlKem1024:                 "ML-KEM-1024",
@@ -137,6 +145,10 @@ var algorithmNames = map[uint16]string{
 	AlgorithmQuadLayer:                 "Quad-Layer",
 	AlgorithmLatticeCodeHybrid:         "Lattice-Code Hybrid",
 	AlgorithmPq3Stack:                  "PQ3-Stack",
+	AlgorithmX25519MlKem768:            "X25519MLKEM768",
+	AlgorithmFrodoKem1344:              "FrodoKEM-1344",
+	AlgorithmClassicMcEliece:           "Classic-McEliece-6960119",
+	AlgorithmFrodoKem976:               "FrodoKEM-976",
 	AlgorithmMaxSecureLightweight:      "Max Secure: PQ Lightweight",
 	AlgorithmMaxSecurePurePQ:           "Max Secure: Pure PQ",
 	AlgorithmMaxSecureHybrid:           "Max Secure: Hybrid",

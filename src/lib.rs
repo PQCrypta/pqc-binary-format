@@ -16,7 +16,7 @@
 //!
 //! ## Features
 //!
-//! - **Algorithm-agnostic**: Works with 47 cryptographic algorithm identifiers
+//! - **Algorithm-agnostic**: Works with every identifier in the registry ([`Algorithm::ALL`])
 //! - **Self-describing metadata**: UTF-8 JSON parameters, compression settings, and custom fields
 //! - **Integrity verification**: SHA-256 checksum over all preceding bytes
 //! - **Feature flags**: Compression, streaming, authentication, experimental features
@@ -86,7 +86,7 @@
 //! - **ML-KEM-1024**: Pure ML-KEM with AES-256-GCM
 //! - **Multi-KEM**: Multiple key encapsulation layers
 //! - **Quad-Layer**: Four independent cryptographic layers
-//! - And 41 more algorithm identifiers (Max-Secure, FN-DSA, HQC, ML-KEM/DSA, SLH-DSA, ...)
+//! - And the rest of the registry ([`Algorithm::ALL`]): Max-Secure, FN-DSA, HQC, FrodoKEM, Classic McEliece, ML-KEM/DSA, SLH-DSA, ...
 //!
 //! ## Use Cases
 //!
@@ -128,7 +128,7 @@ pub mod wasm;
 pub mod ffi;
 
 // Re-exports for convenience
-pub use algorithm::Algorithm;
+pub use algorithm::{Algorithm, Family};
 pub use error::{CryptoError, Result};
 pub use format::{FormatFlags, PqcBinaryFormat};
 pub use metadata::{
