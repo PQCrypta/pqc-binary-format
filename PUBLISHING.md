@@ -2,12 +2,12 @@
 
 A release is a tag. Pushing `vX.Y.Z` publishes that version everywhere:
 
-| Registry | Workflow | How it signs in | Published now |
+| Registry | Workflow | How it signs in | Published |
 |----------|----------|-----------------|---------------|
-| [crates.io](https://crates.io/crates/pqc-binary-format) | `publish.yml` | Trusted publishing (OIDC), environment `crates-io` | 2.0.2 |
-| [PyPI](https://pypi.org/project/pqc-binary-format/) | `publish-python.yml` | Trusted publishing (OIDC) | 2.0.2 (one cp311 Linux wheel; abi3 wheels for every platform from the next release) |
-| [npm](https://www.npmjs.com/package/pqc-binary-format) | `publish-npm.yml` | Trusted publishing (OIDC), npm 11.5.1 or later | 2.0.2 |
-| [Go module proxy](https://pkg.go.dev/github.com/PQCrypta/pqc-binary-format/bindings/go/v3) | `go-module-tag.yml` | `GITHUB_TOKEN` (pushes the `bindings/go/` tag) | 1.0.14; 2.x from the next release |
+| [crates.io](https://crates.io/crates/pqc-binary-format) | `publish.yml` | Trusted publishing (OIDC), environment `crates-io` | [![crates.io](https://img.shields.io/crates/v/pqc-binary-format)](https://crates.io/crates/pqc-binary-format) |
+| [PyPI](https://pypi.org/project/pqc-binary-format/) | `publish-python.yml` | Trusted publishing (OIDC) | [![PyPI](https://img.shields.io/pypi/v/pqc-binary-format)](https://pypi.org/project/pqc-binary-format/) |
+| [npm](https://www.npmjs.com/package/pqc-binary-format) | `publish-npm.yml` | Trusted publishing (OIDC), npm 11.5.1 or later | [![npm](https://img.shields.io/npm/v/pqc-binary-format)](https://www.npmjs.com/package/pqc-binary-format) |
+| [Go module proxy](https://pkg.go.dev/github.com/PQCrypta/pqc-binary-format/bindings/go/v3) | `go-module-tag.yml` | `GITHUB_TOKEN` (pushes the `bindings/go/` tag) | [![Go](https://img.shields.io/github/v/tag/PQCrypta/pqc-binary-format?filter=bindings%2Fgo%2Fv3*&label=go)](https://pkg.go.dev/github.com/PQCrypta/pqc-binary-format/bindings/go/v3) |
 
 No workflow holds a registry token. Each one skips a version that is
 already published, so running one again is safe.

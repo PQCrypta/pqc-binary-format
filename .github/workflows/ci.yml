@@ -45,10 +45,10 @@ jobs:
           key: ${{ runner.os }}-target-${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test --locked --verbose
 
       - name: Run tests (release)
-        run: cargo test --release --verbose
+        run: cargo test --locked --release --verbose
 
   clippy:
     name: Clippy

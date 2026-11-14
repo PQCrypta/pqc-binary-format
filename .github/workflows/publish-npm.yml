@@ -43,6 +43,12 @@ jobs:
       - name: npm with trusted publishing
         run: npm install -g npm@^11.5.1
 
+      # wasm-pack writes Cargo.toml's repository as a plain https URL, which
+      # npm rewrites (with a warning) to the git+https form provenance names
+      - name: Repository URL in npm's form
+        working-directory: ./pkg
+        run: npm pkg set repository.type=git repository.url=git+https://github.com/PQCrypta/pqc-binary-format.git
+
       - name: Publish to npm
         working-directory: ./pkg
         run: |
