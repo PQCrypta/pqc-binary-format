@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-11-15
+
+### Fixed
+- **JavaScript**: `new WasmAlgorithm(name)` takes every algorithm in the registry,
+  by canonical name or compact alias, as the Python and C bindings do. It matched a
+  typed list of 10 names, so 41 of the 51 (`x25519-mlkem768` among them) were refused.
+- **JavaScript**: `WasmAlgorithm.supportedAlgorithms()` lists the whole registry (it
+  listed the same 10).
+- **README**: the Cargo line is `pqc-binary-format = "3"` (3.0.0's said "2.0"), and
+  the status line says what CI tests.
+- **Go**: the example's `go.mod` requires `.../bindings/go/v3`, as its import does.
+
+### Added
+- CI's `bindings` job builds and runs the C, C++, Go, Python and JavaScript examples on
+  every pull request; `tests/registry.rs` holds the README's install line and the Go
+  module paths to the crate's major version.
+
 ## [3.0.0] - 2026-11-14
 
 ### Added
