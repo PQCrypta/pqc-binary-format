@@ -136,9 +136,10 @@ jobs:
           g++ -std=c++17 -o "$RUNNER_TEMP/cpp_example" examples/cpp/basic_usage.cpp -Iinclude -Ltarget/release -lpqc_binary_format -ldl -lpthread -lm
           LD_LIBRARY_PATH=target/release "$RUNNER_TEMP/cpp_example"
 
+      # The current Go: the binding declares go 1.20, its example go 1.22
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: bindings/go/go.mod
+          go-version: stable
 
       - name: Go
         run: |
