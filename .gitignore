@@ -39,3 +39,4 @@ examples/cpp/basic_usage
 # Build outputs
 build-output.txt
 .venv/ 
+pkg-node/

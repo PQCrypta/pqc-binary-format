@@ -54,21 +54,11 @@ impl WasmAlgorithm {
     /// Get all supported algorithm names
     #[wasm_bindgen(js_name = supportedAlgorithms)]
     pub fn supported_algorithms() -> Vec<JsValue> {
-        vec![
-            "classical",
-            "hybrid",
-            "post-quantum",
-            "ml-kem-1024",
-            "multi-algorithm",
-            "multi-kem",
-            "multi-kem-triple",
-            "quad-layer",
-            "pq3-stack",
-            "lattice-code-hybrid",
-        ]
-        .into_iter()
-        .map(JsValue::from_str)
-        .collect()
+        // Every algorithm in the registry, by its canonical name
+        Algorithm::ALL
+            .iter()
+            .map(|a| JsValue::from_str(a.canonical_name()))
+            .collect()
     }
 }
 
