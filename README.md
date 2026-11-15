@@ -30,7 +30,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-pqc-binary-format = "2.0"
+pqc-binary-format = "3"
 ```
 
 ### Basic Usage (Rust)
@@ -660,7 +660,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Current Status
 
-- **Language Bindings**: ✅ **Rust** (native), ✅ **Python** (tested v2.0.1), ✅ **JavaScript/WASM** (tested v2.0.1), ✅ **Go** (tested v2.0.1), ✅ **C/C++** (tested v2.0.1)
+- **Language Bindings**: ✅ **Rust** (native, tested on Linux, macOS and Windows), ✅ **Python**, ✅ **JavaScript/WASM**, ✅ **Go**, ✅ **C/C++**: every binding's example is built and run by CI's `bindings` job on every pull request
 - **Examples**: ✅ 9 validated examples across 6 languages
 - **Package Distribution**: ✅ **All platforms published!** crates.io, PyPI, npm, pkg.go.dev
 

@@ -173,3 +173,39 @@ fn the_algorithm_reference_has_a_section_for_each() {
         "docs/algorithms.md states another count"
     );
 }
+
+/// The README installs this major version: its Cargo line and every Go
+/// import path name the crate's own major version, and the Go modules (the
+/// binding and its example) carry it. The 3.0.0 README still said
+/// `pqc-binary-format = "2.0"`, and the Go example's go.mod still required
+/// `/v2` after its import moved to `/v3`.
+#[test]
+fn the_readme_and_go_modules_name_this_major_version() {
+    let major = env!("CARGO_PKG_VERSION_MAJOR");
+    let readme = read("README.md");
+    let cargo_line = format!("pqc-binary-format = \"{major}\"");
+    let lines: Vec<&str> = readme
+        .lines()
+        .filter(|l| l.trim_start().starts_with("pqc-binary-format = "))
+        .collect();
+    assert!(!lines.is_empty(), "README has no Cargo line");
+    for line in lines {
+        assert_eq!(line.trim(), cargo_line, "README's Cargo line");
+    }
+    let go_path = format!("bindings/go/v{major}");
+    for text in [
+        readme.as_str(),
+        &read("bindings/go/README.md"),
+        &read("examples/go/go.mod"),
+        &read("bindings/go/go.mod"),
+    ] {
+        for (at, _) in text.match_indices("bindings/go/v") {
+            assert!(
+                text[at..].starts_with(&go_path)
+                    && !text[at + go_path.len()..].starts_with(|c: char| c.is_ascii_digit()),
+                "a Go path names another major version: {}",
+                &text[at..(at + 20).min(text.len())]
+            );
+        }
+    }
+}

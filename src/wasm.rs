@@ -21,21 +21,10 @@ impl WasmAlgorithm {
     /// Create a new algorithm from name
     #[wasm_bindgen(constructor)]
     pub fn new(name: &str) -> Result<WasmAlgorithm, JsValue> {
-        let inner = match name.to_lowercase().as_str() {
-            "classical" => Algorithm::Classical,
-            "hybrid" => Algorithm::Hybrid,
-            "post-quantum" | "postquantum" => Algorithm::PostQuantum,
-            "ml-kem-1024" | "mlkem1024" => Algorithm::MlKem1024,
-            "multi-algorithm" | "multialgorithm" => Algorithm::MultiAlgorithm,
-            "multi-kem" | "multikem" => Algorithm::MultiKem,
-            "multi-kem-triple" | "multikemtriple" => Algorithm::MultiKemTriple,
-            "quad-layer" | "quadlayer" => Algorithm::QuadLayer,
-            "pq3-stack" | "pq3stack" => Algorithm::Pq3Stack,
-            "lattice-code-hybrid" | "latticecodehybrid" => Algorithm::LatticeCodeHybrid,
-            _ => {
-                return Err(JsValue::from_str(&format!("Unknown algorithm: {}", name)));
-            }
-        };
+        // Every algorithm in the registry, by its canonical name or a compact
+        // alias ("ml-kem-1024", "mlkem1024"), as the other bindings take it
+        let inner = Algorithm::from_name(name)
+            .ok_or_else(|| JsValue::from_str(&format!("Unknown algorithm: {name}")))?;
         Ok(Self { inner })
     }
 
@@ -54,21 +43,11 @@ impl WasmAlgorithm {
     /// Get all supported algorithm names
     #[wasm_bindgen(js_name = supportedAlgorithms)]
     pub fn supported_algorithms() -> Vec<JsValue> {
-        vec![
-            "classical",
-            "hybrid",
-            "post-quantum",
-            "ml-kem-1024",
-            "multi-algorithm",
-            "multi-kem",
-            "multi-kem-triple",
-            "quad-layer",
-            "pq3-stack",
-            "lattice-code-hybrid",
-        ]
-        .into_iter()
-        .map(JsValue::from_str)
-        .collect()
+        // Every algorithm in the registry, by its canonical name
+        Algorithm::ALL
+            .iter()
+            .map(|a| JsValue::from_str(a.canonical_name()))
+            .collect()
     }
 }
 

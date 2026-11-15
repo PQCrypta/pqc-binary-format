@@ -116,6 +116,53 @@ jobs:
       - name: Run algorithm_comparison example
         run: cargo run --example algorithm_comparison
 
+  # Every binding's example, built and run: what the README says is tested
+  bindings:
+    name: Bindings
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
+        with:
+          toolchain: stable
+
+      - name: C and C++
+        run: |
+          cargo build --locked --release
+          gcc -o "$RUNNER_TEMP/c_example" examples/c/basic_usage.c -Iinclude -Ltarget/release -lpqc_binary_format -ldl -lpthread -lm
+          LD_LIBRARY_PATH=target/release "$RUNNER_TEMP/c_example"
+          g++ -std=c++17 -o "$RUNNER_TEMP/cpp_example" examples/cpp/basic_usage.cpp -Iinclude -Ltarget/release -lpqc_binary_format -ldl -lpthread -lm
+          LD_LIBRARY_PATH=target/release "$RUNNER_TEMP/cpp_example"
+
+      # The current Go: the binding declares go 1.20, its example go 1.22
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+
+      - name: Go
+        run: |
+          (cd bindings/go && go vet ./... && go test ./...)
+          (cd examples/go && go run .)
+
+      - name: Python
+        run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          . "$RUNNER_TEMP/venv/bin/activate"
+          pip install --quiet maturin
+          maturin develop --release
+          python examples/python/basic_usage.py
+          python examples/python/algorithm_comparison.py
+
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@0d096b08b4e5a7de8c28de67e11e945404e9eefa # v0.4.0
+
+      - name: JavaScript (WebAssembly in Node)
+        run: |
+          wasm-pack build --target nodejs --out-dir pkg-node -- --features wasm
+          node bindings/javascript/smoke.cjs
+
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
