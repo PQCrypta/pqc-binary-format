@@ -15,7 +15,11 @@ fuzz_target!(|data: &[u8]| {
 fn round_trip(format: &PqcBinaryFormat) {
     let bytes = format.to_bytes().expect("an accepted envelope serializes");
     let again = PqcBinaryFormat::from_bytes(&bytes).expect("its serialization parses");
-    assert_eq!(again.data(), format.data(), "the payload survives the round trip");
+    assert_eq!(
+        again.data(),
+        format.data(),
+        "the payload survives the round trip"
+    );
     assert_eq!(
         again.to_bytes().expect("and serializes again"),
         bytes,
