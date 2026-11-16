@@ -62,6 +62,21 @@ cargo bench
 cargo doc --open
 ```
 
+### Fuzzing
+
+The parser takes untrusted input, so changes to it are fuzzed: `fuzz/` holds
+two cargo-fuzz targets, `from_bytes` (any bytes) and `envelope` (a correctly
+framed, checksummed envelope around the input). With a nightly toolchain and
+`cargo install cargo-fuzz`:
+
+```bash
+cd fuzz
+cargo +nightly fuzz run from_bytes -- -max_total_time=60
+cargo +nightly fuzz run envelope -- -max_total_time=60
+```
+
+ClusterFuzzLite runs them on every pull request that touches the parser.
+
 ### Commit Messages
 
 - Use present tense ("Add feature" not "Added feature")
