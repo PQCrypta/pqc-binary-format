@@ -1,0 +1,33 @@
+[package]
+name = "pqc-binary-format-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4.13"
+pqc-binary-format = { path = ".." }
+sha2 = "0.10"
+
+# Any bytes, as an untrusted envelope arrives
+[[bin]]
+name = "from_bytes"
+path = "fuzz_targets/from_bytes.rs"
+test = false
+doc = false
+bench = false
+
+# A correctly framed and checksummed envelope around the input
+[[bin]]
+name = "envelope"
+path = "fuzz_targets/envelope.rs"
+test = false
+doc = false
+bench = false
+
+# Its own workspace: not built with the crate
+[workspace]
+members = ["."]

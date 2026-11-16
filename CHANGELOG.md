@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Fuzz targets for the parser (`fuzz/`, cargo-fuzz): `from_bytes` takes any
+  bytes, `envelope` frames and checksums the input so it reaches the metadata
+  and `validate()`. Both check that an accepted envelope round-trips.
+  ClusterFuzzLite runs them on pull requests (five minutes) and daily (half an
+  hour).
+- `SECURITY.md`: private vulnerability reporting, enabled for the repository.
+
+### Changed
+- Every workflow's token is read-only unless a job asks for more; the OIDC
+  token for trusted publishing is the publishing job's alone.
+- CI installs maturin pinned by hash; the npm publish job checks Node 24's
+  npm (11.5.1 or later) instead of installing one unpinned.
+- rand 0.9.5 (dev-dependency, through proptest 1.11): RUSTSEC-2026-0097.
+
 ## [3.0.1] - 2026-11-15
 
 ### Fixed

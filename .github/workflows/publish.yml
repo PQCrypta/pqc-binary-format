@@ -14,15 +14,19 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+# Read only unless a job asks for more
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   publish:
     name: Publish to crates.io
     runs-on: ubuntu-latest
     environment: crates-io
+    # Trusted publishing: crates.io takes this job's OIDC identity
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

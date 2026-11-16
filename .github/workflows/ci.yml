@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+# Read only unless a job asks for more
+permissions:
+  contents: read
+
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
@@ -150,7 +154,7 @@ jobs:
         run: |
           python3 -m venv "$RUNNER_TEMP/venv"
           . "$RUNNER_TEMP/venv/bin/activate"
-          pip install --quiet maturin
+          pip install --quiet --require-hashes -r .github/requirements-maturin.txt
           maturin develop --release
           python examples/python/basic_usage.py
           python examples/python/algorithm_comparison.py

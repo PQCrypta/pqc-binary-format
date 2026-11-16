@@ -12,12 +12,15 @@ on:
 # npmjs.com to this repository and publish-npm.yml. Provenance is
 # attached automatically.
 permissions:
-  id-token: write
   contents: read
 
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
+    # The OIDC identity npm publishes with, for this job only
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -40,8 +43,13 @@ jobs:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
+      # Node 24 ships npm 11.5.1 or later, the first with trusted publishing:
+      # checked, rather than installed unpinned over it
       - name: npm with trusted publishing
-        run: npm install -g npm@^11.5.1
+        run: |
+          v=$(npm --version)
+          printf '%s\n' 11.5.1 "$v" | sort -V -C || { echo "::error::npm $v predates trusted publishing (11.5.1)"; exit 1; }
+          echo "npm $v"
 
       # wasm-pack writes Cargo.toml's repository as a plain https URL, which
       # npm rewrites (with a warning) to the git+https form provenance names

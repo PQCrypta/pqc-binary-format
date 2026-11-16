@@ -14,6 +14,16 @@ updates:
         patterns:
           - "github/codeql-action*"
 
+  # .github/requirements-maturin.txt, pinned by hash: Dependabot moves the
+  # version and its hashes together
+  - package-ecosystem: "pip"
+    directory: "/.github"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "ci"
+
   - package-ecosystem: "cargo"
     directory: "/"
     schedule:
@@ -21,3 +31,21 @@ updates:
       day: "monday"
     commit-message:
       prefix: "chore"
+
+  # The fuzz targets' crate (its own workspace) and the ClusterFuzzLite
+  # builder image, pinned by digest
+  - package-ecosystem: "cargo"
+    directory: "/fuzz"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore"
+
+  - package-ecosystem: "docker"
+    directory: "/.clusterfuzzlite"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "ci"
