@@ -40,16 +40,6 @@ impl ByteBuffer {
             capacity,
         }
     }
-
-    #[allow(dead_code)]
-    unsafe fn to_vec(&self) -> Vec<u8> {
-        unsafe {
-            if self.data.is_null() {
-                return Vec::new();
-            }
-            slice::from_raw_parts(self.data, self.len).to_vec()
-        }
-    }
 }
 
 /// Free a byte buffer allocated by this library
