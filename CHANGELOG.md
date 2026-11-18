@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.2] - 2026-11-18
+
+### Fixed
+- `from_bytes` returns an error for a data length at the top of the address
+  space, in every build profile.
+
 ### Added
+- Tests for the public API and the C interface. CI fails below the 80% line
+  coverage that CONTRIBUTING asks for.
 - Fuzz targets for the parser (`fuzz/`, cargo-fuzz): `from_bytes` takes any
   bytes, `envelope` frames and checksums the input so it reaches the metadata
   and `validate()`. Both check that an accepted envelope round-trips.
