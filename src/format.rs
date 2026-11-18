@@ -401,10 +401,12 @@ impl PqcBinaryFormat {
         let data_end = len_end
             .checked_add(data_len)
             .ok_or_else(|| CryptoError::BinaryFormatError("Data length overflow".into()))?;
-        if data_end + CHECKSUM_SIZE != data.len() {
+        let expected = data_end
+            .checked_add(CHECKSUM_SIZE)
+            .ok_or_else(|| CryptoError::BinaryFormatError("Data length overflow".into()))?;
+        if expected != data.len() {
             return Err(CryptoError::BinaryFormatError(format!(
-                "Length mismatch: expected {} bytes, got {}",
-                data_end + CHECKSUM_SIZE,
+                "Length mismatch: expected {expected} bytes, got {}",
                 data.len()
             )));
         }
