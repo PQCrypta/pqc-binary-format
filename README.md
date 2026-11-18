@@ -1,5 +1,6 @@
 # PQC Binary Format
 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16904/badge)](https://www.bestpractices.dev/projects/16904)
 [![Crates.io](https://img.shields.io/crates/v/pqc-binary-format.svg)](https://crates.io/crates/pqc-binary-format)
 [![Documentation](https://docs.rs/pqc-binary-format/badge.svg)](https://docs.rs/pqc-binary-format)
 [![License](https://img.shields.io/crates/l/pqc-binary-format.svg)](LICENSE-MIT)
