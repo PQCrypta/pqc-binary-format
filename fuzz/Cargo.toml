@@ -10,7 +10,7 @@ cargo-fuzz = true
 [dependencies]
 libfuzzer-sys = "0.4.13"
 pqc-binary-format = { path = ".." }
-sha2 = "0.10"
+sha2 = "0.11"
 
 # Any bytes, as an untrusted envelope arrives
 [[bin]]
